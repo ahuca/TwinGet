@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{46CA5D70-7812-4809-8B40-31392DE18AA1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli", "src\twinget\TwinGet.Cli.csproj", "{296B05F9-B06D-4125-90A2-BD261B2BF04B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{296B05F9-B06D-4125-90A2-BD261B2BF04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{296B05F9-B06D-4125-90A2-BD261B2BF04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{296B05F9-B06D-4125-90A2-BD261B2BF04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{296B05F9-B06D-4125-90A2-BD261B2BF04B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{296B05F9-B06D-4125-90A2-BD261B2BF04B} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
+	EndGlobalSection
+EndGlobal
