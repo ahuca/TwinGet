@@ -4,4 +4,7 @@ $msBuildPath = Join-Path -Path $vsInstallationPath -ChildPath 'MSBuild\Current\B
 
 $null = Test-Path $msBuildPath -ErrorAction Stop
 
+$null = Get-Command nuget -ErrorAction Stop
+
+nuget restore
 & $msBuildPath

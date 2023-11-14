@@ -12,7 +12,7 @@ version: 1.0.0.{build}
 
 image:
   - Visual Studio 2022
-  - Windows
+  - Windows Server 2019
 
 # Ignore testing a commit if only the README.md file changed
 # Or if various strings are found in the commit message: updated readme, update readme, update docs, update version, update appveyor
