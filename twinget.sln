@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{46CA5D70-781
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli", "src\twinget\TwinGet.Cli.csproj", "{296B05F9-B06D-4125-90A2-BD261B2BF04B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Core", "src\TwinGet.Core\TwinGet.Core.csproj", "{9B7F1AC0-7368-4504-8B3F-D9C518B85653}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,11 +19,16 @@ Global
 		{296B05F9-B06D-4125-90A2-BD261B2BF04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{296B05F9-B06D-4125-90A2-BD261B2BF04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{296B05F9-B06D-4125-90A2-BD261B2BF04B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B7F1AC0-7368-4504-8B3F-D9C518B85653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B7F1AC0-7368-4504-8B3F-D9C518B85653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B7F1AC0-7368-4504-8B3F-D9C518B85653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B7F1AC0-7368-4504-8B3F-D9C518B85653}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{296B05F9-B06D-4125-90A2-BD261B2BF04B} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
+		{9B7F1AC0-7368-4504-8B3F-D9C518B85653} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
 	EndGlobalSection
 EndGlobal
