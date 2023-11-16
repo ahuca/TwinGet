@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{46CA5D70-7812-4809-8B40-31392DE18AA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli", "src\twinget\TwinGet.Cli.csproj", "{296B05F9-B06D-4125-90A2-BD261B2BF04B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli", "src\TwinGet.Cli\TwinGet.Cli.csproj", "{296B05F9-B06D-4125-90A2-BD261B2BF04B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Core", "src\TwinGet.Core\TwinGet.Core.csproj", "{9B7F1AC0-7368-4504-8B3F-D9C518B85653}"
 EndProject
