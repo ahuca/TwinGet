@@ -19,4 +19,8 @@
     <Folder Include="Commands\Pack\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TwinGet.Core\TwinGet.Core.csproj" />
+  </ItemGroup>
+
 </Project>

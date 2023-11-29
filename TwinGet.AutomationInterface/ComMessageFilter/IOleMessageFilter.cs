@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace TwinGet.Core.ComMessageFilter;
+namespace TwinGet.AutomationInterface.ComMessageFilter;
 
 [ComImport(), Guid("00000016-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-public interface IOleMessageFilter
+internal interface IOleMessageFilter
 {
     [PreserveSig]
     int HandleInComingCall(int dwCallType, IntPtr hTaskCaller, int dwTickCount, IntPtr lpInterfaceInfo);
