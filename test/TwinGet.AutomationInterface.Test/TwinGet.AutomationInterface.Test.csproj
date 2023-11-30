@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
+    <ProjectReference Include="..\..\src\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
   </ItemGroup>
 
 </Project>

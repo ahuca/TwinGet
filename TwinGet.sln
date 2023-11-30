@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli", "src\TwinGet.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Core", "src\TwinGet.Core\TwinGet.Core.csproj", "{9B7F1AC0-7368-4504-8B3F-D9C518B85653}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.AutomationInterface", "TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj", "{3FD0F366-6A8B-4CF8-A11E-D62D8A687EC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.AutomationInterface", "src\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj", "{3FD0F366-6A8B-4CF8-A11E-D62D8A687EC7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BDB6B966-4B82-4F51-9487-91CD520BC5AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.AutomationInterface.Test", "TwinGet.AutomationInterface.Test\TwinGet.AutomationInterface.Test.csproj", "{C8F1DADD-CC0D-4EA0-9C92-15590FCE9F05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.AutomationInterface.Test", "test\TwinGet.AutomationInterface.Test\TwinGet.AutomationInterface.Test.csproj", "{C8F1DADD-CC0D-4EA0-9C92-15590FCE9F05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

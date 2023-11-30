@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
+    <ProjectReference Include="..\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
     <ProjectReference Include="..\TwinGet.Core\TwinGet.Core.csproj" />
   </ItemGroup>
 
