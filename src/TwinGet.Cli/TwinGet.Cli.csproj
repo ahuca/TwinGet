@@ -6,7 +6,7 @@
     <AssemblyTitle>TwinGet Command Line</AssemblyTitle>
     <Description>TwinGet Command Line Interface</Description>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>

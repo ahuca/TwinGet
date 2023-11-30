@@ -1,10 +1,12 @@
 ﻿using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace TwinGet.AutomationInterface.ComMessageFilter;
 
 /// <summary>
 /// A COM message filtering class <see href="https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_automationinterface/242727947.html&id=">
 /// </summary>
+[SupportedOSPlatform("windows")]
 internal class MessageFilter : IOleMessageFilter
 {
     public static void Register()

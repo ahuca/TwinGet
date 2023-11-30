@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <RootNamesapce>TwinGet.Core</RootNamesapce>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
