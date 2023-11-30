@@ -17,6 +17,7 @@ namespace TwinGet.AutomationInterface
             ProgId = String.Empty; // To avoid CS8618
             MessageFilter.Register();
             TryInitializeDte();
+            Console.CancelKeyPress += new ConsoleCancelEventHandler(DisposeOnCancelEvent);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -42,6 +43,11 @@ namespace TwinGet.AutomationInterface
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        protected void DisposeOnCancelEvent(object sender, ConsoleCancelEventArgs args)
+        {
+            Dispose();
         }
 
         private void CleanUp()
