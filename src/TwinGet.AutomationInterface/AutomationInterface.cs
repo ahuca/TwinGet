@@ -40,7 +40,6 @@ namespace TwinGet.AutomationInterface
 
         public void Dispose()
         {
-            MessageFilter.Revoke();
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
@@ -53,6 +52,7 @@ namespace TwinGet.AutomationInterface
             {
                 _dte.Quit();
                 Marshal.ReleaseComObject(_dte);
+                MessageFilter.Revoke();
             }
         }
 
