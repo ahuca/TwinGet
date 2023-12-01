@@ -4,8 +4,21 @@ namespace TwinGet.AutomationInterface.Test
     {
         private bool disposedValue;
 
+        [Fact]
+        public void ASimplePassingTest()
+        {
+            true.Should().BeTrue();
+        }
+
         [StaFact]
-        public void ProgIdShouldBeValid()
+        public void ProgId_ShouldNotBeNullOrEmpty()
+        {
+            var ai = new AutomationInterface();
+            ai.ProgId.Should().NotBeNullOrEmpty();
+        }
+
+        [StaFact]
+        public void ProgId_ShouldBeValid()
         {
             var ai = new AutomationInterface();
             AutomationInterfaceConstants.SupportedProgIds.Should().Contain(ai.ProgId);
