@@ -23,4 +23,8 @@
     <PackageReference Include="envdte80" Version="17.8.37221" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+
 </Project>

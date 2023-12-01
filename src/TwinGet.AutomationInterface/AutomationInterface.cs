@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using TwinGet.AutomationInterface.ComMessageFilter;
+using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.Utils;
 
 namespace TwinGet.AutomationInterface
@@ -17,6 +18,7 @@ namespace TwinGet.AutomationInterface
             ProgId = String.Empty; // To avoid CS8618
             MessageFilter.Register();
             TryInitializeDte();
+            if (_dte is null) { throw new CouldNotCreateTwinCatDte("Is TwinCAT installed in this system?"); }
             Console.CancelKeyPress += new ConsoleCancelEventHandler(DisposeOnCancelEvent);
         }
 
