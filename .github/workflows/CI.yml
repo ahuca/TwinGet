@@ -7,7 +7,5 @@ jobs:
     runs-on: [self-hosted, Windows, x64, TwinCAT]
     steps:
       - uses: actions/checkout@v3
-        with:
-          dotnet-version: '7.x'
       - run: .\build.ps1
       - run: dotnet test --no-build .\TwinGet.sln
