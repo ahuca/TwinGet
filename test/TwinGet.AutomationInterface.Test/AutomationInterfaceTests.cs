@@ -6,12 +6,6 @@ namespace TwinGet.AutomationInterface.Test
     {
         private bool _disposedValue;
 
-        [Fact]
-        public void ASimplePassingTest()
-        {
-            true.Should().BeTrue();
-        }
-
         [StaFact]
         public void ProgId_ShouldNotBeNullOrEmpty()
         {
