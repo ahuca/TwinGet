@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TwinGet.AutomationInterface.Exceptions
 {
-    internal class CouldNotCreateTwinCatDte : Exception
+    public class CouldNotCreateTwinCatDte : Exception
     {
         public CouldNotCreateTwinCatDte()
         {
