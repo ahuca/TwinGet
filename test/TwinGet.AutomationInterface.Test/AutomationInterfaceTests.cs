@@ -9,15 +9,15 @@ namespace TwinGet.AutomationInterface.Test
         [StaFact]
         public void ProgId_ShouldNotBeNullOrEmpty()
         {
-            var ai = new AutomationInterface();
-            ai.ProgId.Should().NotBeNullOrEmpty();
+            var sut = new AutomationInterface();
+            sut.ProgId.Should().NotBeNullOrEmpty();
         }
 
         [StaFact]
         public void ProgId_ShouldBeValid()
         {
-            var ai = new AutomationInterface();
-            AutomationInterfaceConstants.SupportedProgIds.Should().Contain(ai.ProgId);
+            var sut = new AutomationInterface();
+            AutomationInterfaceConstants.SupportedProgIds.Should().Contain(sut.ProgId);
         }
 
         protected virtual void Dispose(bool disposing)
