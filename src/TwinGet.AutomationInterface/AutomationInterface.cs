@@ -11,17 +11,16 @@ namespace TwinGet.AutomationInterface
     [SupportedOSPlatform("windows")]
     public class AutomationInterface : IDisposable
     {
-        public string ProgId { get; private set; }
-        private EnvDTE80.DTE2? _dte;
+        public string ProgId { get => _progId; }
+        private string _progId;
+        private readonly EnvDTE80.DTE2? _dte;
         private bool _disposedValue;
 
         public AutomationInterface()
         {
-            ProgId = string.Empty; // To avoid CS8618
             MessageFilter.Register();
-            TryInitializeDte();
+            _dte = TryInitializeDte(out _progId);
             if (_dte is null) { throw new CouldNotCreateTwinCatDte("Is TwinCAT installed in this system?"); }
-            Console.CancelKeyPress += new ConsoleCancelEventHandler(DisposeOnCancelEvent);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -49,14 +48,9 @@ namespace TwinGet.AutomationInterface
             GC.SuppressFinalize(this);
         }
 
-        protected void DisposeOnCancelEvent(object sender, ConsoleCancelEventArgs args)
-        {
-            Dispose();
-        }
-
         private void CleanUp()
         {
-            ProgId = string.Empty;
+            _progId = string.Empty;
 
             if (_dte is not null)
             {
@@ -69,8 +63,9 @@ namespace TwinGet.AutomationInterface
         /// <summary>
         /// Try to create a Visual Studio (or TwinCAT XAE) DTE instance.
         /// </summary>
-        /// <returns>true if successful, otherwise false</returns>
-        private bool TryInitializeDte()
+        /// <param name="progId">The ProgId of the created instance if successful, empty string if not.</param>
+        /// <returns>The created DTE instance if successful, null if not.</returns>
+        private static EnvDTE80.DTE2? TryInitializeDte(out string progId)
         {
             foreach (string p in AutomationInterfaceConstants.SupportedProgIds)
             {
@@ -92,15 +87,13 @@ namespace TwinGet.AutomationInterface
 
                 if (dte.IsTwinCatIntegrated())
                 {
-                    ProgId = p;
-                    _dte = dte;
-                    return true;
+                    progId = p;
+                    return dte;
                 }
             }
 
-            ProgId = string.Empty;
-            _dte = null;
-            return false;
+            progId = string.Empty;
+            return null;
         }
 
     }
