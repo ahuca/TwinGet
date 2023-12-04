@@ -1,8 +1,10 @@
+// This file is licensed to you under MIT license.
+
 namespace TwinGet.AutomationInterface.Test
 {
     public class AutomationInterfaceTests : IDisposable
     {
-        private bool disposedValue;
+        private bool _disposedValue;
 
         [Fact]
         public void ASimplePassingTest()
@@ -26,7 +28,7 @@ namespace TwinGet.AutomationInterface.Test
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -35,7 +37,7 @@ namespace TwinGet.AutomationInterface.Test
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

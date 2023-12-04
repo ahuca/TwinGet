@@ -1,4 +1,6 @@
-﻿namespace TwinGet.AutomationInterface.Utils
+﻿// This file is licensed to you under MIT license.
+
+namespace TwinGet.AutomationInterface.Utils
 {
     internal static class DteExtensions
     {

@@ -1,4 +1,6 @@
-﻿using TwinGet.AutomationInterface;
+﻿// This file is licensed to you under MIT license.
+
+using TwinGet.AutomationInterface;
 
 class Program
 {

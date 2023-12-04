@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿// This file is licensed to you under MIT license.
+
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 namespace TwinGet.AutomationInterface.ComMessageFilter;

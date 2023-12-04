@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿// This file is licensed to you under MIT license.
+
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using TwinGet.AutomationInterface.ComMessageFilter;
 using TwinGet.AutomationInterface.Exceptions;
@@ -11,11 +13,11 @@ namespace TwinGet.AutomationInterface
     {
         public string ProgId { get; private set; }
         private EnvDTE80.DTE2? _dte;
-        private bool disposedValue;
+        private bool _disposedValue;
 
         public AutomationInterface()
         {
-            ProgId = String.Empty; // To avoid CS8618
+            ProgId = string.Empty; // To avoid CS8618
             MessageFilter.Register();
             TryInitializeDte();
             if (_dte is null) { throw new CouldNotCreateTwinCatDte("Is TwinCAT installed in this system?"); }
@@ -24,7 +26,7 @@ namespace TwinGet.AutomationInterface
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -32,7 +34,7 @@ namespace TwinGet.AutomationInterface
                 }
 
                 CleanUp();
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 
@@ -54,7 +56,7 @@ namespace TwinGet.AutomationInterface
 
         private void CleanUp()
         {
-            ProgId = String.Empty;
+            ProgId = string.Empty;
 
             if (_dte is not null)
             {
@@ -70,7 +72,7 @@ namespace TwinGet.AutomationInterface
         /// <returns>true if successful, otherwise false</returns>
         private bool TryInitializeDte()
         {
-            foreach (var p in AutomationInterfaceConstants.SupportedProgIds)
+            foreach (string p in AutomationInterfaceConstants.SupportedProgIds)
             {
                 Type? t = Type.GetTypeFromProgID(p);
 
@@ -96,7 +98,7 @@ namespace TwinGet.AutomationInterface
                 }
             }
 
-            ProgId = String.Empty;
+            ProgId = string.Empty;
             _dte = null;
             return false;
         }
