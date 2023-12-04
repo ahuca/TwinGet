@@ -2,6 +2,7 @@
 
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using EnvDTE80;
 using TwinGet.AutomationInterface.ComMessageFilter;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.Utils;
@@ -11,16 +12,20 @@ namespace TwinGet.AutomationInterface
     [SupportedOSPlatform("windows")]
     public class AutomationInterface : IDisposable
     {
-        public string ProgId { get => _progId; }
         private string _progId;
+        private EnvDTE.Solution? _solution;
+        private EnvDTE.SolutionBuild? _solutionBuild;
         private readonly EnvDTE80.DTE2? _dte;
         private bool _disposedValue;
+        public string ProgId { get => _progId; }
+        public bool IsSolutionOpen { get => _solution?.IsOpen ?? false; }
+        public string LoadedSolutionFile { get => _solution?.FileName ?? string.Empty; }
 
         public AutomationInterface()
         {
             MessageFilter.Register();
             _dte = TryInitializeDte(out _progId);
-            if (_dte is null) { throw new CouldNotCreateTwinCatDte("Is TwinCAT installed in this system?"); }
+            if (_dte is null) { throw new CouldNotCreateTwincatDteException("Is TwinCAT installed in this system?"); }
         }
 
         protected virtual void Dispose(bool disposing)
@@ -96,5 +101,33 @@ namespace TwinGet.AutomationInterface
             return null;
         }
 
+        private void ThrowIfDteIsNull()
+        {
+            if (_dte is null) { throw new DteInstanceIsNullException($"No {nameof(DTE2)} instance available."); }
+        }
+
+        private void ThrowIfInvalidSolutionPath(string solutionPath)
+        {
+            if (string.IsNullOrEmpty(solutionPath)) { throw new ArgumentException("Solution path cannot be null or empty."); }
+            if (!Path.Exists(solutionPath)) { throw new ArgumentException($"Provided solution path \"{solutionPath.ToString()}\" does not exists."); }
+        }
+
+        public void LoadSolution(string filePath)
+        {
+            ThrowIfInvalidSolutionPath(filePath);
+            ThrowIfDteIsNull();
+
+            filePath = Path.GetFullPath(filePath);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            _solution = _dte.Solution;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            _solutionBuild = _dte.Solution.SolutionBuild;
+            _solution.Open(filePath);
+        }
+
+        public static void SaveProjectAsLibrary(string solutionPath, string outFile)
+        {
+
+        }
     }
 }

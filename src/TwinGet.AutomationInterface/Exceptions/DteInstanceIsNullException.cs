@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace TwinGet.AutomationInterface.Exceptions
 {
-    public class CouldNotCreateTwinCatDte : Exception
+    public class DteInstanceIsNullException : Exception
     {
-        public CouldNotCreateTwinCatDte()
+        public DteInstanceIsNullException()
         {
         }
 
-        public CouldNotCreateTwinCatDte(string messsage) : base(messsage)
+        public DteInstanceIsNullException(string message) : base(message)
         {
         }
 
-        public CouldNotCreateTwinCatDte(string message, Exception inner) : base(message, inner)
+        public DteInstanceIsNullException(string message, Exception inner) : base(message, inner)
         {
         }
     }

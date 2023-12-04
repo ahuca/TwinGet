@@ -10,6 +10,7 @@ namespace TwinGet.AutomationInterface.Test
         public void ProgId_ShouldNotBeNullOrEmpty()
         {
             var sut = new AutomationInterface();
+
             sut.ProgId.Should().NotBeNullOrEmpty();
         }
 
@@ -17,7 +18,19 @@ namespace TwinGet.AutomationInterface.Test
         public void ProgId_ShouldBeValid()
         {
             var sut = new AutomationInterface();
+
             AutomationInterfaceConstants.SupportedProgIds.Should().Contain(sut.ProgId);
+        }
+
+
+        [StaFact]
+        public void LoadSolution_WithValidPath_ShouldLoadSuccessfully()
+        {
+            var sut = new AutomationInterface();
+            sut.LoadSolution(TestTwincatSolutionConstants.s_testTwincatSolution);
+
+            sut.LoadedSolutionFile.Should().Be(TestTwincatSolutionConstants.s_testTwincatSolution);
+            sut.IsSolutionOpen.Should().BeTrue();
         }
 
         protected virtual void Dispose(bool disposing)

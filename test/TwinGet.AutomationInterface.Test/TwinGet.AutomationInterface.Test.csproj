@@ -27,4 +27,8 @@
     <ProjectReference Include="..\..\src\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="$(ProjectDir)TestTwincatProject\**" CopyToOutputDirectory="PreserveNewest" LinkBase="TestTwincatProject\" />
+  </ItemGroup>
+  
 </Project>
