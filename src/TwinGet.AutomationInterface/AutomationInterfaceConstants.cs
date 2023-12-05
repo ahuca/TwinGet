@@ -16,6 +16,6 @@ namespace TwinGet.AutomationInterface
             "VisualStudio.DTE.14.0",
             "VisualStudio.DTE.15.0"
         };
-
+        public static string TwincatXaeDownloadUrl = @"https://www.beckhoff.com/en-en/support/download-finder/search-result/?search=eXtended%20Automation%20Engineering%20%28XAE%29";
     }
 }
