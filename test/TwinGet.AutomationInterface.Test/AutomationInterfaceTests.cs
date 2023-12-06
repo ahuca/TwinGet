@@ -6,6 +6,11 @@ namespace TwinGet.AutomationInterface.Test
     {
         private bool _disposedValue;
 
+        public AutomationInterfaceTests()
+        {
+
+        }
+
         [StaFact]
         public void ProgId_ShouldNotBeNullOrEmpty()
         {
