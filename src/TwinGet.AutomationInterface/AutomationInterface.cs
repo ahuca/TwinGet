@@ -106,10 +106,10 @@ namespace TwinGet.AutomationInterface
             if (_dte is null) { throw new DteInstanceIsNullException($"No {nameof(DTE2)} instance available."); }
         }
 
-        private void ThrowIfInvalidSolutionPath(string solutionPath)
+        private static void ThrowIfInvalidSolutionPath(string solutionPath)
         {
             if (string.IsNullOrEmpty(solutionPath)) { throw new ArgumentException("Solution path cannot be null or empty."); }
-            if (!Path.Exists(solutionPath)) { throw new ArgumentException($"Provided solution path \"{solutionPath.ToString()}\" does not exists."); }
+            if (!Path.Exists(solutionPath)) { throw new ArgumentException($"Provided solution path \"{solutionPath}\" does not exists."); }
         }
 
         public void LoadSolution(string filePath)
@@ -125,7 +125,7 @@ namespace TwinGet.AutomationInterface
             _solution.Open(filePath);
         }
 
-        public static void SaveProjectAsLibrary(string solutionPath, string outFile)
+        public static void SaveProjectAsLibrary(string outFile, string solutionPath = "")
         {
 
         }

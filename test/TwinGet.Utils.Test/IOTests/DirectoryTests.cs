@@ -27,7 +27,7 @@ namespace TwinGet.Utils.Test.IOTests
         /// Initialize a test directory and return the root path.
         /// </summary>
         /// <returns>The root path of the test directory.</returns>
-        private static string InitializeTestDirectory(Dictionary<string, PathType> directoryStructure)
+        private static string ProvisionTestDirectory(Dictionary<string, PathType> directoryStructure)
         {
             string testDirectory = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(testDirectory);
@@ -56,7 +56,7 @@ namespace TwinGet.Utils.Test.IOTests
         public async void CopyDirectory_Recursively()
         {
             // Arrange
-            string sourceDirectory = InitializeTestDirectory(s_testDirContent);
+            string sourceDirectory = ProvisionTestDirectory(s_testDirContent);
             string destinationDirectory = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
 
             // Act

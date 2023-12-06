@@ -4,7 +4,6 @@ namespace TwinGet.AutomationInterface.Test
 {
     internal static class TestTwincatSolutionConstants
     {
-        public static readonly string s_testTwincatSolutionRootFolder = Path.Join(@$"{AppDomain.CurrentDomain.BaseDirectory}", @"TestTwincatProject");
-        public static readonly string s_testTwincatSolution = Path.Join(@$"{AppDomain.CurrentDomain.BaseDirectory}", @"TestTwincatProject\TestTwincatProject.sln");
+        internal static readonly string s_testTwincatProject = Path.Join(@$"{AppDomain.CurrentDomain.BaseDirectory}", @"TestTwincatProject");
     }
 }
