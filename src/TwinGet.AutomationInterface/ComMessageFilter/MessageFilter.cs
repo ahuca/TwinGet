@@ -1,11 +1,18 @@
-﻿using System.Runtime.InteropServices;
+﻿// This file is licensed to you under MIT license.
 
-namespace TwinGet.Core.ComMessageFilter;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+
+namespace TwinGet.AutomationInterface.ComMessageFilter;
 
 /// <summary>
 /// A COM message filtering class <see href="https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_automationinterface/242727947.html&id=">
 /// </summary>
-public class MessageFilter : IOleMessageFilter
+[SupportedOSPlatform("windows")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0018:Inline variable declaration", Justification = "<Pending>")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "<Pending>")]
+internal class MessageFilter : IOleMessageFilter
 {
     public static void Register()
     {
@@ -56,5 +63,6 @@ public class MessageFilter : IOleMessageFilter
 
     // implement IOleMessageFilter interface. 
     [DllImport("Ole32.dll")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "SYSLIB1054:Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time", Justification = "<Pending>")]
     private static extern int CoRegisterMessageFilter(IOleMessageFilter? newFilter, out IOleMessageFilter oldFilter);
 }

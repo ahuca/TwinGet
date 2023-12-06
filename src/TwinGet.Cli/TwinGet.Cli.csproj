@@ -6,9 +6,10 @@
     <AssemblyTitle>TwinGet Command Line</AssemblyTitle>
     <Description>TwinGet Command Line Interface</Description>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,11 @@
 
   <ItemGroup>
     <Folder Include="Commands\Pack\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
+    <ProjectReference Include="..\TwinGet.Core\TwinGet.Core.csproj" />
   </ItemGroup>
 
 </Project>

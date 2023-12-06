@@ -8,5 +8,5 @@ $null = Get-Command nuget -ErrorAction Stop
 
 $solution = Join-Path -Path $PSScriptRoot -ChildPath 'TwinGet.sln'
 
-nuget restore
-& $msBuildPath $solution
+dotnet restore $solution
+& $msBuildPath $solution -p:Configuration=Release
