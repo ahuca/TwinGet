@@ -109,7 +109,7 @@ namespace TwinGet.AutomationInterface
         private static void ThrowIfInvalidSolutionPath(string solutionPath)
         {
             if (string.IsNullOrEmpty(solutionPath)) { throw new ArgumentException("Solution path cannot be null or empty."); }
-            if (!Path.Exists(solutionPath)) { throw new ArgumentException($"Provided solution path \"{solutionPath}\" does not exists."); }
+            if (!Path.Exists(solutionPath)) { throw new FileNotFoundException($"Provided solution path \"{solutionPath}\" does not exists."); }
         }
 
         public void LoadSolution(string filePath)

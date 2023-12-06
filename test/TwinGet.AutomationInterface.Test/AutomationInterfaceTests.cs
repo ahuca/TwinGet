@@ -37,6 +37,12 @@ namespace TwinGet.AutomationInterface.Test
             _testTwincatSolution = Directory.GetFiles(_testDirectory, "*.sln", SearchOption.AllDirectories).First();
         }
 
+        [Fact]
+        public void PathExists_ShouldSupportRelativePath()
+        {
+            Path.Exists(@"TestTwincatProject\TestTwincatProject.sln").Should().BeTrue();
+        }
+
         [StaFact]
         public void ProgId_ShouldNotBeNullOrEmpty()
         {
@@ -62,6 +68,29 @@ namespace TwinGet.AutomationInterface.Test
 
             sut.LoadedSolutionFile.Should().Be(_testTwincatSolution);
             sut.IsSolutionOpen.Should().BeTrue();
+        }
+
+        [StaFact]
+        public void LoadSolution_WithInvalidPath_ShouldThrow()
+        {
+            var sut = new AutomationInterface();
+
+            string invalidSolution = $"{Guid.NewGuid()}.sln";
+            Action loadSolution = () => sut.LoadSolution(invalidSolution);
+
+            loadSolution.Should().Throw<FileNotFoundException>();
+            sut.IsSolutionOpen.Should().BeFalse();
+        }
+
+        [StaFact]
+        public void LoadSolution_WithEmptyPath_ShouldThrow()
+        {
+            var sut = new AutomationInterface();
+
+            Action loadSolution = () => sut.LoadSolution(string.Empty);
+
+            loadSolution.Should().Throw<ArgumentException>();
+            sut.IsSolutionOpen.Should().BeFalse();
         }
 
         protected virtual void Dispose(bool disposing)
