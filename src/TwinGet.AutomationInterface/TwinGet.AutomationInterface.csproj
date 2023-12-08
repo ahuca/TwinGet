@@ -24,4 +24,8 @@
     <PackageReference Include="envdte80" Version="17.8.37221" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="TwinGet.AutomationInterface.Test"/>
+  </ItemGroup>
+
 </Project>

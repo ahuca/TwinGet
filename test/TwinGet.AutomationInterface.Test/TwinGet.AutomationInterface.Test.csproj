@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+    <DefaultItemExcludes>$(DefaultItemExcludes);TestTwincatProject\TestNonTwincatProject1\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(ProjectDir)TestTwincatProject\**" CopyToOutputDirectory="PreserveNewest" LinkBase="TestTwincatProject\" />
+    <None Include="$(ProjectDir)TestTwincatProject\**" Exclude="$(ProjectDir)TestTwincatProject\TestNonTwincatProject1\**;$(ProjectDir)TestTwincatProject\.vs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="TestTwincatProject\" />
   </ItemGroup>
   
 </Project>

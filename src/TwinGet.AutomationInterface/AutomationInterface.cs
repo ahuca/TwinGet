@@ -3,6 +3,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using EnvDTE80;
+using TCatSysManagerLib;
 using TwinGet.AutomationInterface.ComMessageFilter;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.Utils;
@@ -15,6 +16,7 @@ namespace TwinGet.AutomationInterface
         private string _progId;
         private EnvDTE.Solution? _solution;
         private EnvDTE.SolutionBuild? _solutionBuild;
+        private ITcSysManager15 _systemManager;
         private readonly EnvDTE80.DTE2? _dte;
         private bool _disposedValue;
         public string ProgId { get => _progId; }
@@ -28,14 +30,19 @@ namespace TwinGet.AutomationInterface
             if (_dte is null) { throw new CouldNotCreateTwincatDteException("Is TwinCAT installed in this system?"); }
         }
 
+        internal AutomationInterface(ref EnvDTE80.DTE2? dte)
+        {
+            MessageFilter.Register();
+            _dte = TryInitializeDte(out _progId);
+            dte = _dte;
+            if (_dte is null) { throw new CouldNotCreateTwincatDteException("Is TwinCAT installed in this system?"); }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
-                if (disposing)
-                {
-                    ;
-                }
+                if (disposing) { }
 
                 CleanUp();
                 _disposedValue = true;
@@ -106,10 +113,20 @@ namespace TwinGet.AutomationInterface
             if (_dte is null) { throw new DteInstanceIsNullException($"No {nameof(DTE2)} instance available."); }
         }
 
+        private static void ThrowNullOrEmptySolutionPath()
+        {
+            throw new ArgumentException("Solution path cannot be null or empty.");
+        }
+
+        private static void ThrowSolutionPathNotFound(string solutionPath)
+        {
+            throw new FileNotFoundException($"Provided solution path \"{solutionPath}\" does not exists.");
+        }
+
         private static void ThrowIfInvalidSolutionPath(string solutionPath)
         {
-            if (string.IsNullOrEmpty(solutionPath)) { throw new ArgumentException("Solution path cannot be null or empty."); }
-            if (!Path.Exists(solutionPath)) { throw new FileNotFoundException($"Provided solution path \"{solutionPath}\" does not exists."); }
+            if (string.IsNullOrEmpty(solutionPath)) { ThrowNullOrEmptySolutionPath(); }
+            if (!Path.Exists(solutionPath)) { ThrowSolutionPathNotFound(solutionPath); }
         }
 
         public void LoadSolution(string filePath)
@@ -126,7 +143,7 @@ namespace TwinGet.AutomationInterface
         }
 
         public static void SaveProjectAsLibrary(string outFile, string solutionPath = "")
-        {
+            {
 
         }
     }
