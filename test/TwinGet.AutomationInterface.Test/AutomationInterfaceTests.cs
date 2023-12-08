@@ -5,38 +5,6 @@ namespace TwinGet.AutomationInterface.Test
     public class AutomationInterfaceTests : IDisposable
     {
         private bool _disposedValue;
-        private readonly string _testDirectory;
-        private readonly string _testTwincatSolution;
-
-        private static string ProvisionTestDirectory()
-        {
-            string testDirectory = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(testDirectory);
-
-            return testDirectory;
-        }
-
-        private void TearDownTestDirectory()
-        {
-            if (Directory.Exists(_testDirectory)) { Directory.Delete(_testDirectory, true); }
-        }
-
-        private static void CopyTestTwincatProject(string destination)
-        {
-            TwinGet.Utils.IO.Directory.CopyDirectory(
-                TestTwincatSolutionConstants.s_testTwincatProject,
-                destination).Wait();
-        }
-
-        public AutomationInterfaceTests()
-        {
-            _testDirectory = ProvisionTestDirectory();
-
-            CopyTestTwincatProject(_testDirectory);
-
-            _testTwincatSolution = Directory.GetFiles(_testDirectory, "*.sln", SearchOption.AllDirectories).First();
-        }
-
         [Fact]
         public void PathExists_ShouldSupportRelativePath()
         {
@@ -46,7 +14,7 @@ namespace TwinGet.AutomationInterface.Test
         [StaFact]
         public void ProgId_ShouldNotBeNullOrEmpty()
         {
-            var sut = new AutomationInterface();
+            using AutomationInterface sut = new();
 
             sut.ProgId.Should().NotBeNullOrEmpty();
         }
@@ -54,7 +22,7 @@ namespace TwinGet.AutomationInterface.Test
         [StaFact]
         public void ProgId_ShouldBeValid()
         {
-            var sut = new AutomationInterface();
+            using AutomationInterface sut = new();
 
             AutomationInterfaceConstants.SupportedProgIds.Should().Contain(sut.ProgId);
         }
@@ -63,17 +31,19 @@ namespace TwinGet.AutomationInterface.Test
         [StaFact]
         public void LoadSolution_WithValidPath_ShouldLoadSuccessfully()
         {
-            var sut = new AutomationInterface();
-            sut.LoadSolution(_testTwincatSolution);
+            using AutomationInterface sut = new();
+            using TestProject project = new();
 
-            sut.LoadedSolutionFile.Should().Be(_testTwincatSolution);
+            sut.LoadSolution(project.SolutionPath);
+
+            sut.LoadedSolutionFile.Should().Be(project.SolutionPath);
             sut.IsSolutionOpen.Should().BeTrue();
         }
 
         [StaFact]
         public void LoadSolution_WithInvalidPath_ShouldThrow()
         {
-            var sut = new AutomationInterface();
+            using AutomationInterface sut = new();
 
             string invalidSolution = $"{Guid.NewGuid()}.sln";
             Action loadSolution = () => sut.LoadSolution(invalidSolution);
@@ -85,7 +55,7 @@ namespace TwinGet.AutomationInterface.Test
         [StaFact]
         public void LoadSolution_WithEmptyPath_ShouldThrow()
         {
-            var sut = new AutomationInterface();
+            using AutomationInterface sut = new();
 
             Action loadSolution = () => sut.LoadSolution(string.Empty);
 
@@ -102,7 +72,6 @@ namespace TwinGet.AutomationInterface.Test
                     ;
                 }
 
-                TearDownTestDirectory();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 _disposedValue = true;
