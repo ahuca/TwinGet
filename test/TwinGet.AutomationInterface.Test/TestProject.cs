@@ -15,7 +15,7 @@ namespace TwinGet.AutomationInterface.Test
 
             TwinGet.Utils.IO.Directory.CopyDirectory(
     TestTwincatProjectConstants.s_testTwincatProject,
-    Path).Wait();
+    Path, FileShare.Read).Wait();
 
             SolutionPath = Directory.GetFiles(Path, "*.sln", SearchOption.AllDirectories).First();
         }
