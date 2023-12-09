@@ -2,6 +2,7 @@
 
 namespace TwinGet.AutomationInterface.Exceptions
 {
+    [Serializable]
     public class DteInstanceIsNullException : Exception
     {
         public DteInstanceIsNullException()
