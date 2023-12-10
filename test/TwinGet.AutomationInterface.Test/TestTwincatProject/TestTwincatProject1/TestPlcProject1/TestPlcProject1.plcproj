@@ -8,7 +8,7 @@
     <DownloadApplicationInfo>true</DownloadApplicationInfo>
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
-    <Name>TestPlcProject</Name>
+    <Name>TestPlcProject1</Name>
     <ProgramVersion>3.1.4024.0</ProgramVersion>
     <Application>{da8cb013-01e2-4e76-aad8-c63cb197c3b9}</Application>
     <TypeSystem>{65a0cb05-45a0-424f-9370-5321fe656f5f}</TypeSystem>
@@ -18,8 +18,18 @@
     <LibraryReferences>{bd174e45-2719-4cbf-b50e-b235af23264e}</LibraryReferences>
     <Company>TwinGet</Company>
     <Released>false</Released>
-    <Title>TwinGet.TestPlcProject</Title>
+    <Title>TwinGet.TestTwincatProject1.TestPlcProject1</Title>
     <ProjectVersion>0.1.0</ProjectVersion>
+    <LibraryCategories>
+      <LibraryCategory xmlns="">
+        <Id>{736e1fb9-7997-4a5d-a19a-cfcf55bcd1a4}</Id>
+        <Version>1.0.0.0</Version>
+        <DefaultName>TwinGet</DefaultName>
+      </LibraryCategory>
+    </LibraryCategories>
+    <SelectedLibraryCategories>
+      <Id xmlns="">{736e1fb9-7997-4a5d-a19a-cfcf55bcd1a4}</Id>
+    </SelectedLibraryCategories>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PlcTask.TcTTO">

@@ -1,12 +1,15 @@
 ﻿// This file is licensed to you under MIT license.
 
+using Microsoft.Build.Construction;
+
 namespace TwinGet.AutomationInterface.Test
 {
     internal class TestProject : IDisposable
     {
         private bool _disposedValue;
         public string Path { get; private set; }
-        public string SolutionPath { get; private set; }
+        public string SolutionPath { get; }
+        public SolutionFile SolutionFile { get; }
 
         public TestProject()
         {
@@ -18,6 +21,8 @@ namespace TwinGet.AutomationInterface.Test
     Path, FileShare.Read).Wait();
 
             SolutionPath = Directory.GetFiles(Path, "*.sln", SearchOption.AllDirectories).First();
+
+            SolutionFile = SolutionFile.Parse(SolutionPath);
         }
 
         protected virtual void Dispose(bool disposing)

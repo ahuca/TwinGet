@@ -3,10 +3,10 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using EnvDTE80;
-using TCatSysManagerLib;
 using TwinGet.AutomationInterface.ComMessageFilter;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.Utils;
+using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
 
 namespace TwinGet.AutomationInterface
 {
@@ -16,12 +16,14 @@ namespace TwinGet.AutomationInterface
         private string _progId;
         private EnvDTE.Solution? _solution;
         private EnvDTE.SolutionBuild? _solutionBuild;
-        private ITcSysManager15 _systemManager;
         private readonly EnvDTE80.DTE2? _dte;
         private bool _disposedValue;
+        private readonly List<TwincatProject> _twincatProjects = new();
+
         public string ProgId { get => _progId; }
         public bool IsSolutionOpen { get => _solution?.IsOpen ?? false; }
         public string LoadedSolutionFile { get => _solution?.FileName ?? string.Empty; }
+        public IReadOnlyList<TwincatProject> TwincatProjects { get => _twincatProjects; }
 
         public AutomationInterface()
         {
@@ -140,10 +142,21 @@ namespace TwinGet.AutomationInterface
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             _solutionBuild = _dte.Solution.SolutionBuild;
             _solution.Open(filePath);
+
+            // Get TwinCAT projects
+            for (int i = ProjectItemStartingIndex; i <= _dte.Solution.Projects.Count; i++)
+            {
+                EnvDTE.Project currentItem = _dte.Solution.Projects.Item(i);
+
+                if (currentItem.IsTwincatProject())
+                {
+                    _twincatProjects.Add(new TwincatProject(currentItem));
+                }
+            }
         }
 
         public static void SaveProjectAsLibrary(string outFile, string solutionPath = "")
-            {
+        {
 
         }
     }

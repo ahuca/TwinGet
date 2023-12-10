@@ -5,6 +5,18 @@ namespace TwinGet.AutomationInterface.Utils
     internal static class DteExtensions
     {
         /// <summary>
+        /// Verify whether the current <see cref="EnvDTE.Project"/> is a TwinCAT project.
+        /// </summary>
+        /// <param name="project"></param>
+        /// <returns>true if the <see cref="EnvDTE.Project"/> is a TwinCAT project, and false otherwise.</returns>
+        public static bool IsTwincatProject(this EnvDTE.Project project)
+        {
+            bool isTwincatXaeProject = project.Kind == AutomationInterfaceConstants.TwincatXaeProjectKind;
+            bool isTwincatPlcProject = project.Kind == AutomationInterfaceConstants.TwincatPlcProjectKind;
+            return isTwincatXaeProject || isTwincatPlcProject;
+        }
+
+        /// <summary>
         /// Check if TwinCAT is integrated with the given DTE instance.
         /// </summary>
         /// <param name="dte"></param>
