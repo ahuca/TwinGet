@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace TwinGet.AutomationInterface.ProjectFileDeserialization
 {
     [XmlRoot("Project", Namespace = "http://schemas.microsoft.com/developer/msbuild/2003")]
-    public class PlcProject
+    public class PlcProjectData
     {
         [XmlAttribute("DefaultTargets")]
         public string DefaultTargets { get; set; }

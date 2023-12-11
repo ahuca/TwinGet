@@ -1,7 +1,9 @@
 ﻿// This file is licensed to you under MIT license.
 
 using TwinGet.AutomationInterface.Exceptions;
+using TwinGet.AutomationInterface.Test.TestUtils;
 using TwinGet.AutomationInterface.Utils;
+using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
 
 namespace TwinGet.AutomationInterface.Test
 {
@@ -9,7 +11,7 @@ namespace TwinGet.AutomationInterface.Test
     {
         private static EnvDTE.Project? GetFirstTwincatProject(EnvDTE.Projects projects)
         {
-            for (int i = 1; i <= projects.Count; i++)
+            for (int i = ProjectItemStartingIndex; i <= projects.Count; i++)
             {
                 EnvDTE.Project tmp = projects.Item(i);
 
@@ -24,7 +26,7 @@ namespace TwinGet.AutomationInterface.Test
 
         private static EnvDTE.Project? GetFirstNonTwincatProject(EnvDTE.Projects projects)
         {
-            for (int i = 1; i <= projects.Count; i++)
+            for (int i = ProjectItemStartingIndex; i <= projects.Count; i++)
             {
                 EnvDTE.Project tmp = projects.Item(i);
 
@@ -79,7 +81,31 @@ namespace TwinGet.AutomationInterface.Test
         [StaFact]
         public void PlcProjects_ShouldBeExpected()
         {
+            // Arrange
+            EnvDTE80.DTE2? dte = null;
+            using TestProject testProject = new();
+            using AutomationInterface ai = new(ref dte);
+            ai.LoadSolution(testProject.SolutionPath);
 
+            // Act, construct TwincatProjects
+            List<TwincatProject> twincatProjects = [];
+            for (int i = ProjectItemStartingIndex; i <= dte.Solution.Projects.Count; i++)
+            {
+                EnvDTE.Project currentProject = dte.Solution.Projects.Item(i);
+                if (currentProject.IsTwincatProject())
+                    twincatProjects.Add(new TwincatProject(currentProject));
+            }
+
+            // Assert
+            foreach (TwincatProject twincatProject in twincatProjects)
+            {
+                TestTwincatProject? testTwincatProject = testProject.TwincatProjects.Where(x => x.Name == twincatProject.Name).FirstOrDefault();
+
+                IEnumerable<string> expectedPlcProjectNames = testTwincatProject.PlcProjects.Select(x => x.Name);
+                IEnumerable<string> actualPlcProjectNames = twincatProject.PlcProjects.Select(x => x.Name);
+
+                expectedPlcProjectNames.Should().BeEquivalentTo(actualPlcProjectNames);
+            }
         }
     }
 }

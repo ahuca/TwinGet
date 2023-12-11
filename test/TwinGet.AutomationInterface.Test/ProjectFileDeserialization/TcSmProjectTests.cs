@@ -79,11 +79,11 @@ namespace TwinGet.AutomationInterface.Test.ProjectFileDeserialization
         [MemberData(nameof(TestData.ValidXmlContents), MemberType = typeof(TestData))]
         public void Deserialize_FromValidXmlContent_ShouldSucceed(string xmlContent, string tcVersion, List<string> plcProjectNames)
         {
-            XmlSerializer serializer = new(typeof(TcSmProject));
+            XmlSerializer serializer = new(typeof(TcSmProjectData));
 
             using (StringReader reader = new(xmlContent))
             {
-                TcSmProject? project = serializer.Deserialize(reader) as TcSmProject;
+                TcSmProjectData? project = serializer.Deserialize(reader) as TcSmProjectData;
 
                 project.Should().NotBeNull();
 

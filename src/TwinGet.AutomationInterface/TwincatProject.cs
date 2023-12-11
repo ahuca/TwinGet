@@ -41,11 +41,11 @@ namespace TwinGet.AutomationInterface
             ArgumentException.ThrowIfNullOrEmpty(projectPath, nameof(projectPath));
 
             string xmlContent = File.ReadAllText(projectPath);
-            XmlSerializer serializer = new(typeof(TcSmProject));
+            XmlSerializer serializer = new(typeof(TcSmProjectData));
 
             using (StringReader reader = new(xmlContent))
             {
-                TcSmProject tcSmProject = serializer.Deserialize(reader) as TcSmProject ?? throw new InvalidProjectFileFormat("The format of TwinCAT project file is invalid.", projectPath);
+                TcSmProjectData tcSmProject = serializer.Deserialize(reader) as TcSmProjectData ?? throw new InvalidProjectFileFormat("The format of TwinCAT project file is invalid.", projectPath);
                 string? rootDir = Path.GetDirectoryName(projectPath);
 
                 if (tcSmProject.Project.Plc?.Projects is not null)

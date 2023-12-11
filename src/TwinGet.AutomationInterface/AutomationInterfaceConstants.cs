@@ -13,5 +13,12 @@ namespace TwinGet.AutomationInterface
         public const string TwincatXaeProjectKind = "{B1E792BE-AA5F-4E3C-8C82-674BF9C0715B}";
         public const string TwincatPlcProjectKind = TwincatXaeProjectKind;
         public const int ProjectItemStartingIndex = 1;
+        public const string TwincatXaeProjectExtension = ".tsproj";
+        public const string TwincatPlcProjectExtension = ".tspproj";
+        public static readonly IReadOnlyList<string> TwincatProjectExtensions = new List<string>
+        {
+            TwincatXaeProjectExtension,
+            TwincatPlcProjectExtension
+        };
     }
 }

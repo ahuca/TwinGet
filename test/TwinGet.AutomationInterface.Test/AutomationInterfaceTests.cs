@@ -1,5 +1,7 @@
 // This file is licensed to you under MIT license.
 
+using TwinGet.AutomationInterface.Test.TestUtils;
+
 namespace TwinGet.AutomationInterface.Test
 {
     public class AutomationInterfaceTests : IDisposable

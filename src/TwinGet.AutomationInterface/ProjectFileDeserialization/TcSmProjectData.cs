@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 namespace TwinGet.AutomationInterface.ProjectFileDeserialization
 {
     [XmlRoot("TcSmProject")]
-    public class TcSmProject
+    public class TcSmProjectData
     {
         [XmlAttribute("TcSmVersion")]
         public string TcSmVersion { get; set; }
