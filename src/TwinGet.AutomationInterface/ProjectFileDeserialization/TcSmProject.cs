@@ -2,7 +2,7 @@
 
 using System.Xml.Serialization;
 
-namespace TwinGet.AutomationInterface.ProjectFilesDeserialization
+namespace TwinGet.AutomationInterface.ProjectFileDeserialization
 {
     [XmlRoot("TcSmProject")]
     public class TcSmProject

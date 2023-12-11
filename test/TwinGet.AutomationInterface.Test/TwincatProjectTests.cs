@@ -75,5 +75,11 @@ namespace TwinGet.AutomationInterface.Test
             // Assert
             constructTwincatProject.Should().Throw<NotATwincatProject>();
         }
+
+        [StaFact]
+        public void PlcProjects_ShouldBeExpected()
+        {
+
+        }
     }
 }

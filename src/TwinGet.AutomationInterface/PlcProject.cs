@@ -9,7 +9,7 @@ namespace TwinGet.AutomationInterface
     public class PlcProject : ITcPlcIECProject3
     {
         private readonly ITcPlcIECProject3 _plcProject;
-        private readonly ProjectFilesDeserialization.PlcProject _plcProjectFile;
+        private readonly ProjectFileDeserialization.PlcProject _plcProjectFile;
 
         public string Name { get => _plcProjectFile.PropertyGroup.Name; }
         public string Path { get; }
@@ -39,11 +39,11 @@ namespace TwinGet.AutomationInterface
             ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             string xmlContent = File.ReadAllText(path);
-            XmlSerializer serializer = new(typeof(ProjectFilesDeserialization.PlcProject));
+            XmlSerializer serializer = new(typeof(ProjectFileDeserialization.PlcProject));
 
             using (StringReader reader = new(xmlContent))
             {
-                ProjectFilesDeserialization.PlcProject plcProjectFile = serializer.Deserialize(reader) as ProjectFilesDeserialization.PlcProject ?? throw new InvalidProjectFileFormat("Could not deserialize the provided PLC project file.", path);
+                ProjectFileDeserialization.PlcProject plcProjectFile = serializer.Deserialize(reader) as ProjectFileDeserialization.PlcProject ?? throw new InvalidProjectFileFormat("Could not deserialize the provided PLC project file.", path);
                 _plcProjectFile = plcProjectFile;
             }
 

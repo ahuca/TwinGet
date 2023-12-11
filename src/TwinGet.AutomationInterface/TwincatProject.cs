@@ -3,7 +3,7 @@
 using System.Xml.Serialization;
 using EnvDTE;
 using TwinGet.AutomationInterface.Exceptions;
-using TwinGet.AutomationInterface.ProjectFilesDeserialization;
+using TwinGet.AutomationInterface.ProjectFileDeserialization;
 using TwinGet.AutomationInterface.Utils;
 using ITcSysManagerAlias = TCatSysManagerLib.ITcSysManager15;
 
