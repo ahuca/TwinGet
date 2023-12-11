@@ -29,7 +29,7 @@ namespace TwinGet.AutomationInterface
         {
             MessageFilter.Register();
             _dte = TryInitializeDte(out _progId);
-            if (_dte is null) { throw new CouldNotCreateTwincatDteException("Is TwinCAT installed in this system?"); }
+            ThrowIfFailToInitializeDte(_dte);
         }
 
         internal AutomationInterface(ref EnvDTE80.DTE2? dte)
@@ -74,6 +74,14 @@ namespace TwinGet.AutomationInterface
             }
         }
 
+        private void ThrowIfFailToInitializeDte(EnvDTE80.DTE2? dte)
+        {
+            if (dte is null)
+            {
+                throw new CouldNotCreateTwincatDteException($"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {AutomationInterfaceConstants.TwincatXaeDownloadUrl}");
+            }
+        }
+
         /// <summary>
         /// Try to create a Visual Studio (or TwinCAT XAE) DTE instance.
         /// </summary>
@@ -91,13 +99,9 @@ namespace TwinGet.AutomationInterface
                 try
                 {
                     dte = (EnvDTE80.DTE2?)Activator.CreateInstance(t);
+                    if (dte is null) { continue; }
                 }
                 catch { continue; }
-
-                if (dte is null)
-                {
-                    continue;
-                }
 
                 if (dte.IsTwinCatIntegrated())
                 {
