@@ -1,12 +1,15 @@
 // This file is licensed to you under MIT license.
 
 using TwinGet.AutomationInterface.Test.TestUtils;
+using Xunit.Abstractions;
 
 namespace TwinGet.AutomationInterface.Test
 {
-    public class AutomationInterfaceTests : IDisposable
+    public class AutomationInterfaceTests(ITestOutputHelper output) : IDisposable
     {
+        private readonly ITestOutputHelper _output = output;
         private bool _disposedValue;
+
         [Fact]
         public void PathExists_ShouldSupportRelativePath()
         {
@@ -33,8 +36,8 @@ namespace TwinGet.AutomationInterface.Test
         [StaFact]
         public void LoadSolution_WithValidPath_ShouldLoadSuccessfully()
         {
-            using AutomationInterface sut = new();
             using TestProject project = new();
+            using AutomationInterface sut = new();
 
             sut.LoadSolution(project.SolutionPath);
 

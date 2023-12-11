@@ -5,6 +5,10 @@ using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
 
 namespace TwinGet.AutomationInterface.Test.TestUtils
 {
+    /// <summary>
+    /// A class that setup a test project in a temporary path.
+    /// Any other instances that access resources created from <see cref="TestProject"/> must be closed prior to its disposal, otherwise <see cref="TestProject"/> will not be able to fully clean up the temporary resources.
+    /// </summary>
     internal class TestProject : IDisposable
     {
         private bool _disposedValue;
@@ -16,7 +20,7 @@ namespace TwinGet.AutomationInterface.Test.TestUtils
 
         public TestProject()
         {
-            RootPath = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString());
+            RootPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(RootPath);
 
             TwinGet.Utils.IO.Directory.CopyDirectory(
@@ -27,7 +31,7 @@ namespace TwinGet.AutomationInterface.Test.TestUtils
 
             SolutionFile = SolutionFile.Parse(SolutionPath);
 
-            static bool isTwincatProject(string absolutePath) => TwincatProjectExtensions.Contains(System.IO.Path.GetExtension(absolutePath));
+            static bool isTwincatProject(string absolutePath) => TwincatProjectExtensions.Contains(Path.GetExtension(absolutePath));
 
             _twincatProjects = new(SolutionFile.ProjectsInOrder
                 .Where(x => isTwincatProject(x.AbsolutePath))
@@ -40,7 +44,11 @@ namespace TwinGet.AutomationInterface.Test.TestUtils
             {
                 if (disposing) { }
 
-                if (Directory.Exists(RootPath)) { Directory.Delete(RootPath, true); }
+                if (Directory.Exists(RootPath))
+                {
+                    Directory.Delete(RootPath, true);
+                }
+
                 _disposedValue = true;
             }
         }

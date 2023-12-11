@@ -48,9 +48,7 @@ namespace TwinGet.AutomationInterface.Test
             using TestProject testProject = new();
             using TwincatDteProvider dteProvider = new(this);
             dteProvider.Dte.Solution.Open(testProject.SolutionPath);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             EnvDTE.Project? project = GetFirstTwincatProject(dteProvider.Dte.Solution.Projects);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             // "Assert" no exception
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -65,9 +63,7 @@ namespace TwinGet.AutomationInterface.Test
             using TestProject testProject = new();
             using TwincatDteProvider dteProvider = new(this);
             dteProvider.Dte.Solution.Open(testProject.SolutionPath);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             EnvDTE.Project? project = GetFirstNonTwincatProject(dteProvider.Dte.Solution.Projects);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             // Act
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -100,7 +96,7 @@ namespace TwinGet.AutomationInterface.Test
             {
                 TestTwincatProject? testTwincatProject = testProject.TwincatProjects.Where(x => x.Name == twincatProject.Name).FirstOrDefault();
 
-                IEnumerable<string> expectedPlcProjectNames = testTwincatProject.PlcProjects.Select(x => x.Name);
+                IEnumerable<string>? expectedPlcProjectNames = testTwincatProject?.PlcProjects.Select(x => x.Name);
                 IEnumerable<string> actualPlcProjectNames = twincatProject.PlcProjects.Select(x => x.Name);
 
                 expectedPlcProjectNames.Should().BeEquivalentTo(actualPlcProjectNames);

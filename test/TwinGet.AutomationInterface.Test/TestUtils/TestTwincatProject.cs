@@ -8,7 +8,7 @@ namespace TwinGet.AutomationInterface.Test.TestUtils
 {
     internal class TestTwincatProject
     {
-        private List<TestPlcProject> _plcProjects = [];
+        private readonly List<TestPlcProject> _plcProjects = [];
         public string Name { get; }
         public string AbsolutePath { get; }
         public IReadOnlyList<TestPlcProject> PlcProjects { get => _plcProjects; }
