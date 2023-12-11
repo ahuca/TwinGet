@@ -7,8 +7,10 @@ using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
 
 namespace TwinGet.AutomationInterface.Test
 {
-    public class TwincatProjectTests
+    public class TwincatProjectTests : IDisposable
     {
+        private bool _disposedValue;
+
         private static EnvDTE.Project? GetFirstTwincatProject(EnvDTE.Projects projects)
         {
             for (int i = ProjectItemStartingIndex; i <= projects.Count; i++)
@@ -43,12 +45,11 @@ namespace TwinGet.AutomationInterface.Test
         public void Construct_WithTwincatProject_ShouldSucceed()
         {
             // Arrange
-            EnvDTE80.DTE2? dte = null;
             using TestProject testProject = new();
-            using AutomationInterface ai = new(ref dte);
-            ai.LoadSolution(testProject.SolutionPath);
+            using TwincatDteProvider dteProvider = new(this);
+            dteProvider.Dte.Solution.Open(testProject.SolutionPath);
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            EnvDTE.Project? project = GetFirstTwincatProject(dte.Solution.Projects);
+            EnvDTE.Project? project = GetFirstTwincatProject(dteProvider.Dte.Solution.Projects);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             // "Assert" no exception
@@ -61,12 +62,11 @@ namespace TwinGet.AutomationInterface.Test
         public void Construct_WithNonTwincatProject_ShouldThrow()
         {
             // Arrange
-            EnvDTE80.DTE2? dte = null;
             using TestProject testProject = new();
-            using AutomationInterface ai = new(ref dte);
-            ai.LoadSolution(testProject.SolutionPath);
+            using TwincatDteProvider dteProvider = new(this);
+            dteProvider.Dte.Solution.Open(testProject.SolutionPath);
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            EnvDTE.Project? project = GetFirstNonTwincatProject(dte.Solution.Projects);
+            EnvDTE.Project? project = GetFirstNonTwincatProject(dteProvider.Dte.Solution.Projects);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             // Act
@@ -82,16 +82,15 @@ namespace TwinGet.AutomationInterface.Test
         public void PlcProjects_ShouldBeExpected()
         {
             // Arrange
-            EnvDTE80.DTE2? dte = null;
             using TestProject testProject = new();
-            using AutomationInterface ai = new(ref dte);
-            ai.LoadSolution(testProject.SolutionPath);
+            using TwincatDteProvider dteProvider = new(this);
+            dteProvider.Dte.Solution.Open(testProject.SolutionPath);
 
             // Act, construct TwincatProjects
             List<TwincatProject> twincatProjects = [];
-            for (int i = ProjectItemStartingIndex; i <= dte.Solution.Projects.Count; i++)
+            for (int i = ProjectItemStartingIndex; i <= dteProvider.Dte.Solution.Projects.Count; i++)
             {
-                EnvDTE.Project currentProject = dte.Solution.Projects.Item(i);
+                EnvDTE.Project currentProject = dteProvider.Dte.Solution.Projects.Item(i);
                 if (currentProject.IsTwincatProject())
                     twincatProjects.Add(new TwincatProject(currentProject));
             }
@@ -106,6 +105,29 @@ namespace TwinGet.AutomationInterface.Test
 
                 expectedPlcProjectNames.Should().BeEquivalentTo(actualPlcProjectNames);
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing) { }
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                _disposedValue = true;
+            }
+        }
+
+        ~TwincatProjectTests()
+        {
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

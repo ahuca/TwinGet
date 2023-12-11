@@ -69,10 +69,7 @@ namespace TwinGet.AutomationInterface.Test
         {
             if (!_disposedValue)
             {
-                if (disposing)
-                {
-                    ;
-                }
+                if (disposing) { }
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();

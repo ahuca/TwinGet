@@ -1,6 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 
-using System.IO;
 using Microsoft.Build.Construction;
 using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
 
