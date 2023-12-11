@@ -5,7 +5,7 @@ using TwinGet.AutomationInterface.ProjectFileDeserialization;
 
 namespace TwinGet.AutomationInterface.Test.ProjectFileDeserialization
 {
-    public class TcSmProjectTests
+    public class TcSmProjectDataTests
     {
         private class TestData
         {
