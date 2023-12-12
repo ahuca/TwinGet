@@ -8,4 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: .\build.ps1 -Configuration Release
-      - run: dotnet test --configuration Release --no-build .\TwinGet.sln
+      - run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed" .\TwinGet.sln
