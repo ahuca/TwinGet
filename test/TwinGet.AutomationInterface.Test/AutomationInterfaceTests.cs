@@ -68,6 +68,31 @@ namespace TwinGet.AutomationInterface.Test
             sut.IsSolutionOpen.Should().BeFalse();
         }
 
+        [StaFact]
+        public void SavePlcProjectsAsLibraries_ShouldSucceed()
+        {
+            using TestProject testProject = new();
+            _output.WriteLine(testProject.RootPath);
+            using AutomationInterface sut = new();
+
+            sut.LoadSolution(testProject.SolutionPath);
+
+            foreach (TwincatProject twincatProject in sut.TwincatProjects)
+            {
+                foreach (PlcProject plcProject in twincatProject.PlcProjects)
+                {
+                    if (plcProject.IsManagedLibrary)
+                    {
+                        string libraryFile = Path.Join(Path.GetDirectoryName(plcProject.FilePath), $"{plcProject.Title}.library");
+
+                        _output.WriteLine(libraryFile);
+                        plcProject.SaveAsLibrary(libraryFile);
+                        File.Exists(libraryFile).Should().BeTrue();
+                    }
+                }
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)

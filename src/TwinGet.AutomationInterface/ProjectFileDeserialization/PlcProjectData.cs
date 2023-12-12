@@ -63,22 +63,22 @@ namespace TwinGet.AutomationInterface.ProjectFileDeserialization
         public string LibraryReferences { get; set; }
 
         [XmlElement("Released")]
-        public string Released { get; set; }
+        public string? Released { get; set; }
 
         [XmlElement("Title")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [XmlElement("Company")]
-        public string Company { get; set; }
+        public string? Company { get; set; }
 
         [XmlElement("ProjectVersion")]
-        public string ProjectVersion { get; set; }
+        public string? ProjectVersion { get; set; }
 
         [XmlElement("LibraryCategories")]
-        public LibraryCategories LibraryCategories { get; set; }
+        public LibraryCategories? LibraryCategories { get; set; }
 
         [XmlElement("SelectedLibraryCategories")]
-        public SelectedLibraryCategories SelectedLibraryCategories { get; set; }
+        public SelectedLibraryCategories? SelectedLibraryCategories { get; set; }
     }
 
     public class LibraryCategories

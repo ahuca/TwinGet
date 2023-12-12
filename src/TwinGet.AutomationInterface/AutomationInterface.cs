@@ -96,7 +96,7 @@ namespace TwinGet.AutomationInterface
             }
         }
 
-        public static void SaveProjectAsLibrary(string outFile, string solutionPath = "")
+        public static void SaveProjectAsLibrary(string plcProjectName, string outFile, string solutionPath = "")
         {
 
         }

@@ -12,10 +12,20 @@ namespace TwinGet.AutomationInterface
         private readonly ProjectFileDeserialization.PlcProjectData _plcProjectFile;
 
         public string Name { get => _plcProjectFile.PropertyGroup.Name; }
-        public string Path { get; }
+        public string? Company { get => _plcProjectFile.PropertyGroup.Company; }
+        public string? Title { get => _plcProjectFile.PropertyGroup.Title; }
+        public string? ProjectVersion { get => _plcProjectFile.PropertyGroup.ProjectVersion; }
+        public bool IsManagedLibrary
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Company) && !string.IsNullOrEmpty(Title) && !string.IsNullOrEmpty(ProjectVersion);
+            }
+        }
+        public string FilePath { get; }
 
 
-        public PlcProject(ITcSmTreeItem treeItem, string path) : this(path)
+        public PlcProject(ITcSmTreeItem treeItem, string filePath) : this(filePath)
         {
             try
             {
@@ -47,7 +57,7 @@ namespace TwinGet.AutomationInterface
                 _plcProjectFile = plcProjectFile;
             }
 
-            Path = path;
+            FilePath = path;
         }
 
         public void PlcOpenExport(string bstrFile, string bstrSelection) => _plcProject.PlcOpenExport(bstrFile, bstrSelection);
