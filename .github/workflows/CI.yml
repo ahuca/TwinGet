@@ -9,9 +9,12 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v3
 
-      - name: Build and run tests
+      - name: Build
         shell: pwsh
         run: |
-          whoami
           .\build.ps1 -Configuration Release
+
+      - name: Run tests
+        shell: pwsh
+        run: |
           dotnet test --configuration Release --no-build --logger "console;verbosity=detailed" .\TwinGet.sln
