@@ -6,6 +6,12 @@ jobs:
     name: Build project
     runs-on: [self-hosted, Windows, x64, TwinCAT]
     steps:
-      - uses: actions/checkout@v3
-      - run: .\build.ps1 -Configuration Release
-      - run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed" .\TwinGet.sln
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Build and run tests
+        shell: pwsh
+        run: |
+          whoami
+          .\build.ps1 -Configuration Release
+          dotnet test --configuration Release --no-build --logger "console;verbosity=detailed" .\TwinGet.sln
