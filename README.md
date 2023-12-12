@@ -10,8 +10,8 @@ This project CI pipeline uses self-hosted runner. Following are the required sof
 * [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
 * [GitHub runner](https://github.com/actions/runner/releases)
 * A service account for running GitHub runner as a service
-* The service account must be added to the group "Distributed COM Users", for example, using the following command,
+* The service account must be added to the "Administrators" group, for example, using the following command,
   
   ```powershell
-  Add-LocalGroupMember -Group "Distributed COM Users" -Member <windows_account_name>
+  Add-LocalGroupMember -Group "Administrators" -Member <windows_account_name>
   ```
