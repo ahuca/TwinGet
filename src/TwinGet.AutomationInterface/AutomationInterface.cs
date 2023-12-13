@@ -29,15 +29,18 @@ namespace TwinGet.AutomationInterface
             _dteProvider = new(this, true);
         }
 
-        protected void TryCleanUpDteProvider()
+        protected bool TryCleanUpDteProvider()
         {
-            if (_dteProvider is null) { return; }
+            if (_dteProvider is null) { return false; }
 
             /// We only dispose the <see cref="_dteProvider"/> that we created.
             if (_dteProvider.Owner == this)
             {
                 _dteProvider.Dispose();
+                return true;
             }
+
+            return false;
         }
 
         protected virtual void Dispose(bool disposing)
