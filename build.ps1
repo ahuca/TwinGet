@@ -6,14 +6,15 @@ param (
     $Configuration = "Debug"
 )
 
+. "$PSScriptRoot\common.ps1"
 
-$vsInstallationPath = .\tools\vswhere.exe -latest -property installationPath
+$msBuildPath = Resolve-MsBuildPath -ErrorAction Stop
 
-$msBuildPath = Join-Path -Path $vsInstallationPath -ChildPath 'MSBuild\Current\Bin\MSBuild.exe'
+if (!$msBuildPath) {
+    throw "Could not resolve MSBuild path."
+}
 
 $null = Test-Path $msBuildPath -ErrorAction Stop
-
-$null = Get-Command nuget -ErrorAction Stop
 
 $solution = Join-Path -Path $PSScriptRoot -ChildPath 'TwinGet.sln'
 
