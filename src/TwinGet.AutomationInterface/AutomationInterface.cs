@@ -1,7 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
 using System.Runtime.Versioning;
-using TwinGet.AutomationInterface.ComMessageFilter;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.Utils;
 using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
@@ -9,7 +8,7 @@ using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
 namespace TwinGet.AutomationInterface
 {
     [SupportedOSPlatform("windows")]
-    public class AutomationInterface : IDisposable
+    public class AutomationInterface : IDisposable, IAutomationInterface
     {
         private bool _disposedValue;
         private readonly TwincatDteProvider _dteProvider;
@@ -21,11 +20,10 @@ namespace TwinGet.AutomationInterface
         public string ProgId { get => _dteProvider.ProgId; }
         public bool IsSolutionOpen { get => _solution?.IsOpen ?? false; }
         public string LoadedSolutionFile { get => _solution?.FileName ?? string.Empty; }
-        public IReadOnlyList<TwincatProject> TwincatProjects { get => _twincatProjects; }
+        public IReadOnlyList<ITwincatProject> TwincatProjects { get => _twincatProjects; }
 
         public AutomationInterface()
         {
-            MessageFilter.Register();
             _dteProvider = new(this, true);
         }
 

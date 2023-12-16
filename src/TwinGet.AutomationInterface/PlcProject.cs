@@ -6,7 +6,7 @@ using TwinGet.AutomationInterface.Exceptions;
 
 namespace TwinGet.AutomationInterface
 {
-    public class PlcProject : ITcPlcIECProject3
+    public class PlcProject : IPlcProject
     {
         private readonly ITcPlcIECProject3 _plcProject;
         private readonly ProjectFileDeserialization.PlcProjectData _plcProjectFile;
@@ -15,15 +15,9 @@ namespace TwinGet.AutomationInterface
         public string? Company { get => _plcProjectFile.PropertyGroup.Company; }
         public string? Title { get => _plcProjectFile.PropertyGroup.Title; }
         public string? ProjectVersion { get => _plcProjectFile.PropertyGroup.ProjectVersion; }
-        public bool IsManagedLibrary
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(Company) && !string.IsNullOrEmpty(Title) && !string.IsNullOrEmpty(ProjectVersion);
-            }
-        }
-        public string FilePath { get; }
+        public bool IsManagedLibrary;
 
+        public string FilePath { get; }
 
         public PlcProject(ITcSmTreeItem treeItem, string filePath) : this(filePath)
         {

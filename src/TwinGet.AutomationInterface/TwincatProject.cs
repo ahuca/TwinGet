@@ -9,12 +9,12 @@ using ITcSysManagerAlias = TCatSysManagerLib.ITcSysManager15;
 
 namespace TwinGet.AutomationInterface
 {
-    public class TwincatProject : EnvDTE.Project
+    public class TwincatProject : ITwincatProject
     {
         private readonly EnvDTE.Project _project;
         private readonly ITcSysManagerAlias _systemManager;
         private readonly List<PlcProject> _plcProjects;
-        public IReadOnlyList<PlcProject> PlcProjects { get => _plcProjects; }
+        public IReadOnlyList<IPlcProject> PlcProjects { get => _plcProjects; }
 
         public TwincatProject(EnvDTE.Project project)
         {
