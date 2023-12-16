@@ -5,7 +5,7 @@ namespace TwinGet.Utils.IO
     public static class Directory
     {
         /// <summary>
-        /// Method for copying a directory content.<see cref="https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories"/>
+        /// Method for copying a directory content.<see href="https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories"/>
         /// </summary>
         /// <param name="sourceDir">Source directory.</param>
         /// <param name="destinationDir">Destination directory.</param>
