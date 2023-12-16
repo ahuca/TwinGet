@@ -27,7 +27,7 @@ namespace TwinGet.AutomationInterface
             ArgumentNullException.ThrowIfNull(owner, nameof(owner));
             Owner = owner;
 
-            foreach (string p in AutomationInterfaceConstants.SupportedProgIds)
+            foreach (string p in TwincatConstants.SupportedProgIds)
             {
                 Type? t = Type.GetTypeFromProgID(p);
 
@@ -51,7 +51,7 @@ namespace TwinGet.AutomationInterface
 
             if (Dte is null || string.IsNullOrEmpty(ProgId))
             {
-                throw new CouldNotCreateTwincatDteException($"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {AutomationInterfaceConstants.TwincatXaeDownloadUrl}");
+                throw new CouldNotCreateTwincatDteException($"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}");
             }
 
             if (startMsgFiltering)

@@ -3,7 +3,7 @@
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.Test.TestUtils;
 using TwinGet.AutomationInterface.Utils;
-using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
+using static TwinGet.AutomationInterface.TwincatConstants;
 
 namespace TwinGet.AutomationInterface.Test
 {

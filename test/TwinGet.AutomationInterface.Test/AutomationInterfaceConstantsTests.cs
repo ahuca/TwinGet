@@ -7,13 +7,13 @@ namespace TwinGet.AutomationInterface.Test
         [Fact]
         public void SupportedProgIds_ShouldNotBeEmpty()
         {
-            AutomationInterfaceConstants.SupportedProgIds.Should().NotBeEmpty();
+            TwincatConstants.SupportedProgIds.Should().NotBeEmpty();
         }
 
         [Fact]
         public void TwincatXaeDownloadUrl_ShouldNotBeNullOrEmpty()
         {
-            AutomationInterfaceConstants.TwincatXaeDownloadUrl.Should().NotBeNullOrEmpty();
+            TwincatConstants.TwincatXaeDownloadUrl.Should().NotBeNullOrEmpty();
         }
     }
 }

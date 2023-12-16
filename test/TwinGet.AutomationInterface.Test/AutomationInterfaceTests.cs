@@ -29,7 +29,7 @@ namespace TwinGet.AutomationInterface.Test
         {
             using AutomationInterface sut = new();
 
-            AutomationInterfaceConstants.SupportedProgIds.Should().Contain(sut.ProgId);
+            TwincatConstants.SupportedProgIds.Should().Contain(sut.ProgId);
         }
 
 

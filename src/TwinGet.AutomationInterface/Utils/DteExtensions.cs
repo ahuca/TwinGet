@@ -11,8 +11,8 @@ namespace TwinGet.AutomationInterface.Utils
         /// <returns>true if the <see cref="EnvDTE.Project"/> is a TwinCAT project, and false otherwise.</returns>
         public static bool IsTwincatProject(this EnvDTE.Project project)
         {
-            bool isTwincatXaeProject = project.Kind == AutomationInterfaceConstants.TwincatXaeProjectKind;
-            bool isTwincatPlcProject = project.Kind == AutomationInterfaceConstants.TwincatPlcProjectKind;
+            bool isTwincatXaeProject = project.Kind == TwincatConstants.TwincatXaeProjectKind;
+            bool isTwincatPlcProject = project.Kind == TwincatConstants.TwincatPlcProjectKind;
             return isTwincatXaeProject || isTwincatPlcProject;
         }
 
