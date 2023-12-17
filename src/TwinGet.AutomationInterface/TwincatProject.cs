@@ -1,6 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 
-using System.Xml.Serialization;
 using EnvDTE;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.ProjectFileDeserialization;

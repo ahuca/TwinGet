@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="envdte80" Version="17.8.37221" />
+    <PackageReference Include="Microsoft.Build" Version="17.8.3" />
   </ItemGroup>
 
   <ItemGroup>

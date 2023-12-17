@@ -10,6 +10,7 @@ namespace TwinGet.AutomationInterface.Test.Utils
         [Fact]
         public void GetParentTwincatProject_ShouldSucceed()
         {
+            // Arrange
             using TestProject testProject = new TestProject();
             TestTwincatProject? testTcProject = null;
             TestPlcProject? testPlcProject = null;
@@ -25,11 +26,29 @@ namespace TwinGet.AutomationInterface.Test.Utils
             }
 
             testTcProject.Should().NotBeNull();
-
-            string actual = TwincatUtils.GetParentTwincatProject(testPlcProject.AbsolutePath);
             string expected = testTcProject.AbsolutePath;
 
+            // Act
+            string actual = TwincatUtils.GetParentTwincatProjectFile(testPlcProject.AbsolutePath);
+
+            // Assert
             expected.Should().NotBeNullOrEmpty();
+            expected.Should().Be(actual);
+        }
+
+        [Fact]
+        public void GetParentSolutionFile_ShouldSucceed()
+        {
+            // Arrange
+            using TestProject testProject = new();
+            TestTwincatProject? testTcProject = testProject.TwincatProjects[0];
+
+            string expected = testProject.SolutionPath;
+
+            // Act
+            string actual = TwincatUtils.GetParentSolutionFile(testTcProject.AbsolutePath);
+
+            // Assert
             expected.Should().Be(actual);
         }
     }

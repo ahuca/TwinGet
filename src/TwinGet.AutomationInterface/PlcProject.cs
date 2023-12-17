@@ -1,7 +1,5 @@
 // This file is licensed to you under MIT license.
 
-using System.Reflection.PortableExecutable;
-using System.Xml.Serialization;
 using TCatSysManagerLib;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.ProjectFileDeserialization;
