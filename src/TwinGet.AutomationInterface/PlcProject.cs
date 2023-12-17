@@ -1,8 +1,8 @@
 // This file is licensed to you under MIT license.
 
 using TCatSysManagerLib;
+using TwinGet.AutomationInterface.Dto;
 using TwinGet.AutomationInterface.Exceptions;
-using TwinGet.AutomationInterface.ProjectFileDeserialization;
 using TwinGet.AutomationInterface.Utils;
 
 namespace TwinGet.AutomationInterface

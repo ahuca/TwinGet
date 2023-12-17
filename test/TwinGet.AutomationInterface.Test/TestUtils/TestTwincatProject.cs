@@ -1,8 +1,8 @@
 ﻿// This file is licensed to you under MIT license.
 
 using System.Xml.Serialization;
+using TwinGet.AutomationInterface.Dto;
 using TwinGet.AutomationInterface.Exceptions;
-using TwinGet.AutomationInterface.ProjectFileDeserialization;
 
 namespace TwinGet.AutomationInterface.Test.TestUtils
 {

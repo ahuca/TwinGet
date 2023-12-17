@@ -1,8 +1,8 @@
 ﻿// This file is licensed to you under MIT license.
 
 using EnvDTE;
+using TwinGet.AutomationInterface.Dto;
 using TwinGet.AutomationInterface.Exceptions;
-using TwinGet.AutomationInterface.ProjectFileDeserialization;
 using TwinGet.AutomationInterface.Utils;
 using ITcSysManagerAlias = TCatSysManagerLib.ITcSysManager15;
 

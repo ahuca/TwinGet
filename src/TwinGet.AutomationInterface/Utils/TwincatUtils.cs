@@ -2,15 +2,15 @@
 
 using Microsoft.Build.Construction;
 using TCatSysManagerLib;
+using TwinGet.AutomationInterface.Dto;
 using TwinGet.AutomationInterface.Exceptions;
-using TwinGet.AutomationInterface.ProjectFileDeserialization;
 using ITcSmTreeItemAlias = TCatSysManagerLib.ITcSmTreeItem9;
 using ITcSysManagerAlias = TCatSysManagerLib.ITcSysManager15;
-using TwingetProjectElement = TwinGet.AutomationInterface.ProjectFileDeserialization.ProjectElement;
+using TwingetProjectElement = TwinGet.AutomationInterface.Dto.ProjectElement;
 
 namespace TwinGet.AutomationInterface.Utils
 {
-    internal static class TwincatUtils
+    public static class TwincatUtils
     {
         public static ITcPlcIECProject3? LookUpPlcProject(this ITcSysManagerAlias systemManager, string name)
         {

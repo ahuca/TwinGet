@@ -1,7 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
 using System.Xml.Serialization;
-using TwinGet.AutomationInterface.ProjectFileDeserialization;
+using TwinGet.AutomationInterface.Dto;
 
 namespace TwinGet.AutomationInterface.Test.ProjectFileDeserialization
 {

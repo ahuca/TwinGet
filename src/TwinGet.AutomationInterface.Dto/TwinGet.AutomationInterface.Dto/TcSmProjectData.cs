@@ -3,7 +3,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace TwinGet.AutomationInterface.ProjectFileDeserialization
+namespace TwinGet.AutomationInterface.Dto
 {
     [XmlRoot("TcSmProject")]
     public class TcSmProjectData : ITwincatProjectData

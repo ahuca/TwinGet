@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TwinGet.AutomationInterface.Dto\TwinGet.AutomationInterface.Dto\TwinGet.AutomationInterface.Dto.csproj" />
     <ProjectReference Include="..\TwinGet.Utils\TwinGet.Utils.csproj" />
   </ItemGroup>
 

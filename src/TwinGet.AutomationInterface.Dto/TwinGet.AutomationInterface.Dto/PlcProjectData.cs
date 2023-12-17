@@ -3,7 +3,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace TwinGet.AutomationInterface.ProjectFileDeserialization
+namespace TwinGet.AutomationInterface.Dto
 {
     [XmlRoot("Project", Namespace = "http://schemas.microsoft.com/developer/msbuild/2003")]
     public class PlcProjectData : ITwincatProjectData

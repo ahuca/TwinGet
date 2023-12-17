@@ -15,9 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BDB6B966-4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.AutomationInterface.Test", "test\TwinGet.AutomationInterface.Test\TwinGet.AutomationInterface.Test.csproj", "{0A952D6F-9D6D-45B0-8535-E10ED8029B6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Utils", "src\TwinGet.Utils\TwinGet.Utils.csproj", "{C29610F6-4B71-49AD-B57F-784467C1CF1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Utils", "src\TwinGet.Utils\TwinGet.Utils.csproj", "{C29610F6-4B71-49AD-B57F-784467C1CF1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Utils.Test", "test\TwinGet.Utils.Test\TwinGet.Utils.Test.csproj", "{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Utils.Test", "test\TwinGet.Utils.Test\TwinGet.Utils.Test.csproj", "{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.AutomationInterface.Dto", "src\TwinGet.AutomationInterface.Dto\TwinGet.AutomationInterface.Dto\TwinGet.AutomationInterface.Dto.csproj", "{563081EB-AA78-4C47-8826-1DB5F1D724DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{0A952D6F-9D6D-45B0-8535-E10ED8029B6B} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 		{C29610F6-4B71-49AD-B57F-784467C1CF1F} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42610935-EABE-41BA-A9A9-57FB7A657F65}
