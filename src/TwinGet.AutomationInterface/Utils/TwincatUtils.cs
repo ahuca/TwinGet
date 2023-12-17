@@ -1,6 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 
-using System.Xml.Serialization;
 using TCatSysManagerLib;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.ProjectFileDeserialization;
@@ -22,6 +21,20 @@ namespace TwinGet.AutomationInterface.Utils
         }
 
         /// <summary>
+        /// Wraps the <see cref="TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileTo"/> and throw if the deserialized object is null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidProjectFileFormat"></exception>
+        public static T DeserializeXmlFileToProjectData<T>(string filePath) where T : ITwincatProjectData
+        {
+            T? projectData = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileTo<T>(filePath) ?? throw new InvalidProjectFileFormat("The format of the TwinCAT project file is invalid.", filePath);
+
+            return projectData;
+        }
+
+        /// <summary>
         /// Try to find the TwinCAT project that the given PLC project belong to.
         /// </summary>
         /// <param name="plcProjectPath">The path to the <c>.plcproj</c> file.</param>
@@ -38,14 +51,7 @@ namespace TwinGet.AutomationInterface.Utils
             }
 
             // We first try to parse the plcproj file and throw if necessary.
-            string xmlContent = File.ReadAllText(plcProjectPath);
-            XmlSerializer serializer = new(typeof(PlcProjectData));
-
-            PlcProjectData plcProjectFile;
-            using (StringReader reader = new(xmlContent))
-            {
-                plcProjectFile = serializer.Deserialize(reader) as PlcProjectData ?? throw new InvalidProjectFileFormat("Could not deserialize the provided PLC project file.", plcProjectPath);
-            }
+            PlcProjectData? plcProjectFile = DeserializeXmlFileToProjectData<PlcProjectData>(plcProjectPath);
 
             /// We recursively look up TwinCAT project files in parent folders with a depth of <param name="upwardDepth"/param>.
             string parent = plcProjectPath;
@@ -67,23 +73,17 @@ namespace TwinGet.AutomationInterface.Utils
                 // We process each TwinCAT project file we found.
                 foreach (string tcCandidate in twincatProjectCandidate)
                 {
-                    xmlContent = File.ReadAllText(tcCandidate);
-                    serializer = new(typeof(TcSmProjectData));
+                    TcSmProjectData? tcSmProject = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileTo<TcSmProjectData>(tcCandidate);
 
-                    using (StringReader reader = new(xmlContent))
+                    if (tcSmProject is null) { continue; }
+
+                    // We process each PLC project the TwinCAT project has.
+                    foreach (ProjectElement plcProjectCandidate in tcSmProject.Project.Plc.Projects)
                     {
-                        TcSmProjectData? tcSmProject = serializer.Deserialize(reader) as TcSmProjectData;
-
-                        if (tcSmProject is null) { continue; }
-
-                        // We process each PLC project the TwinCAT project has.
-                        foreach (ProjectElement plcProjectCandidate in tcSmProject.Project.Plc.Projects)
+                        // Using GUID, if we find ourselves in the TwinCAT project candidate, we return the candidate.
+                        if (plcProjectCandidate.GUID.Equals(plcProjectFile.PropertyGroup.ProjectGuid, StringComparison.OrdinalIgnoreCase))
                         {
-                            // Using GUID, if we find ourselves in the TwinCAT project candidate, we return the candidate.
-                            if (plcProjectCandidate.GUID.Equals(plcProjectFile.PropertyGroup.ProjectGuid, StringComparison.OrdinalIgnoreCase))
-                            {
-                                return tcCandidate;
-                            }
+                            return tcCandidate;
                         }
                     }
                 }

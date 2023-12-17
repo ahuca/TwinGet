@@ -28,4 +28,8 @@
     <InternalsVisibleTo Include="TwinGet.AutomationInterface.Test" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TwinGet.Utils\TwinGet.Utils.csproj" />
+  </ItemGroup>
+
 </Project>

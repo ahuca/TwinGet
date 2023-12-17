@@ -34,29 +34,24 @@ namespace TwinGet.AutomationInterface
             _plcProjects = new(TryGetPlcProjects(_systemManager, _project.FullName));
         }
 
-        private static IReadOnlyList<PlcProject> TryGetPlcProjects(ITcSysManagerAlias systemManager, string projectPath)
+        private static IReadOnlyList<PlcProject> TryGetPlcProjects(ITcSysManagerAlias systemManager, string filePath)
         {
             List<PlcProject> plcProjects = new();
 
-            ArgumentException.ThrowIfNullOrEmpty(projectPath, nameof(projectPath));
+            ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
 
-            string xmlContent = File.ReadAllText(projectPath);
-            XmlSerializer serializer = new(typeof(TcSmProjectData));
+            TcSmProjectData? tcSmProject = TwincatUtils.DeserializeXmlFileToProjectData<TcSmProjectData>(filePath);
 
-            using (StringReader reader = new(xmlContent))
+            string? rootDir = Path.GetDirectoryName(filePath);
+
+            if (tcSmProject.Project.Plc?.Projects is not null)
             {
-                TcSmProjectData tcSmProject = serializer.Deserialize(reader) as TcSmProjectData ?? throw new InvalidProjectFileFormat("The format of TwinCAT project file is invalid.", projectPath);
-                string? rootDir = Path.GetDirectoryName(projectPath);
-
-                if (tcSmProject.Project.Plc?.Projects is not null)
-                {
 #pragma warning disable CS8604 // Possible null reference argument.
-                    plcProjects.AddRange(from ProjectElement project in tcSmProject.Project.Plc.Projects
-                                         let plcProject = new PlcProject(systemManager.LookUpPlcProject(project.Name), Path.Join(rootDir, project.PrjFilePath))
-                                         where plcProject is not null
-                                         select plcProject);
+                plcProjects.AddRange(from ProjectElement project in tcSmProject.Project.Plc.Projects
+                                     let plcProject = new PlcProject(systemManager.LookUpPlcProject(project.Name), Path.Join(rootDir, project.PrjFilePath))
+                                     where plcProject is not null
+                                     select plcProject);
 #pragma warning restore CS8604 // Possible null reference argument.
-                }
             }
 
             return plcProjects;

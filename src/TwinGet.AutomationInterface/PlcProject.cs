@@ -1,15 +1,18 @@
 // This file is licensed to you under MIT license.
 
+using System.Reflection.PortableExecutable;
 using System.Xml.Serialization;
 using TCatSysManagerLib;
 using TwinGet.AutomationInterface.Exceptions;
+using TwinGet.AutomationInterface.ProjectFileDeserialization;
+using TwinGet.AutomationInterface.Utils;
 
 namespace TwinGet.AutomationInterface
 {
     public class PlcProject : IPlcProject
     {
         private readonly ITcPlcIECProject3 _plcProject;
-        private readonly ProjectFileDeserialization.PlcProjectData _plcProjectFile;
+        private readonly PlcProjectData _plcProjectFile;
 
         public string Name { get => _plcProjectFile.PropertyGroup.Name; }
         public string? Company { get => _plcProjectFile.PropertyGroup.Company; }
@@ -37,21 +40,16 @@ namespace TwinGet.AutomationInterface
         }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        protected PlcProject(string path)
+        protected PlcProject(string filePath)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+            ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
 
-            string xmlContent = File.ReadAllText(path);
-            XmlSerializer serializer = new(typeof(ProjectFileDeserialization.PlcProjectData));
+            PlcProjectData plcProjectFile = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(filePath);
 
-            using (StringReader reader = new(xmlContent))
-            {
-                ProjectFileDeserialization.PlcProjectData plcProjectFile = serializer.Deserialize(reader) as ProjectFileDeserialization.PlcProjectData ?? throw new InvalidProjectFileFormat("Could not deserialize the provided PLC project file.", path);
-                _plcProjectFile = plcProjectFile;
-            }
+            _plcProjectFile = plcProjectFile;
 
-            FilePath = path;
+            FilePath = filePath;
         }
 
         public void PlcOpenExport(string bstrFile, string bstrSelection) => _plcProject.PlcOpenExport(bstrFile, bstrSelection);

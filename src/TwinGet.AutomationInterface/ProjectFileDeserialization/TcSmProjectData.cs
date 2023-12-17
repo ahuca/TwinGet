@@ -1,11 +1,12 @@
 ﻿// This file is licensed to you under MIT license.
 
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace TwinGet.AutomationInterface.ProjectFileDeserialization
 {
     [XmlRoot("TcSmProject")]
-    public class TcSmProjectData
+    public class TcSmProjectData : ITwincatProjectData
     {
         [XmlAttribute("TcSmVersion")]
         public string TcSmVersion { get; set; }
