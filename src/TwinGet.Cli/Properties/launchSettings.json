@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TwinGet.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "pack foo.csproj --solution bar.sln --output-directory .\foobar"
+    }
+  }
+}
