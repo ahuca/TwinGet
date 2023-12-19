@@ -53,13 +53,20 @@ public class PackCommand : Command
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0003:Remove qualification", Justification = "For clarity.")]
         public async Task<int> InvokeAsync(InvocationContext context)
         {
-            await _mediator.Send(new Core.Commands.PackCommand
+            try
             {
-                Logger = this.Logger,
-                Path = this.Path,
-                Solution = this.Solution,
-                OutputDirectory = this.OutputDirectory
-            });
+                await _mediator.Send(new Core.Commands.PackCommand
+                {
+                    Logger = this.Logger,
+                    Path = this.Path,
+                    Solution = this.Solution,
+                    OutputDirectory = this.OutputDirectory
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError(ex.Message);
+            }
 
             return 0;
         }

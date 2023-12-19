@@ -11,8 +11,10 @@ namespace TwinGet.Cli
     {
         public static IServiceCollection AddLogger(this IServiceCollection services)
         {
+            string appsettingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "appsettings.json");
+
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddJsonFile(
-                "appsettings.json",
+                appsettingsPath,
                 optional: false,
                 reloadOnChange: true);
 

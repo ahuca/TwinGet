@@ -1,6 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
 using Microsoft.Build.Construction;
+using Microsoft.VisualStudio.TextManager.Interop;
 using TCatSysManagerLib;
 using TwinGet.AutomationInterface.Dto;
 using TwinGet.AutomationInterface.Exceptions;
@@ -145,6 +146,85 @@ namespace TwinGet.AutomationInterface.Utils
             }
 
             return "";
+        }
+
+        /// <summary>
+        /// Verify if the PLC project belongs to the solution.
+        /// </summary>
+        /// <param name="plcProjectPath">The path to the PLC project file.</param>
+        /// <param name="solutionPath">The path to the solution file.</param>
+        /// <returns></returns>
+        public static bool PlcProjectBelongToSolution(string plcProjectPath, string solutionPath)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
+            ArgumentException.ThrowIfNullOrEmpty(solutionPath, nameof(solutionPath));
+
+            PlcProjectData plcProjectData = DeserializeXmlFileToProjectData<PlcProjectData>(plcProjectPath);
+
+            // We should parse the solution file to make sure it is valid.
+            var solutionFile = SolutionFile.Parse(solutionPath);
+
+            // We process each project in solution.
+            foreach (ProjectInSolution? project in solutionFile.ProjectsInOrder)
+            {
+                // We skip any project that does not have TwinCAT project file extension.
+                if (!IsTwincatProjectFileExtension(project.RelativePath))
+                {
+                    continue;
+                }
+
+                // We parse the TwinCAT project file.
+                TcSmProjectData? tcProject = null;
+                try
+                {
+                    tcProject = DeserializeXmlFileToProjectData<TcSmProjectData>(project.AbsolutePath);
+                    if (tcProject is null)
+                    {
+                        continue;
+                    }
+                }
+                catch { continue; }
+
+                // We process through each PLC project the TwinCAT project contains.
+                foreach (TwingetProjectElement plcProject in tcProject.Project.Plc.Projects)
+                {
+                    string candidatePath = Path.Combine(Path.GetDirectoryName(project.AbsolutePath) ?? "", plcProject.PrjFilePath);
+                    PlcProjectData candidate = DeserializeXmlFileToProjectData<PlcProjectData>(candidatePath);
+
+                    if (plcProjectData.PropertyGroup.ProjectGuid.Equals(candidate.PropertyGroup.ProjectGuid, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Verify that the specified file has a valid TwinCAT project file extension. See <see cref="TwincatConstants.TwincatProjectExtensions"/>.
+        /// </summary>
+        /// <param name="filePath">The file path to verify.</param>
+        /// <returns>True if the specified file has a valid TwinCAT project file extension.</returns>
+        public static bool IsTwincatProjectFileExtension(string filePath)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
+            string fileExtension = Path.GetExtension(filePath);
+
+            return TwincatConstants.TwincatProjectExtensions.Contains(fileExtension, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Verify that the specified file has a valid PLC project file extension. See <see cref="TwincatConstants.PlcProjectExtension"/>.
+        /// </summary>
+        /// <param name="filePath">The file path to verify.</param>
+        /// <returns>True if the specified file has a valid PLC project file extension.</returns>
+        public static bool IsPlcProjectFileExtension(string filePath)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
+            string fileExtension = Path.GetExtension(filePath);
+
+            return TwincatConstants.PlcProjectExtension.Equals(fileExtension, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

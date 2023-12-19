@@ -51,5 +51,46 @@ namespace TwinGet.AutomationInterface.Test.Utils
             // Assert
             expected.Should().Be(actual);
         }
+
+        [Fact]
+        public void PlcProjectBelongToSolution_ShouldWork()
+        {
+            // Arrange
+            using TestProject testProject = new();
+            TestTwincatProject? testTcProject = testProject.TwincatProjects[0];
+            TestPlcProject? testPlcProject = testTcProject.PlcProjects[0];
+
+            // Act
+            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.AbsolutePath, testProject.SolutionPath);
+
+            // Assert
+            actual.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("foo.tsproj", true)]
+        [InlineData("foo.tspproj", true)]
+        [InlineData(".", false)]
+        [InlineData("foo.bar", false)]
+        [InlineData("foo", false)]
+        public void IsTwincatProjectFileExtension_ShouldWork(string filePath, bool expected)
+        {
+            bool actual = TwincatUtils.IsTwincatProjectFileExtension(filePath);
+
+            actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("foo.plcproj", true)]
+        [InlineData("bar.plcproj", true)]
+        [InlineData(".", false)]
+        [InlineData("foo.bar", false)]
+        [InlineData("foo", false)]
+        public void IsPlcProjectFileExtension_ShouldWork(string filePath, bool expected)
+        {
+            bool actual = TwincatUtils.IsPlcProjectFileExtension(filePath);
+
+            actual.Should().Be(expected);
+        }
     }
 }
