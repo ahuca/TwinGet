@@ -1,6 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
-namespace TwinGet.AutomationInterface.Test
+namespace Test.Utils
 {
     internal static class TestTwincatProjectConstants
     {

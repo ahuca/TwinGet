@@ -1,7 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
 using TwinGet.AutomationInterface.Exceptions;
-using TwinGet.AutomationInterface.Test.TestUtils;
 using TwinGet.AutomationInterface.Utils;
 using static TwinGet.AutomationInterface.TwincatConstants;
 

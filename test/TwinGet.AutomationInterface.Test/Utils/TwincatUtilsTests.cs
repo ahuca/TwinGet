@@ -1,6 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 
-using TwinGet.AutomationInterface.Test.TestUtils;
 using TwinGet.AutomationInterface.Utils;
 
 namespace TwinGet.AutomationInterface.Test.Utils

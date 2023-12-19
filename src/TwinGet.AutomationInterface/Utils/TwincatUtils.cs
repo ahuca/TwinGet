@@ -1,7 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
 using Microsoft.Build.Construction;
-using Microsoft.VisualStudio.TextManager.Interop;
 using TCatSysManagerLib;
 using TwinGet.AutomationInterface.Dto;
 using TwinGet.AutomationInterface.Exceptions;

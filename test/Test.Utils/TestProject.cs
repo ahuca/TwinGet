@@ -3,7 +3,7 @@
 using Microsoft.Build.Construction;
 using static TwinGet.AutomationInterface.TwincatConstants;
 
-namespace TwinGet.AutomationInterface.Test.TestUtils
+namespace Test.Utils
 {
     /// <summary>
     /// A class that setup a test project in a temporary path.

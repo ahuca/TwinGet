@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 using TwinGet.AutomationInterface.Dto;
 using TwinGet.AutomationInterface.Exceptions;
 
-namespace TwinGet.AutomationInterface.Test.TestUtils
+namespace Test.Utils
 {
     internal class TestPlcProject
     {

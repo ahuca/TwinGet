@@ -1,6 +1,8 @@
 ﻿// This file is licensed to you under MIT license.
+using FluentAssertions;
+using Xunit;
 
-namespace TwinGet.AutomationInterface.Test.TestUtils
+namespace Test.Utils
 {
     public class TestTwincatProjectTests
     {
