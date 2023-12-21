@@ -7,6 +7,11 @@ namespace TwinGet.TwincatInterface
     public interface IPlcProject : ITcPlcIECProject3
     {
         /// <summary>
+        /// PLC project GUID.
+        /// </summary>
+        public string ProjectGuid { get; }
+
+        /// <summary>
         /// PLC project name. Note that the PLC project <see cref="Name"/> can be different than the PLC project <see cref="Title"/>.
         /// </summary>
         public string Name { get; }

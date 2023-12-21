@@ -63,6 +63,7 @@ namespace TwinGet.TwincatInterface
             GC.SuppressFinalize(this);
         }
 
+        // TODO: if we throw everytime we fail to instantiate a DTE instance, is this method even needed?
         private void ThrowIfDteIsNull()
         {
             if (_dte is null) { throw new DteInstanceIsNullException($"No {nameof(EnvDTE80.DTE2)} instance available."); }
@@ -97,9 +98,51 @@ namespace TwinGet.TwincatInterface
             }
         }
 
-        public static void SaveProjectAsLibrary(string plcProjectName, string outFile, string solutionPath = "")
+        public IPlcProject? SavePlcProject(string plcProjectPath, string outputDirectory, string solutionPath = "")
         {
+            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
 
+            ArgumentException.ThrowIfNullOrEmpty(outputDirectory, nameof(outputDirectory));
+
+            ThrowIfDteIsNull();
+
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            string fullPlcProjectPath = Path.GetFullPath(plcProjectPath);
+
+            string resolvedSolutionPath = solutionPath;
+            // If the given solution path is null or empty, we try to find the right solution.
+            if (string.IsNullOrEmpty(solutionPath))
+            {
+                string twincatProject = TwincatUtils.GetParentTwincatProjectFile(fullPlcProjectPath);
+                resolvedSolutionPath = TwincatUtils.GetParentSolutionFile(twincatProject);
+            }
+
+            // If the solution is not already loaded, we load it.
+            if (!resolvedSolutionPath.Equals(LoadedSolutionFile, StringComparison.OrdinalIgnoreCase))
+            {
+                LoadSolution(resolvedSolutionPath);
+            }
+
+            IPlcProject plcProjectToSave = GetPlcProjects().Where(p =>
+            {
+                return fullPlcProjectPath.Equals(p.FilePath, StringComparison.OrdinalIgnoreCase);
+            }).First();
+
+            string fileName = $"{plcProjectToSave.Title}{TwincatPlcLibraryExtension}";
+            string fullPath = Path.Combine(outputDirectory, fileName);
+
+            plcProjectToSave.SaveAsLibrary(fullPath, false);
+
+            return plcProjectToSave;
+        }
+
+        public IEnumerable<IPlcProject> GetPlcProjects()
+        {
+            return TwincatProjects.SelectMany(t => t.PlcProjects);
         }
     }
 }

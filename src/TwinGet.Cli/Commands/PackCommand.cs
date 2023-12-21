@@ -5,6 +5,7 @@ using System.CommandLine.Invocation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using TwinGet.Core.Commands;
+using TwinGet.Core.Packaging;
 using static NuGet.Configuration.NuGetConstants;
 using static TwinGet.TwincatInterface.TwincatConstants;
 
@@ -62,6 +63,10 @@ public class PackCommand : Command
                     Solution = this.Solution,
                     OutputDirectory = this.OutputDirectory
                 });
+            }
+            catch (PackagingException ex)
+            {
+                Logger?.LogError(ex.AsLogMessage());
             }
             catch (Exception ex)
             {

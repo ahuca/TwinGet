@@ -2,7 +2,6 @@
 
 using FluentValidation;
 using TwinGet.Core.Packaging;
-using TwinGet.TwincatInterface.Utils;
 
 namespace TwinGet.Core.Commands
 {
@@ -13,6 +12,7 @@ namespace TwinGet.Core.Commands
             ClassLevelCascadeMode = CascadeMode.Stop;
 
             RuleFor(p => p.Path)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().NotNull().WithMessage(PackagingErrors.InputFileNotSpecified)
                 .Must(File.Exists).WithMessage(p => string.Format(PackagingErrors.InputFileNotFound, p.Path))
                 .Must(Packaging.Utils.IsSupportedFileType).WithMessage(PackagingErrors.InputFileNotSupported);
@@ -38,7 +38,7 @@ namespace TwinGet.Core.Commands
 
             try
             {
-                return TwincatUtils.PlcProjectBelongToSolution(plcProjectPath, solutionPath);
+                return Packaging.Utils.PlcProjectBelongToSolution(plcProjectPath, solutionPath);
             }
             catch { return false; }
         }

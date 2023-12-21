@@ -8,7 +8,10 @@ namespace Test.Utils
 {
     internal class TestPlcProject
     {
-        public string Name { get; }
+        private readonly PlcProjectData _data;
+
+        public string Title { get => _data.PropertyGroup.Title; }
+        public string Name { get => _data.PropertyGroup.Name; }
         public string AbsolutePath { get; }
 
         public TestPlcProject(string path)
@@ -20,9 +23,7 @@ namespace Test.Utils
 
             using (StringReader reader = new(xmlContent))
             {
-                var plcProjectData = serializer.Deserialize(reader) as PlcProjectData;
-
-                Name = plcProjectData?.PropertyGroup.Name ?? throw new InvalidProjectFileFormat("Failed to get the PLC project name.", path);
+                _data = serializer.Deserialize(reader) as PlcProjectData ?? throw new InvalidProjectFileFormat("Failed to parse the PLC project file.", path);
             }
         }
     }

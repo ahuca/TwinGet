@@ -14,7 +14,15 @@ namespace TwinGet.Core.Packaging
             bool isNuspecExtension = filePath.EndsWith(ManifestExtension, StringComparison.OrdinalIgnoreCase);
             bool isPlcProjectExtension = TwincatUtils.IsPlcProjectFileExtension(filePath);
 
-            return isNuspecExtension && isPlcProjectExtension;
+            return isNuspecExtension || isPlcProjectExtension;
+        }
+
+        /// <summary>
+        /// Delegate to <see cref="TwincatUtils.PlcProjectBelongToSolution"/>.
+        /// </summary>
+        public static bool PlcProjectBelongToSolution(string plcProjectPath, string solutionPath)
+        {
+            return TwincatUtils.PlcProjectBelongToSolution(plcProjectPath, solutionPath);
         }
     }
 }

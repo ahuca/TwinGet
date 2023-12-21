@@ -12,6 +12,7 @@ namespace TwinGet.TwincatInterface
         private readonly ITcPlcIECProject3 _plcProject;
         private readonly PlcProjectData _plcProjectFile;
 
+        public string ProjectGuid { get => _plcProjectFile.PropertyGroup.ProjectGuid; }
         public string Name { get => _plcProjectFile.PropertyGroup.Name; }
         public string? Company { get => _plcProjectFile.PropertyGroup.Company; }
         public string? Title { get => _plcProjectFile.PropertyGroup.Title; }

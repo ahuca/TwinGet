@@ -161,7 +161,7 @@ namespace TwinGet.TwincatInterface.Utils
             PlcProjectData plcProjectData = DeserializeXmlFileToProjectData<PlcProjectData>(plcProjectPath);
 
             // We should parse the solution file to make sure it is valid.
-            var solutionFile = SolutionFile.Parse(solutionPath);
+            var solutionFile = SolutionFile.Parse(Path.GetFullPath(solutionPath));
 
             // We process each project in solution.
             foreach (ProjectInSolution? project in solutionFile.ProjectsInOrder)

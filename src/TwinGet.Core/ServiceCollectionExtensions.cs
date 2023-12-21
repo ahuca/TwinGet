@@ -3,6 +3,7 @@
 using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using TwinGet.Core.Packaging;
 
 namespace TwinGet.Core
 {
@@ -12,6 +13,7 @@ namespace TwinGet.Core
         {
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddTransient<IPackageService, PackageService>();
 
             return services;
         }
