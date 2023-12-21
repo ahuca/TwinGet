@@ -4,6 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Description>Provides utilities for test projects.</Description>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestTwincatProject\TestNonTwincatProject1\**</DefaultItemExcludes>
   </PropertyGroup>
 

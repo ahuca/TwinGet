@@ -4,7 +4,7 @@ using TwinGet.Core.Commands;
 
 namespace TwinGet.Core.Test.Commands
 {
-    public class TwincatUtils
+    public class PackCommandValidatorTests
     {
         private PackCommandValidator _sut = new PackCommandValidator();
 
