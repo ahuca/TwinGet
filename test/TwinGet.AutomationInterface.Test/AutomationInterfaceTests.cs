@@ -1,8 +1,9 @@
 // This file is licensed to you under MIT license.
 
 using Xunit.Abstractions;
+using static TwinGet.TwincatInterface.TwincatConstants;
 
-namespace TwinGet.AutomationInterface.Test
+namespace TwinGet.TwincatInterface.Test
 {
     public class AutomationInterfaceTests(ITestOutputHelper output) : IDisposable
     {

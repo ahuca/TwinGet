@@ -1,7 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
 using static NuGet.Configuration.NuGetConstants;
-using static TwinGet.AutomationInterface.TwincatConstants;
+using static TwinGet.TwincatInterface.TwincatConstants;
 
 namespace TwinGet.Core.Packaging
 {

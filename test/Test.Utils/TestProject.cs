@@ -1,7 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
 using Microsoft.Build.Construction;
-using static TwinGet.AutomationInterface.TwincatConstants;
+using static TwinGet.TwincatInterface.TwincatConstants;
 
 namespace Test.Utils
 {

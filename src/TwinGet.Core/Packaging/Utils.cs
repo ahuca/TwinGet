@@ -1,6 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
-using TwinGet.AutomationInterface.Utils;
+using TwinGet.TwincatInterface.Utils;
 using static NuGet.Configuration.NuGetConstants;
 
 namespace TwinGet.Core.Packaging

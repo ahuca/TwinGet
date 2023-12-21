@@ -1,8 +1,8 @@
 ﻿// This file is licensed to you under MIT license.
 
 using FluentValidation;
-using TwinGet.AutomationInterface.Utils;
 using TwinGet.Core.Packaging;
+using TwinGet.TwincatInterface.Utils;
 
 namespace TwinGet.Core.Commands
 {

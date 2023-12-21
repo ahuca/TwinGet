@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="TwinGet.AutomationInterface.Test" />
+    <InternalsVisibleTo Include="TwinGet.TwincatInterface.Test" />
     <InternalsVisibleTo Include="TwinGet.Core.Test" />
   </ItemGroup>
   
@@ -29,7 +29,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
+    <ProjectReference Include="..\..\src\TwinGet.TwincatInterface\TwinGet.TwincatInterface.csproj" />
   </ItemGroup>
 
 </Project>

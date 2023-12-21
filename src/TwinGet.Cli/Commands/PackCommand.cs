@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using TwinGet.Core.Commands;
 using static NuGet.Configuration.NuGetConstants;
-using static TwinGet.AutomationInterface.TwincatConstants;
+using static TwinGet.TwincatInterface.TwincatConstants;
 
 namespace TwinGet.Cli.Commands;
 

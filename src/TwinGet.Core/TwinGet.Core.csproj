@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamesapce>TwinGet.Core</RootNamesapce>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
+    <ProjectReference Include="..\TwinGet.TwincatInterface\TwinGet.TwincatInterface.csproj" />
   </ItemGroup>
 
 </Project>
