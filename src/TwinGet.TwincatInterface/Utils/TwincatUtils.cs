@@ -77,7 +77,8 @@ namespace TwinGet.TwincatInterface.Utils
 
                 if (string.IsNullOrEmpty(parent))
                 {
-                    break;
+                    // If we can't even get the first parent, we return.
+                    return string.Empty;
                 }
 
                 string[] xaeCandidates = Directory.GetFiles(parent, $"*{TwincatConstants.TwincatXaeProjectExtension}");
@@ -105,7 +106,57 @@ namespace TwinGet.TwincatInterface.Utils
                 }
             }
 
-            return "";
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Try to find the TwinCAT project that the given PLC project belongs to.
+        /// </summary>
+        /// <param name="plcProjectPath">The path to the <c>.plcproj</c> file.</param>
+        /// <param name="upwardDepth">The upward depth of parents to search.</param>
+        /// <returns>The absolute path to the TwinCAT project file if successfully found, otherwise <see cref="string.Empty"/>.</returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        public static async Task<string> GetParentTwincatProjectFileAsync(string plcProjectPath, int upwardDepth = 5)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
+            if (!IsPlcProjectFileExtension(plcProjectPath))
+            {
+                return string.Empty;
+            }
+
+            if (!File.Exists(plcProjectPath))
+            {
+                throw new FileNotFoundException($"Provided plc project file path does not exists.", plcProjectPath);
+            }
+
+            Task<string> getPlcProjectGuidTask = new PlcProjectFileHelper(plcProjectPath).GetProjectGuid();
+
+            /// We recursively look up TwinCAT project files in parent folders with a depth of <param name="upwardDepth"/param>.
+            string parent = plcProjectPath;
+            for (int i = 0; i < upwardDepth - 1; i++)
+            {
+                parent = Directory.GetParent(parent)?.FullName ?? string.Empty;
+
+                if (string.IsNullOrEmpty(parent))
+                {
+                    // If we can't even get the first parent, we return.
+                    return string.Empty;
+                }
+
+                foreach (var candidate in Directory.EnumerateFiles(parent, $"*{TwincatConstants.TwincatProjectWildcardExtension}", SearchOption.TopDirectoryOnly).Where(IsTwincatProjectFileExtension))
+                {
+                    var tcSmFileHelper = new TcSmProjectFileHelper(candidate);
+
+                    var plcGuid = await getPlcProjectGuidTask;
+
+                    if (await tcSmFileHelper.HasPlcProject(plcGuid))
+                    {
+                        return candidate;
+                    }
+                }
+            }
+
+            return string.Empty;
         }
 
         /// <summary>

@@ -18,6 +18,7 @@ namespace TwinGet.TwincatInterface
         public const string SolutionExtension = ".sln";
         public const string TwincatXaeProjectExtension = ".tsproj";
         public const string TwincatPlcProjectExtension = ".tspproj";
+        public const string TwincatProjectWildcardExtension = ".ts*proj";
         public const string PlcProjectExtension = ".plcproj";
         public static readonly IReadOnlyList<string> TwincatProjectExtensions = new List<string>
         {

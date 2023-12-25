@@ -1,18 +1,21 @@
 ﻿// This file is licensed to you under MIT license.
 
-using System.Collections.Frozen;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Utils;
+using Xunit.Abstractions;
 
 namespace TwinGet.TwincatInterface.Test.Utils
 {
-    public class TwincatUtilsTests
+
+    public class TwincatUtilsTests(ITestOutputHelper output)
     {
+        private readonly ITestOutputHelper _output = output;
+
         [Fact]
         public void GetParentTwincatProject_ShouldSucceed()
         {
             // Arrange
-            using TestProject testProject = new TestProject();
+            using TestProject testProject = new();
             TestTwincatProject? testTcProject = null;
             TestPlcProject? testPlcProject = null;
 
@@ -31,6 +34,35 @@ namespace TwinGet.TwincatInterface.Test.Utils
 
             // Act
             string actual = TwincatUtils.GetParentTwincatProjectFile(testPlcProject.AbsolutePath);
+
+            // Assert
+            expected.Should().NotBeNullOrEmpty();
+            expected.Should().Be(actual);
+        }
+
+        [Fact]
+        public async void GetParentTwincatProjectFileAsync_ShouldSucceed()
+        {
+            // Arrange
+            using TestProject testProject = new();
+            TestTwincatProject? testTcProject = null;
+            TestPlcProject? testPlcProject = null;
+
+            // Find a test TwinCAT project that has at least one PLC project.
+            foreach (TestTwincatProject tcProj in testProject.TwincatProjects)
+            {
+                if (tcProj.PlcProjects.Count > 0)
+                {
+                    testTcProject = tcProj;
+                    testPlcProject = tcProj.PlcProjects.First();
+                }
+            }
+
+            testTcProject.Should().NotBeNull();
+            string expected = testTcProject.AbsolutePath;
+
+            // Act
+            string actual = await TwincatUtils.GetParentTwincatProjectFileAsync(testPlcProject.AbsolutePath);
 
             // Assert
             expected.Should().NotBeNullOrEmpty();

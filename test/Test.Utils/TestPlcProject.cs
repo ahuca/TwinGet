@@ -12,6 +12,7 @@ namespace Test.Utils
 
         public string Title { get => _data.PropertyGroup.Title; }
         public string Name { get => _data.PropertyGroup.Name; }
+        public string GUID { get => _data.PropertyGroup.ProjectGuid; }
         public string AbsolutePath { get; }
 
         public TestPlcProject(string path)
