@@ -38,6 +38,11 @@ namespace Test.Utils
                 .Select(x => new TestTwincatProject(x.ProjectName, x.AbsolutePath)));
         }
 
+        public IEnumerable<TestPlcProject> GetPlcProjects()
+        {
+            return TwincatProjects.SelectMany(t => t.PlcProjects);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)

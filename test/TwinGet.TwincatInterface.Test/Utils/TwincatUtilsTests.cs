@@ -1,5 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
+using System.Collections.Frozen;
+using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Utils;
 
 namespace TwinGet.TwincatInterface.Test.Utils
@@ -90,6 +92,27 @@ namespace TwinGet.TwincatInterface.Test.Utils
             bool actual = TwincatUtils.IsPlcProjectFileExtension(filePath);
 
             actual.Should().Be(expected);
+        }
+
+        [Fact]
+        public void DeserializeXmlFileToProjectData_WithValidTwincatProjectFile_ShouldSucceed()
+        {
+            using TestProject testProject = new();
+
+            TcSmProjectData plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<TcSmProjectData>(testProject.TwincatProjects[0].AbsolutePath);
+
+            plcProjectData.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async void DeserializeXmlFileToProjectDataAsync_WithValidPlcProjectFile_ShouldSucceed()
+        {
+            using TestProject testProject = new();
+            var plcProjects = testProject.GetPlcProjects();
+
+            PlcProjectData plcProjectData = await TwincatUtils.DeserializeXmlFileToProjectDataAsync<PlcProjectData>(plcProjects.First().AbsolutePath);
+
+            plcProjectData.Should().NotBeNull();
         }
     }
 }

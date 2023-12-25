@@ -23,7 +23,7 @@ namespace TwinGet.TwincatInterface.Utils
         }
 
         /// <summary>
-        /// Wraps the <see cref="TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileTo"/> and throw if the deserialized object is null.
+        /// Wraps the <see cref="TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile"/> and throw if the deserialized object is null.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="filePath"></param>
@@ -31,7 +31,21 @@ namespace TwinGet.TwincatInterface.Utils
         /// <exception cref="InvalidProjectFileFormat"></exception>
         public static T DeserializeXmlFileToProjectData<T>(string filePath) where T : ITwincatProjectData
         {
-            T? projectData = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileTo<T>(filePath) ?? throw new InvalidProjectFileFormat("The format of the TwinCAT project file is invalid.", filePath);
+            T? projectData = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile<T>(filePath) ?? throw new InvalidProjectFileFormat("The format of the TwinCAT project file is invalid.", filePath);
+
+            return projectData;
+        }
+
+        /// <summary>
+        /// Wraps the <see cref="TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile"/> and throw if the deserialized object is null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidProjectFileFormat"></exception>
+        public static async Task<T> DeserializeXmlFileToProjectDataAsync<T>(string filePath) where T : ITwincatProjectData
+        {
+            T? projectData = await TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileAsync<T>(filePath) ?? throw new InvalidProjectFileFormat("The format of the TwinCAT project file is invalid.", filePath);
 
             return projectData;
         }
@@ -75,7 +89,7 @@ namespace TwinGet.TwincatInterface.Utils
                 // We process each TwinCAT project file we found.
                 foreach (string tcCandidate in twincatProjectCandidate)
                 {
-                    TcSmProjectData? tcSmProject = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileTo<TcSmProjectData>(tcCandidate);
+                    TcSmProjectData? tcSmProject = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile<TcSmProjectData>(tcCandidate);
 
                     if (tcSmProject is null) { continue; }
 
