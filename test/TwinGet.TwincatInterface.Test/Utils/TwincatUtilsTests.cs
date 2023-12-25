@@ -25,7 +25,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
                 if (tcProj.PlcProjects.Count > 0)
                 {
                     testTcProject = tcProj;
-                    testPlcProject = tcProj.PlcProjects.First();
+                    testPlcProject = tcProj.PlcProjects[0];
                 }
             }
 

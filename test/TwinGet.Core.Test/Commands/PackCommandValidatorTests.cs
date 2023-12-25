@@ -6,7 +6,7 @@ namespace TwinGet.Core.Test.Commands
 {
     public class PackCommandValidatorTests
     {
-        private PackCommandValidator _sut = new PackCommandValidator();
+        private readonly PackCommandValidator _sut = new();
 
         [Fact]
         public async Task ShouldHaveError_WhenPathIsNullAsync()

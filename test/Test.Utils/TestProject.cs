@@ -27,7 +27,7 @@ namespace Test.Utils
     TestTwincatProjectConstants.s_testTwincatProject,
     RootPath, FileShare.Read).Wait();
 
-            SolutionPath = Directory.GetFiles(RootPath, "*.sln", SearchOption.AllDirectories).First();
+            SolutionPath = Directory.EnumerateFiles(RootPath, "*.sln", SearchOption.AllDirectories).First();
 
             SolutionFile = SolutionFile.Parse(SolutionPath);
 

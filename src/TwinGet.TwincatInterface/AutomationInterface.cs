@@ -15,7 +15,7 @@ namespace TwinGet.TwincatInterface
         private EnvDTE80.DTE2 _dte { get => _dteProvider.Dte; }
         private EnvDTE.Solution? _solution;
         private EnvDTE.SolutionBuild? _solutionBuild;
-        private readonly List<TwincatProject> _twincatProjects = new();
+        private readonly List<TwincatProject> _twincatProjects = [];
 
         public string ProgId { get => _dteProvider.ProgId; }
         public bool IsSolutionOpen { get => _solution?.IsOpen ?? false; }

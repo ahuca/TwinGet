@@ -81,16 +81,15 @@ namespace TwinGet.TwincatInterface.Utils
                     return string.Empty;
                 }
 
-                string[] xaeCandidates = Directory.GetFiles(parent, $"*{TwincatConstants.TwincatXaeProjectExtension}");
-                string[] plcCandidates = Directory.GetFiles(parent, $"*{TwincatConstants.TwincatPlcProjectExtension}");
-                string[] twincatProjectCandidate = xaeCandidates.Concat(plcCandidates).ToArray();
-
-                if (twincatProjectCandidate.Length == 0) { continue; }
-
                 // We process each TwinCAT project file we found.
-                foreach (string tcCandidate in twincatProjectCandidate)
+                var candidates = Directory.EnumerateFiles(
+                    parent,
+                    $"*{TwincatConstants.TwincatProjectWildcardExtension}",
+                    SearchOption.TopDirectoryOnly).Where(IsTwincatProjectFileExtension);
+
+                foreach (string candidate in candidates)
                 {
-                    TcSmProjectData? tcSmProject = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile<TcSmProjectData>(tcCandidate);
+                    TcSmProjectData? tcSmProject = TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile<TcSmProjectData>(candidate);
 
                     if (tcSmProject is null) { continue; }
 
@@ -100,7 +99,7 @@ namespace TwinGet.TwincatInterface.Utils
                         // Using GUID, if we find ourselves in the TwinCAT project candidate, we return the candidate.
                         if (plcProjectCandidate.GUID.Equals(plcProjectData.PropertyGroup.ProjectGuid, StringComparison.OrdinalIgnoreCase))
                         {
-                            return tcCandidate;
+                            return candidate;
                         }
                     }
                 }
@@ -143,7 +142,9 @@ namespace TwinGet.TwincatInterface.Utils
                     return string.Empty;
                 }
 
-                foreach (var candidate in Directory.EnumerateFiles(parent, $"*{TwincatConstants.TwincatProjectWildcardExtension}", SearchOption.TopDirectoryOnly).Where(IsTwincatProjectFileExtension))
+                var candidates = Directory.EnumerateFiles(parent, $"*{TwincatConstants.TwincatProjectWildcardExtension}", SearchOption.TopDirectoryOnly).Where(IsTwincatProjectFileExtension);
+
+                foreach (var candidate in candidates)
                 {
                     var tcSmFileHelper = new TcSmProjectFileHelper(candidate);
 
@@ -189,9 +190,7 @@ namespace TwinGet.TwincatInterface.Utils
                     break;
                 }
 
-                string[] solutionFileCandidates = Directory.GetFiles(parent, $"*{TwincatConstants.SolutionExtension}");
-
-                if (solutionFileCandidates.Length == 0) { continue; }
+                var solutionFileCandidates = Directory.EnumerateFiles(parent, $"*{TwincatConstants.SolutionExtension}");
 
                 // We process each solution file we found.
                 foreach (string solutionCandidate in solutionFileCandidates)

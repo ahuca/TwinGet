@@ -13,8 +13,8 @@ namespace TwinGet.Utils.Test.IOTests
             IEnumerable<string> dir2SubDir = Directory.GetDirectories(dir2.FullName, "*", SearchOption.AllDirectories).Select(d => Path.GetRelativePath(dir2.FullName, d));
             bool sameDirectoryStructure = dir1SubDir.SequenceEqual(dir2SubDir);
 
-            List<string> dir1Files = dir1.GetFiles("*.*", SearchOption.AllDirectories).Select(f => Path.GetRelativePath(dir1.FullName, f.FullName)).ToList();
-            List<string> dir2Files = dir2.GetFiles("*.*", SearchOption.AllDirectories).Select(f => Path.GetRelativePath(dir2.FullName, f.FullName)).ToList();
+            var dir1Files = dir1.EnumerateFiles("*.*", SearchOption.AllDirectories).Select(f => Path.GetRelativePath(dir1.FullName, f.FullName));
+            var dir2Files = dir2.EnumerateFiles("*.*", SearchOption.AllDirectories).Select(f => Path.GetRelativePath(dir2.FullName, f.FullName));
             bool sameFileStructure = dir1Files.SequenceEqual(dir2Files);
 
             return sameDirectoryStructure && sameFileStructure;
