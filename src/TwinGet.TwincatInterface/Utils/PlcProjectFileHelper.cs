@@ -20,7 +20,7 @@ namespace TwinGet.TwincatInterface.Utils
             _filePath = Path.GetFullPath(filePath);
         }
 
-        public async Task<string> GetProjectGuid()
+        public async Task<string> GetProjectGuidAsync()
         {
             using XmlReader reader = XmlReader.Create(_filePath, new XmlReaderSettings() { Async = true });
 

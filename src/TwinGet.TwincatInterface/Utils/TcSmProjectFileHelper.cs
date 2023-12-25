@@ -20,11 +20,32 @@ namespace TwinGet.TwincatInterface.Utils
             _filePath = Path.GetFullPath(filePath);
         }
 
+        public async Task<string> GetProjectGuidAsync()
+        {
+            using var reader = XmlReader.Create(_filePath, new XmlReaderSettings() { Async = true });
+
+            while (!reader.EOF)
+            {
+                await reader.ReadAsync();
+
+                if (reader.NodeType == XmlNodeType.Element
+                    && reader.Name.Equals("Project", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!reader.HasAttributes) { continue; }
+                    string? guid = reader.GetAttribute("ProjectGUID");
+                    if (string.IsNullOrEmpty(guid)) { continue; }
+                    return guid;
+                }
+            }
+
+            return string.Empty;
+        }
+
         public async Task<bool> HasPlcProject(string GUID)
         {
             ArgumentException.ThrowIfNullOrEmpty(GUID, nameof(GUID));
 
-            using XmlReader reader = XmlReader.Create(_filePath, new XmlReaderSettings() { Async = true });
+            using var reader = XmlReader.Create(_filePath, new XmlReaderSettings() { Async = true });
 
             while (!reader.EOF)
             {
