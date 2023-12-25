@@ -25,8 +25,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Core.Test", "test\T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Utils", "test\Test.Utils\Test.Utils.csproj", "{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.TwincatInterface.Dto.Test", "test\TwinGet.TwincatInterface.Dto.Test\TwinGet.TwincatInterface.Dto.Test.csproj", "{651795EE-A72E-4C3A-9F96-372A3FAC37BD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,10 +67,6 @@ Global
 		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{651795EE-A72E-4C3A-9F96-372A3FAC37BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{651795EE-A72E-4C3A-9F96-372A3FAC37BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{651795EE-A72E-4C3A-9F96-372A3FAC37BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{651795EE-A72E-4C3A-9F96-372A3FAC37BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,7 +81,6 @@ Global
 		{563081EB-AA78-4C47-8826-1DB5F1D724DE} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
 		{79FD1B02-D5D7-44B5-83EF-5A8D0CDFDC17} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
-		{651795EE-A72E-4C3A-9F96-372A3FAC37BD} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42610935-EABE-41BA-A9A9-57FB7A657F65}

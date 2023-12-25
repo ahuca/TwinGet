@@ -30,7 +30,7 @@ namespace TwinGet.TwincatInterface.Dto
         public SystemElement System { get; set; }
 
         [XmlElement("Plc")]
-        public Plc Plc { get; set; }
+        public Plc? Plc { get; set; }
     }
 
     public class SystemElement
