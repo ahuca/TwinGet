@@ -1,5 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 using NuGet.Configuration;
 using Test.Utils;
 using TwinGet.Core.Commands;
@@ -7,11 +8,22 @@ using TwinGet.Core.Packaging;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Utils;
 using Xunit.Abstractions;
+using Task = System.Threading.Tasks.Task;
 
 namespace TwinGet.Core.Test.Packaging
 {
-    public class PackageServiceTests(ITestOutputHelper output)
+    public class PackageServiceTests
     {
+        private readonly TestProject _testProject = new();
+        private readonly PackageService _sut = new();
+        private readonly ITestOutputHelper _output;
+
+        public PackageServiceTests(ITestOutputHelper output)
+        {
+            _output = output;
+            _output.WriteLine(_testProject.RootPath);
+        }
+
         private class TestData
         {
             public static TheoryData<PackCommandConfig> PackAsyncData()
@@ -35,25 +47,18 @@ namespace TwinGet.Core.Test.Packaging
             public bool ProvideSolutionPath { get; set; }
         }
 
-        private readonly PackageService _sut = new();
-        private readonly ITestOutputHelper _output = output;
-
         [Theory]
         [MemberData(nameof(TestData.PackAsyncData), MemberType = typeof(TestData))]
-        internal async void PackAsync_WithPlcProjectFile_ShouldSucceed(PackCommandConfig config)
+        internal async void PackAsync_WithValidParameters_ShouldSucceed(PackCommandConfig config)
         {
             // Arange
-            using TestProject testProject = new();
-            _output.WriteLine(testProject.RootPath);
-            var testPlcProject = testProject.GetPlcProjects().First();
-
+            var testPlcProject = _testProject.GetPlcProjects().First();
             var packCommand = new PackCommand()
             {
                 Path = testPlcProject.AbsolutePath,
-                Solution = config.ProvideSolutionPath ? testProject.SolutionPath : string.Empty,
-                OutputDirectory = testProject.RootPath,
+                Solution = config.ProvideSolutionPath ? _testProject.SolutionPath : string.Empty,
+                OutputDirectory = _testProject.RootPath,
             };
-
             var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(packCommand.Path);
 
             // Act
@@ -63,6 +68,43 @@ namespace TwinGet.Core.Test.Packaging
             var exists = Directory.EnumerateFiles(packCommand.OutputDirectory, $"{plcProjectData.PropertyGroup.Title}*{NuGetConstants.PackageExtension}", SearchOption.TopDirectoryOnly).Any();
             result.Should().BeTrue();
             exists.Should().BeTrue();
+        }
+
+        [Fact]
+        public async void PackAsync_WithNoPath_ShouldThrow()
+        {
+            // Arrange
+            var packCommand = new PackCommand()
+            {
+                Path = string.Empty,
+                Solution = _testProject.RootPath,
+                OutputDirectory = _testProject.RootPath,
+            };
+
+            // Act
+            Task packAsync() => _sut.PackAsync(packCommand);
+
+            // Assert
+            await Assert.ThrowsAsync<ArgumentException>(packAsync);
+        }
+
+        [Fact]
+        public async void PackAsync_WithNoOutputDirectory_ShouldThrow()
+        {
+            // Arrange
+            var testPlcProject = _testProject.GetPlcProjects().First();
+            var packCommand = new PackCommand()
+            {
+                Path = testPlcProject.AbsolutePath,
+                Solution = _testProject.RootPath,
+                OutputDirectory = string.Empty,
+            };
+
+            // Act
+            Task packAsync() => _sut.PackAsync(packCommand);
+
+            // Assert
+            await Assert.ThrowsAsync<ArgumentException>(packAsync);
         }
     }
 }
