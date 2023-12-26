@@ -1,6 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using NuGet.Configuration;
 using Test.Utils;
 using TwinGet.Core.Commands;

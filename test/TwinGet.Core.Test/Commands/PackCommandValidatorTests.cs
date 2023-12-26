@@ -29,7 +29,7 @@ namespace TwinGet.Core.Test.Commands
             var result = await _sut.TestValidateAsync(_command);
 
             result.ShouldHaveValidationErrorFor(p => p.Path)
-                .WithErrorMessage(PackagingErrors.InputFileNotSpecified);
+                .WithErrorMessage(string.Format(PackagingErrors.InputFileNotFound, _command.Path));
         }
 
         [Fact]
@@ -40,6 +40,23 @@ namespace TwinGet.Core.Test.Commands
 
             result.ShouldHaveValidationErrorFor(p => p.Path)
                 .WithErrorMessage(string.Format(PackagingErrors.InputFileNotFound, _command.Path));
+        }
+
+        [Fact]
+        public async Task ShouldHaveError_WhenSolutionIsProvidedAndDoesNotExist()
+        {
+            using TestProject testProject2 = new();
+
+            _command.Path = _testProject.GetPlcProjects().First().AbsolutePath;
+            _command.Solution = "foo.sln";
+
+            var result = await _sut.TestValidateAsync(_command);
+            var expectedMsg = string.Format(
+                PackagingErrors.SolutionFileNotFound,
+                _command.Solution);
+
+            result.ShouldHaveValidationErrorFor(p => p.Solution)
+                .WithErrorMessage(expectedMsg);
         }
 
         [Fact]

@@ -20,10 +20,20 @@ namespace TwinGet.Core.Commands
 
             RuleFor(p => p.Solution)
                 .Cascade(CascadeMode.Stop)
+                .Must((solution) =>
+                {
+                    if (string.IsNullOrEmpty(solution))
+                        return true;
+
+                    return File.Exists(solution);
+                })
+                .WithMessage(p => string.Format(PackagingErrors.SolutionFileNotFound, p.Solution))
+
                 .Must((packCommand, _) =>
                 {
                     return VerifyPlcProjectRelationWithSolution(packCommand.Path, packCommand.Solution);
-                }).WithMessage(p => string.Format(PackagingErrors.SpecifiedInputFileDoesNotBelongToSolution, p.Path, p.Solution));
+                })
+                .WithMessage(p => string.Format(PackagingErrors.SpecifiedInputFileDoesNotBelongToSolution, p.Path, p.Solution));
         }
 
         /// <summary>
