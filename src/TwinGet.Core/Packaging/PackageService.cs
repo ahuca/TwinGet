@@ -52,7 +52,15 @@ namespace TwinGet.Core.Packaging
                 throw new PackagingException($"Failed to save the {packCommand.Path} as library.");
             }
 
-            return BuildPackage(packCommand, plcLibrary);
+            bool result = BuildPackage(packCommand, plcLibrary);
+
+            // Delete the library once we are done packing.
+            if (!string.IsNullOrEmpty(plcLibrary))
+            {
+                File.Delete(plcLibrary);
+            }
+
+            return result;
         }
 
         private static bool BuildPackage(IPackCommand packCommand, string libraryPath)
