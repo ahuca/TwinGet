@@ -247,6 +247,22 @@ namespace TwinGet.TwincatInterface.Test.Utils
         }
 
         [Fact]
+        public async void GetParentSolutionFileAsync_ShouldSucceed()
+        {
+            // Arrange
+            using TestProject testProject = new();
+            TestTwincatProject? testTcProject = testProject.TwincatProjects[0];
+
+            string expected = testProject.SolutionPath;
+
+            // Act
+            string actual = await TwincatUtils.GetParentSolutionFileAsync(testTcProject.AbsolutePath);
+
+            // Assert
+            expected.Should().Be(actual);
+        }
+
+        [Fact]
         public void PlcProjectBelongToSolution_ShouldWork()
         {
             // Arrange

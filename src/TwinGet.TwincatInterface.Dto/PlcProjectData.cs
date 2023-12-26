@@ -79,6 +79,12 @@ namespace TwinGet.TwincatInterface.Dto
 
         [XmlElement("SelectedLibraryCategories")]
         public SelectedLibraryCategories? SelectedLibraryCategories { get; set; }
+
+        [XmlElement("Author")]
+        public string? Author { get; set; }
+
+        [XmlElement("Description")]
+        public string? Description { get; set; }
     }
 
     public class LibraryCategories

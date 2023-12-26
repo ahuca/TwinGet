@@ -30,6 +30,8 @@
     <SelectedLibraryCategories>
       <Id xmlns="">{736e1fb9-7997-4a5d-a19a-cfcf55bcd1a4}</Id>
     </SelectedLibraryCategories>
+    <Author>Author</Author>
+    <Description>Description</Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PlcTask.TcTTO">

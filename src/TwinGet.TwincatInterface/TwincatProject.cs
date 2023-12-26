@@ -1,7 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
 using EnvDTE;
-using TCatSysManagerLib;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Exceptions;
 using TwinGet.TwincatInterface.Utils;

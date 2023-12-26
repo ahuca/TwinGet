@@ -34,7 +34,7 @@ namespace TwinGet.TwincatInterface
         /// <param name="solutionPath">The path to the solution containing the <paramref name="plcProjectPath"/>.</param>
         /// <param name="outputDirectory">The output directory for the library file.</param>
         /// <returns>The <see cref="IPlcProject"/> that was saved successfully, otherwise null.</returns>
-        public IPlcProject? SavePlcProject(string plcProjectPath, string outputDirectory, string solutionPath = "");
+        public string SavePlcProject(string plcProjectPath, string outputDirectory, string solutionPath = "");
 
         /// <summary>
         /// Get all the <see cref="IPlcProject"/> that belongs to the current loaded solution.

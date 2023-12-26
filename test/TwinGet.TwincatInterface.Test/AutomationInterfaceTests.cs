@@ -124,12 +124,12 @@ namespace TwinGet.TwincatInterface.Test
             string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
 
             // Act
-            IPlcProject? result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir, testProject.SolutionPath);
+            var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir, testProject.SolutionPath);
 
             // Assert
             File.Exists(expected).Should().BeTrue();
             result.Should().NotBeNull();
-            expected.Should().Contain(result.Title);
+            result.Should().Contain(expected);
         }
 
         [StaFact]
@@ -147,12 +147,12 @@ namespace TwinGet.TwincatInterface.Test
             string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
 
             // Act
-            IPlcProject? result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir);
+            var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir);
 
             // Assert
             File.Exists(expected).Should().BeTrue();
             result.Should().NotBeNull();
-            expected.Should().Contain(result.Title);
+            result.Should().Contain(expected);
         }
 
 

@@ -20,7 +20,18 @@ namespace TwinGet.Core.Commands
                 throw new PackagingException(result.Errors.ToList());
             }
 
-            if (string.IsNullOrEmpty(request.OutputDirectory))
+            request.Path = Path.GetFullPath(request.Path);
+
+            if (!string.IsNullOrEmpty(request.Solution))
+            {
+                request.Solution = Path.GetFullPath(request.Solution);
+            }
+
+            if (!string.IsNullOrEmpty(request.OutputDirectory))
+            {
+                request.OutputDirectory = Path.GetFullPath(request.OutputDirectory);
+            }
+            else
             {
                 request.OutputDirectory = Directory.GetCurrentDirectory();
             }

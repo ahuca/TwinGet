@@ -98,10 +98,16 @@ namespace TwinGet.TwincatInterface
             }
         }
 
-        public IPlcProject? SavePlcProject(string plcProjectPath, string outputDirectory, string solutionPath = "")
+        /// <summary>
+        /// Save a PLC project as library.
+        /// </summary>
+        /// <param name="plcProjectPath">The path to the PLC project file.</param>
+        /// <param name="outputDirectory">The output directory for the library.</param>
+        /// <param name="solutionPath">The path to the solution file containing the PLC project.</param>
+        /// <returns>The absolute path to the library file if successfully saved, otherwise, returns <see cref="string.Empty"/>.</returns>
+        public string SavePlcProject(string plcProjectPath, string outputDirectory, string solutionPath = "")
         {
             ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
-
             ArgumentException.ThrowIfNullOrEmpty(outputDirectory, nameof(outputDirectory));
 
             ThrowIfDteIsNull();
@@ -132,12 +138,17 @@ namespace TwinGet.TwincatInterface
                 return fullPlcProjectPath.Equals(p.FilePath, StringComparison.OrdinalIgnoreCase);
             }).First();
 
+            if (plcProjectToSave is null)
+            {
+                return string.Empty;
+            }
+
             string fileName = $"{plcProjectToSave.Title}{TwincatPlcLibraryExtension}";
             string fullPath = Path.Combine(outputDirectory, fileName);
 
             plcProjectToSave.SaveAsLibrary(fullPath, false);
 
-            return plcProjectToSave;
+            return fullPath;
         }
 
         public IEnumerable<IPlcProject> GetPlcProjects()
