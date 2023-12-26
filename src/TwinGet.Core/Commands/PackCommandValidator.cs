@@ -13,14 +13,16 @@ namespace TwinGet.Core.Commands
 
             RuleFor(p => p.Path)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().NotNull().WithMessage(PackagingErrors.InputFileNotSpecified)
+                .NotEmpty().WithMessage(PackagingErrors.InputFileNotSpecified)
+                .NotNull().WithMessage(PackagingErrors.InputFileNotSpecified)
                 .Must(File.Exists).WithMessage(p => string.Format(PackagingErrors.InputFileNotFound, p.Path))
                 .Must(Packaging.Utils.IsSupportedFileType).WithMessage(PackagingErrors.InputFileNotSupported);
 
             RuleFor(p => p.Solution)
-                .MustAsync(async (packCommand, solution, cancellation) =>
+                .Cascade(CascadeMode.Stop)
+                .Must((packCommand, _) =>
                 {
-                    return await VerifyPlcProjectRelationWithSolution(packCommand.Path, packCommand.Solution, cancellation);
+                    return VerifyPlcProjectRelationWithSolution(packCommand.Path, packCommand.Solution);
                 }).WithMessage(p => string.Format(PackagingErrors.SpecifiedInputFileDoesNotBelongToSolution, p.Path, p.Solution));
         }
 
@@ -29,9 +31,8 @@ namespace TwinGet.Core.Commands
         /// </summary>
         /// <param name="plcProjectPath"></param>
         /// <param name="solutionPath"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>True if no solution is provided (empty or null), or the PLC project is verified to belong the solution by <see cref="TwincatUtils.PlcProjectBelongToSolution"/>. False otherwise.</returns>
-        private static async Task<bool> VerifyPlcProjectRelationWithSolution(string? plcProjectPath, string? solutionPath, CancellationToken cancellationToken)
+        /// <returns>True if no solution is provided (empty or null), or the PLC project is verified to belong the solution. False otherwise.</returns>
+        private static bool VerifyPlcProjectRelationWithSolution(string? plcProjectPath, string? solutionPath)
         {
             // Solution file is optional, so if it's not provided we pass this validation.
             if (string.IsNullOrEmpty(solutionPath)) { return true; }

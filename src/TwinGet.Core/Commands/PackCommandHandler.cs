@@ -2,13 +2,14 @@
 
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using TwinGet.Core.Packaging;
 
 namespace TwinGet.Core.Commands
 {
     public class PackCommandHander(IValidator<PackCommand> validator, IPackageService packageService) : IRequestHandler<PackCommand, bool>
     {
-        private IValidator<PackCommand> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+        private readonly IValidator<PackCommand> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         private readonly IPackageService _packageService = packageService ?? throw new ArgumentNullException(nameof(packageService));
 
         public async Task<bool> Handle(PackCommand request, CancellationToken cancellationToken)
@@ -19,6 +20,8 @@ namespace TwinGet.Core.Commands
             {
                 throw new PackagingException(result.Errors.ToList());
             }
+
+            request.Logger?.LogInformation(PackagingStrings.AttemptingToBuildPackage, Path.GetFileName(request.Path));
 
             request.Path = Path.GetFullPath(request.Path);
 

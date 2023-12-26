@@ -50,7 +50,8 @@ public class PackCommand : Command
             Logger = logger;
         }
 
-        public int Invoke(InvocationContext context) => throw new NotImplementedException();
+        public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0003:Remove qualification", Justification = "For clarity.")]
         public async Task<int> InvokeAsync(InvocationContext context)
         {

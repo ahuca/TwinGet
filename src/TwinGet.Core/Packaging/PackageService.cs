@@ -45,8 +45,56 @@ namespace TwinGet.Core.Packaging
 
         private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
         {
+            string? plcLibrary = SavePlcLibrary(packCommand);
 
-            string? plcProject = null;
+            if (string.IsNullOrEmpty(plcLibrary))
+            {
+                throw new PackagingException($"Failed to save the {packCommand.Path} as library.");
+            }
+
+            return BuildPackage(packCommand, plcLibrary);
+        }
+
+        private static bool BuildPackage(IPackCommand packCommand, string libraryPath)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(libraryPath, nameof(libraryPath));
+
+            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(packCommand.Path);
+
+            ManifestMetadata metadata = new()
+            {
+                Authors = new List<string>() { plcProjectData.PropertyGroup.Author ?? string.Empty },
+                Version = new NuGetVersion(plcProjectData.PropertyGroup.ProjectVersion ?? string.Empty),
+                Id = plcProjectData.PropertyGroup.Title,
+                Description = plcProjectData.PropertyGroup.Description,
+            };
+
+            var files = new List<ManifestFile>()
+            {
+                new() { Source = libraryPath, Target = "lib" }
+            };
+
+            if (!Directory.Exists(packCommand.OutputDirectory))
+            {
+                Directory.CreateDirectory(packCommand.OutputDirectory);
+            }
+
+            var packageBuilder = new PackageBuilder();
+            packageBuilder.Populate(metadata);
+            packageBuilder.PopulateFiles(string.Empty, files);
+
+            string outputPath = Path.Combine(packCommand.OutputDirectory, $"{packageBuilder.Id}{PackageExtension}");
+            using FileStream stream = File.Open(outputPath, FileMode.OpenOrCreate);
+            packageBuilder.Save(stream);
+
+            packCommand.Logger?.LogInformation(PackagingStrings.PackSuccess, outputPath);
+
+            return true;
+        }
+
+        private static string? SavePlcLibrary(IPackCommand packCommand)
+        {
+            string libraryPath = string.Empty;
 
             Task<string>? getSolutionTask = null;
             if (string.IsNullOrEmpty(packCommand.Solution))
@@ -61,15 +109,21 @@ namespace TwinGet.Core.Packaging
                 if (string.IsNullOrEmpty(packCommand.Solution))
                 {
                     packCommand.Solution = await getSolutionTask;
+                    if (string.IsNullOrEmpty(packCommand.Solution))
+                    {
+                        packCommand.Logger?.LogError(PackagingErrors.FailedToResolveSolutionFile, packCommand.Path);
+                        return;
+                    }
                 }
 
                 try
                 {
-                    plcProject = ai.SavePlcProject(packCommand.Path, packCommand.OutputDirectory, packCommand.Solution);
+                    packCommand.Logger?.LogInformation(PackagingStrings.SavingPlcLibrary, packCommand.Path);
+                    libraryPath = ai.SavePlcProject(packCommand.Path, packCommand.OutputDirectory, packCommand.Solution);
                 }
                 catch (Exception ex)
                 {
-                    packCommand.Logger?.LogError(ex.Message);
+                    packCommand.Logger?.LogError(PackagingErrors.FailedToSavePlcLibrary, packCommand.Path, ex.Message);
                 }
 
             });
@@ -77,40 +131,7 @@ namespace TwinGet.Core.Packaging
             thread.Start();
             thread.Join();
 
-            if (string.IsNullOrEmpty(plcProject))
-            {
-                throw new PackagingException($"Failed to save the {packCommand.Path} as library.");
-            }
-
-            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(packCommand.Path);
-
-            ManifestMetadata metadata = new()
-            {
-                Authors = new List<string>() { plcProjectData.PropertyGroup.Author ?? string.Empty },
-                Version = new NuGetVersion(plcProjectData.PropertyGroup.ProjectVersion ?? string.Empty),
-                Id = plcProjectData.PropertyGroup.Title,
-                Description = plcProjectData.PropertyGroup.Description,
-            };
-
-            var files = new List<ManifestFile>()
-            {
-                new() { Source = plcProject, Target = "lib" }
-            };
-
-            if (!Directory.Exists(packCommand.OutputDirectory))
-            {
-                Directory.CreateDirectory(packCommand.OutputDirectory);
-            }
-
-            var packageBuilder = new PackageBuilder();
-            packageBuilder.Populate(metadata);
-            packageBuilder.PopulateFiles(string.Empty, files);
-
-            string packageFile = Path.Combine(packCommand.OutputDirectory, $"{packageBuilder.Id}{PackageExtension}");
-            using FileStream stream = File.Open(packageFile, FileMode.OpenOrCreate);
-            packageBuilder.Save(stream);
-
-            return true;
+            return libraryPath;
         }
 
         private static async Task<string> GetParentSolutionFileAsync(string plcProjectPath)
