@@ -272,7 +272,7 @@ namespace TwinGet.TwincatInterface.Utils
         /// </summary>
         /// <param name="plcProjectPath">The path to the PLC project file.</param>
         /// <param name="solutionPath">The path to the solution file.</param>
-        /// <returns></returns>
+        /// <returns>True if the PLC project belong to the solution, meaning the GUID and the path information match. Otherwise false.</returns>
         public static bool PlcProjectBelongToSolution(string plcProjectPath, string solutionPath)
         {
             ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
@@ -297,7 +297,15 @@ namespace TwinGet.TwincatInterface.Utils
                 try
                 {
                     tcProject = DeserializeXmlFileToProjectData<TcSmProjectData>(project.AbsolutePath);
-                    if (tcProject is null)
+
+                    static bool doesNotHavePlcProject(TcSmProjectData tcProject)
+                    {
+                        return tcProject.Project.Plc is null
+                            || tcProject.Project.Plc?.Projects is null
+                            || tcProject.Project.Plc?.Projects.Count == 0;
+                    }
+
+                    if (tcProject is null || doesNotHavePlcProject(tcProject))
                     {
                         continue;
                     }
@@ -305,12 +313,15 @@ namespace TwinGet.TwincatInterface.Utils
                 catch { continue; }
 
                 // We process through each PLC project the TwinCAT project contains.
-                foreach (TwingetProjectElement plcProject in tcProject.Project.Plc.Projects)
+                foreach (TwingetProjectElement plcProject in tcProject.Project.Plc?.Projects)
                 {
                     string candidatePath = Path.Combine(Path.GetDirectoryName(project.AbsolutePath) ?? "", plcProject.PrjFilePath);
                     PlcProjectData candidate = DeserializeXmlFileToProjectData<PlcProjectData>(candidatePath);
 
-                    if (plcProjectData.PropertyGroup.ProjectGuid.Equals(candidate.PropertyGroup.ProjectGuid, StringComparison.OrdinalIgnoreCase))
+                    bool isCorrectGuid = plcProjectData.PropertyGroup.ProjectGuid.Equals(candidate.PropertyGroup.ProjectGuid, StringComparison.OrdinalIgnoreCase);
+                    bool isCorrectPath = candidatePath.Equals(plcProjectPath, StringComparison.OrdinalIgnoreCase);
+
+                    if (isCorrectGuid && isCorrectPath)
                     {
                         return true;
                     }

@@ -263,7 +263,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
         }
 
         [Fact]
-        public void PlcProjectBelongToSolution_ShouldWork()
+        public void PlcProjectBelongToSolution_WithRelatedFiles_ShouldBeTrue()
         {
             // Arrange
             using TestProject testProject = new();
@@ -275,6 +275,22 @@ namespace TwinGet.TwincatInterface.Test.Utils
 
             // Assert
             actual.Should().BeTrue();
+        }
+
+        [Fact]
+        public void PlcProjectBelongToSolution_WithUnrelatedFiles_ShouldBeFalse()
+        {
+            // Arrange
+            using TestProject testProject1 = new();
+            using TestProject testProject2 = new();
+            TestTwincatProject? testTcProject = testProject1.TwincatProjects[0];
+            TestPlcProject? testPlcProject = testTcProject.PlcProjects[0];
+
+            // Act
+            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.AbsolutePath, testProject2.SolutionPath);
+
+            // Assert
+            actual.Should().BeFalse();
         }
 
         [Theory]
