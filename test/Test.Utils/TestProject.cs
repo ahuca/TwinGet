@@ -11,23 +11,27 @@ namespace Test.Utils
     /// </summary>
     internal class TestProject : IDisposable
     {
+        private TestDirectory _testDirectory;
         private bool _disposedValue;
         private readonly List<TestTwincatProject> _twincatProjects = [];
-        public string RootPath { get; private set; }
+        public string RootPath { get => _testDirectory.Path; }
         public string SolutionPath { get; }
         public SolutionFile SolutionFile { get; }
         public IReadOnlyList<TestTwincatProject> TwincatProjects { get => _twincatProjects; }
 
         public TestProject()
         {
-            RootPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(RootPath);
+            _testDirectory = TestDirectory.Create();
 
             TwinGet.Utils.IO.Directory.CopyDirectory(
-    TestTwincatProjectConstants.s_testTwincatProject,
-    RootPath, FileShare.Read).Wait();
+                TestTwincatProjectConstants.s_testTwincatProject,
+                RootPath,
+                FileShare.Read).Wait();
 
-            SolutionPath = Directory.EnumerateFiles(RootPath, "*.sln", SearchOption.AllDirectories).First();
+            SolutionPath = Directory.EnumerateFiles(
+                RootPath,
+                "*.sln",
+                SearchOption.AllDirectories).First();
 
             SolutionFile = SolutionFile.Parse(SolutionPath);
 

@@ -1,6 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 using FluentAssertions;
-using Xunit;
 
 namespace Test.Utils
 {
