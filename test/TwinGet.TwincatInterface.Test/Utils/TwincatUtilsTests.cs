@@ -202,7 +202,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
         }
 
         [Fact]
-        public async void GetParentTwincatProjectFileAsync_ShouldSucceed()
+        public async void GetParentTwincatProjectFileAsync_ShouldSucceedAsync()
         {
             // Arrange
             using TestProject testProject = new();
@@ -247,7 +247,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
         }
 
         [Fact]
-        public async void GetParentSolutionFileAsync_ShouldSucceed()
+        public async void GetParentSolutionFileAsync_ShouldSucceedAsync()
         {
             // Arrange
             using TestProject testProject = new();
@@ -343,14 +343,14 @@ namespace TwinGet.TwincatInterface.Test.Utils
 
         [Theory]
         [MemberData(nameof(TestData.TwincatProjectFiles), MemberType = typeof(TestData))]
-        public async void DeserializeXmlFileToProjectDataAsync_WithValidTwincatProjectFile_ShouldSucceed(string xmlContent, Dictionary<string, string> expectedProperties, List<string> plcProjectNames)
+        public async void DeserializeXmlFileToProjectDataAsync_WithValidTwincatProjectFile_ShouldSucceedAsync(string xmlContent, Dictionary<string, string> expectedProperties, List<string> plcProjectNames)
         {
             // Arrange
             var projectFile = Path.GetTempFileName();
             File.WriteAllText(projectFile, xmlContent);
 
             // Act
-            TcSmProjectData tcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<TcSmProjectData>(projectFile);
+            TcSmProjectData tcProjectData = await TwincatUtils.DeserializeXmlFileToProjectDataAsync<TcSmProjectData>(projectFile);
 
             // Assert
             tcProjectData.Should().NotBeNull();

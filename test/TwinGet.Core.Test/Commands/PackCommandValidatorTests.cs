@@ -33,7 +33,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task ShouldHaveError_WhenPathDoesNotExist()
+        public async Task ShouldHaveError_WhenPathDoesNotExistAsync()
         {
             _command.Path = "foo.plcproj";
             var result = await _sut.TestValidateAsync(_command);
@@ -43,7 +43,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task ShouldHaveError_WhenSolutionIsProvidedAndDoesNotExist()
+        public async Task ShouldHaveError_WhenSolutionIsProvidedAndDoesNotExistAsync()
         {
             using TestProject testProject2 = new();
 
@@ -60,7 +60,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task ShouldHaveError_WhenPlcProjectDoesNotBelongToSolution()
+        public async Task ShouldHaveError_WhenPlcProjectDoesNotBelongToSolutionAsync()
         {
             using TestProject testProject2 = new();
 

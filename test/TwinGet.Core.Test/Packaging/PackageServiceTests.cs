@@ -48,7 +48,7 @@ namespace TwinGet.Core.Test.Packaging
 
         [Theory]
         [MemberData(nameof(TestData.PackAsyncData), MemberType = typeof(TestData))]
-        internal async void PackAsync_WithValidParameters_ShouldSucceed(PackCommandConfig config)
+        internal async void PackAsync_WithValidParameters_ShouldSucceedAsync(PackCommandConfig config)
         {
             // Arange
             var testPlcProject = _testProject.GetPlcProjects().First();
@@ -70,7 +70,7 @@ namespace TwinGet.Core.Test.Packaging
         }
 
         [Fact]
-        public async void PackAsync_WithNoPath_ShouldThrow()
+        public async void PackAsync_WithNoPath_ShouldThrowAsync()
         {
             // Arrange
             var packCommand = new PackCommand()
@@ -88,7 +88,7 @@ namespace TwinGet.Core.Test.Packaging
         }
 
         [Fact]
-        public async void PackAsync_WithNoOutputDirectory_ShouldThrow()
+        public async void PackAsync_WithNoOutputDirectory_ShouldThrowAsync()
         {
             // Arrange
             var testPlcProject = _testProject.GetPlcProjects().First();

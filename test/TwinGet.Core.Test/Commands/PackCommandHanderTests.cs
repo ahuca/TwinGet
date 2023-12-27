@@ -42,7 +42,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task Handle_ShouldDeletegateToPackageService()
+        public async Task Handle_ShouldDeletegateToPackageServiceAsync()
         {
             // Act
             await _sut.Handle(_command, default);
@@ -52,7 +52,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task Handle_WithRelativePath_ShouldGetFullPath()
+        public async Task Handle_WithRelativePath_ShouldGetFullPathAsync()
         {
             // Arrange
             var testPlcProject = _testProject.GetPlcProjects().First();
@@ -69,7 +69,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task Handle_WithRelativeSolutionPath_ShouldGetFullPath()
+        public async Task Handle_WithRelativeSolutionPath_ShouldGetFullPathAsync()
         {
             // Arrange
             _command.Solution = Path.GetRelativePath(Directory.GetCurrentDirectory(), _testProject.SolutionPath);
@@ -85,7 +85,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task Handle_WithNoOutputDirectory_ShouldSetToCurrentDirectory()
+        public async Task Handle_WithNoOutputDirectory_ShouldSetToCurrentDirectoryAsync()
         {
             // Arrange
             _command.OutputDirectory = string.Empty;
@@ -98,7 +98,7 @@ namespace TwinGet.Core.Test.Commands
         }
 
         [Fact]
-        public async Task Handle_WithRelativeOutputDirectoryPath_ShouldGetFullPath()
+        public async Task Handle_WithRelativeOutputDirectoryPath_ShouldGetFullPathAsync()
         {
             // Arrange
             _command.OutputDirectory = Path.GetRelativePath(Directory.GetCurrentDirectory(), _testProject.RootPath);
