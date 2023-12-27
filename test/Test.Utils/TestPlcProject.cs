@@ -17,14 +17,14 @@ namespace Test.Utils
         public string Title { get => _data.PropertyGroup.Title; }
         public string? ProjectVersion { get => _data.PropertyGroup.ProjectVersion; }
         public string ProjectGuid { get => _data.PropertyGroup.ProjectGuid; }
-        public string FilePath { get; }
+        public string AbsolutePath { get; }
         public bool IsManagedLibrary { get => TwincatUtils.IsManagedLibrary(this); }
 
         public TestPlcProject(string path)
         {
-            FilePath = Path.GetFullPath(path);
+            AbsolutePath = Path.GetFullPath(path);
 
-            string xmlContent = File.ReadAllText(FilePath);
+            string xmlContent = File.ReadAllText(AbsolutePath);
             XmlSerializer serializer = new(typeof(PlcProjectData));
 
             using (StringReader reader = new(xmlContent))

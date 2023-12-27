@@ -14,6 +14,7 @@ namespace TwinGet.TwincatInterface
         private readonly ITcSysManagerAlias _systemManager;
         private readonly List<PlcProject> _plcProjects;
         public IReadOnlyList<IPlcProject> PlcProjects { get => _plcProjects; }
+        public string AbsolutePath { get => FullName; }
 
         public TwincatProject(EnvDTE.Project project)
         {
@@ -97,5 +98,6 @@ namespace TwinGet.TwincatInterface
         public ProjectItem ParentProjectItem => _project.ParentProjectItem;
 
         public CodeModel CodeModel => _project.CodeModel;
+
     }
 }

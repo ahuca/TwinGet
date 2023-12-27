@@ -37,6 +37,6 @@ namespace TwinGet.TwincatInterface
         /// <summary>
         /// The absolute path to the corresponding <c>.plcproj</c>.
         /// </summary>
-        public string FilePath { get; }
+        public string AbsolutePath { get; }
     }
 }

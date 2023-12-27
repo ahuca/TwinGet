@@ -29,7 +29,7 @@ namespace TwinGet.TwincatInterface.Test
         {
             using AutomationInterface sut = new();
 
-            TwincatConstants.SupportedProgIds.Should().Contain(sut.ProgId);
+            SupportedProgIds.Should().Contain(sut.ProgId);
         }
 
 
@@ -69,31 +69,6 @@ namespace TwinGet.TwincatInterface.Test
         }
 
         [StaFact]
-        public void SavePlcProjectsAsLibraries_ShouldSucceed()
-        {
-            using TestProject testProject = new();
-            _output.WriteLine(testProject.RootPath);
-            using AutomationInterface sut = new();
-
-            sut.LoadSolution(testProject.SolutionPath);
-
-            foreach (TwincatProject twincatProject in sut.TwincatProjects)
-            {
-                foreach (PlcProject plcProject in twincatProject.PlcProjects)
-                {
-                    if (plcProject.IsManagedLibrary)
-                    {
-                        string libraryFile = Path.Join(Path.GetDirectoryName(plcProject.FilePath), $"{plcProject.Title}.library");
-
-                        _output.WriteLine(libraryFile);
-                        plcProject.SaveAsLibrary(libraryFile);
-                        File.Exists(libraryFile).Should().BeTrue();
-                    }
-                }
-            }
-        }
-
-        [StaFact]
         public void GetPlcProjects_WithASolutionOpened_ShouldGetAll()
         {
             using TestProject testProject = new();
@@ -102,15 +77,33 @@ namespace TwinGet.TwincatInterface.Test
 
             sut.LoadSolution(testProject.SolutionPath);
 
-            IEnumerable<string> expected = testProject.TwincatProjects.SelectMany(t => t.PlcProjects).Select(p => p.FilePath);
+            IEnumerable<string> expected = testProject.TwincatProjects.SelectMany(t => t.PlcProjects).Select(p => p.AbsolutePath);
 
-            IEnumerable<string> actual = sut.GetPlcProjects().Select(p => p.FilePath);
+            IEnumerable<string> actual = sut.GetPlcProjects().Select(p => p.AbsolutePath);
 
+            expected.Should().NotBeNullOrEmpty(); // Make sure the test project has PLC projects.
             actual.Should().BeEquivalentTo(expected);
         }
 
         [StaFact]
-        public void SavePlcProject_WithProjectPathAndSolutionPath_ShouldSucceed()
+        public void TwincatProjects_ShouldBeConsistent()
+        {
+            using TestProject testProject = new();
+            _output.WriteLine(testProject.RootPath);
+            using AutomationInterface sut = new();
+
+            sut.LoadSolution(testProject.SolutionPath);
+
+            IEnumerable<string> expected = testProject.TwincatProjects.Select(p => p.AbsolutePath);
+
+            IEnumerable<string> actual = sut.TwincatProjects.Select(p => p.FullName);
+
+            expected.Should().NotBeNullOrEmpty(); // Make sure the test project has TwinCAT projects.
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [StaFact]
+        public void SavePlcProject_WithValidParams_ShouldSucceed()
         {
             // Arrange
             using TestProject testProject = new();
@@ -124,7 +117,7 @@ namespace TwinGet.TwincatInterface.Test
             string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
 
             // Act
-            var result = sut.SavePlcProject(plcProject.FilePath, outputDir, testProject.SolutionPath);
+            var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir, testProject.SolutionPath);
 
             // Assert
             File.Exists(expected).Should().BeTrue();
@@ -133,7 +126,7 @@ namespace TwinGet.TwincatInterface.Test
         }
 
         [StaFact]
-        public void SavePlcProject_WithProjectPathOnly_ShouldSucceed()
+        public void SavePlcProject_WithoutSolutionPath_ShouldSucceed()
         {
             // Arrange
             using TestProject testProject = new();
@@ -147,7 +140,7 @@ namespace TwinGet.TwincatInterface.Test
             string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
 
             // Act
-            var result = sut.SavePlcProject(plcProject.FilePath, outputDir);
+            var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir);
 
             // Assert
             File.Exists(expected).Should().BeTrue();

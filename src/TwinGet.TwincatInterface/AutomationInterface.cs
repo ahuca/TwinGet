@@ -135,7 +135,7 @@ namespace TwinGet.TwincatInterface
 
             IPlcProject plcProjectToSave = GetPlcProjects().Where(p =>
             {
-                return fullPlcProjectPath.Equals(p.FilePath, StringComparison.OrdinalIgnoreCase);
+                return fullPlcProjectPath.Equals(p.AbsolutePath, StringComparison.OrdinalIgnoreCase);
             }).First();
 
             if (plcProjectToSave is null)

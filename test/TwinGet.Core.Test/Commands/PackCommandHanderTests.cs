@@ -31,7 +31,7 @@ namespace TwinGet.Core.Test.Commands
             // Template the pack command. Test methods can still override needed properties.
             _command = new()
             {
-                Path = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First().FilePath,
+                Path = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First().AbsolutePath,
                 Solution = _testProject.SolutionPath,
                 OutputDirectory = _testProject.RootPath,
             };
@@ -56,7 +56,7 @@ namespace TwinGet.Core.Test.Commands
         {
             // Arrange
             var testPlcProject = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First();
-            _command.Path = Path.GetRelativePath(Directory.GetCurrentDirectory(), testPlcProject.FilePath);
+            _command.Path = Path.GetRelativePath(Directory.GetCurrentDirectory(), testPlcProject.AbsolutePath);
             Path.IsPathFullyQualified(_command.Path).Should().BeFalse();
             _output.WriteLine(_command.Path);
 

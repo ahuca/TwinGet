@@ -54,7 +54,7 @@ namespace TwinGet.Core.Test.Packaging
             var testPlcProject = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First();
             var packCommand = new PackCommand()
             {
-                Path = testPlcProject.FilePath,
+                Path = testPlcProject.AbsolutePath,
                 Solution = config.ProvideSolutionPath ? _testProject.SolutionPath : string.Empty,
                 OutputDirectory = _testProject.RootPath,
             };
@@ -97,7 +97,7 @@ namespace TwinGet.Core.Test.Packaging
             var testPlcProject = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First();
             var packCommand = new PackCommand()
             {
-                Path = testPlcProject.FilePath,
+                Path = testPlcProject.AbsolutePath,
                 Solution = _testProject.RootPath,
                 OutputDirectory = string.Empty,
             };

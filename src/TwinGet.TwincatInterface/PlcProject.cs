@@ -19,7 +19,7 @@ namespace TwinGet.TwincatInterface
         public string? ProjectVersion { get => _plcProjectFile.PropertyGroup.ProjectVersion; }
         public bool IsManagedLibrary { get => TwincatUtils.IsManagedLibrary(this); }
 
-        public string FilePath { get; }
+        public string AbsolutePath { get; }
 
         public PlcProject(ITcSmTreeItem treeItem, string filePath) : this(filePath)
         {
@@ -48,7 +48,7 @@ namespace TwinGet.TwincatInterface
 
             _plcProjectFile = plcProjectFile;
 
-            FilePath = filePath;
+            AbsolutePath = filePath;
         }
 
         public void PlcOpenExport(string bstrFile, string bstrSelection) => _plcProject.PlcOpenExport(bstrFile, bstrSelection);
