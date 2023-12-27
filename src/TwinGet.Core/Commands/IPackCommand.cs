@@ -4,8 +4,8 @@ namespace TwinGet.Core.Commands
 {
     public interface IPackCommand : ITwinGetCommand
     {
-        public string Path { get; set; }
-        public string Solution { get; set; }
-        public string OutputDirectory { get; set; }
+        public string Path { get; }
+        public string Solution { get; }
+        public string OutputDirectory { get; }
     }
 }

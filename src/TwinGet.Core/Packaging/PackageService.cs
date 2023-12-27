@@ -8,6 +8,7 @@ using TwinGet.TwincatInterface;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Utils;
 using static NuGet.Configuration.NuGetConstants;
+using Task = System.Threading.Tasks.Task;
 
 namespace TwinGet.Core.Packaging
 {
@@ -112,34 +113,76 @@ namespace TwinGet.Core.Packaging
 
             var thread = new Thread(async () =>
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 using AutomationInterface ai = new();
+                string resolvedSolution = packCommand.Solution;
 
-                if (string.IsNullOrEmpty(packCommand.Solution))
+                // If no solution is provided, we try to find it.
+                if (string.IsNullOrEmpty(resolvedSolution))
                 {
-                    packCommand.Solution = await getSolutionTask;
-                    if (string.IsNullOrEmpty(packCommand.Solution))
+                    await SafeExecuteAsync(
+                        async () => resolvedSolution = await getSolutionTask,
+                        packCommand.Logger);
+
+                    // If we cannot find the solution, quit early.
+                    if (string.IsNullOrEmpty(resolvedSolution))
                     {
                         packCommand.Logger?.LogError(PackagingErrors.FailedToResolveSolutionFile, packCommand.Path);
                         return;
                     }
                 }
 
-                try
-                {
-                    packCommand.Logger?.LogInformation(PackagingStrings.SavingPlcLibrary, packCommand.Path);
-                    libraryPath = ai.SavePlcProject(packCommand.Path, packCommand.OutputDirectory, packCommand.Solution);
-                }
-                catch (Exception ex)
-                {
-                    packCommand.Logger?.LogError(PackagingErrors.FailedToSavePlcLibrary, packCommand.Path, ex.Message);
-                }
+                packCommand.Logger?.LogInformation(PackagingStrings.SavingPlcLibrary, packCommand.Path);
 
+                SafeExecute(
+                    () => libraryPath = ai.SavePlcProject(
+                        packCommand.Path,
+                        packCommand.OutputDirectory,
+                        resolvedSolution),
+                    packCommand.Logger);
+
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join();
 
             return libraryPath;
+        }
+
+        private static bool SafeExecute(Action action, ILogger? logger)
+        {
+            try
+            {
+                action.Invoke();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler(logger, ex);
+            }
+
+            return false;
+        }
+
+        private static async Task<bool> SafeExecuteAsync(Func<Task> func, ILogger? logger)
+        {
+            try
+            {
+                await func();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler(logger, ex);
+            }
+
+            return false;
+        }
+
+        private static void ExceptionHandler(ILogger? logger, Exception ex)
+        {
+            logger?.LogError(ex.Message);
         }
 
         private static async Task<string> GetParentSolutionFileAsync(string plcProjectPath)
