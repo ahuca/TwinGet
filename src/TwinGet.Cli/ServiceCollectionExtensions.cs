@@ -11,12 +11,12 @@ namespace TwinGet.Cli
     {
         public static IServiceCollection AddLogger(this IServiceCollection services)
         {
-            string appsettingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "appsettings.json");
-
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddJsonFile(
-                appsettingsPath,
-                optional: false,
-                reloadOnChange: true);
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile(
+                    "appsettings.json",
+                    optional: false,
+                    reloadOnChange: true);
 
             IConfigurationRoot config = configurationBuilder.Build();
 
