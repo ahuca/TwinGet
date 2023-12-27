@@ -102,7 +102,7 @@ namespace TwinGet.TwincatInterface.Test
 
             sut.LoadSolution(testProject.SolutionPath);
 
-            IEnumerable<string> expected = testProject.TwincatProjects.SelectMany(t => t.PlcProjects).Select(p => p.AbsolutePath);
+            IEnumerable<string> expected = testProject.TwincatProjects.SelectMany(t => t.PlcProjects).Select(p => p.FilePath);
 
             IEnumerable<string> actual = sut.GetPlcProjects().Select(p => p.FilePath);
 
@@ -124,7 +124,7 @@ namespace TwinGet.TwincatInterface.Test
             string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
 
             // Act
-            var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir, testProject.SolutionPath);
+            var result = sut.SavePlcProject(plcProject.FilePath, outputDir, testProject.SolutionPath);
 
             // Assert
             File.Exists(expected).Should().BeTrue();
@@ -147,7 +147,7 @@ namespace TwinGet.TwincatInterface.Test
             string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
 
             // Act
-            var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir);
+            var result = sut.SavePlcProject(plcProject.FilePath, outputDir);
 
             // Assert
             File.Exists(expected).Should().BeTrue();

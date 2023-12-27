@@ -17,7 +17,7 @@ namespace TwinGet.TwincatInterface
         public string? Company { get => _plcProjectFile.PropertyGroup.Company; }
         public string? Title { get => _plcProjectFile.PropertyGroup.Title; }
         public string? ProjectVersion { get => _plcProjectFile.PropertyGroup.ProjectVersion; }
-        public bool IsManagedLibrary;
+        public bool IsManagedLibrary { get => TwincatUtils.IsManagedLibrary(this); }
 
         public string FilePath { get; }
 

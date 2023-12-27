@@ -1,25 +1,30 @@
 ﻿// This file is licensed to you under MIT license.
 
 using System.Xml.Serialization;
+using TwinGet.TwincatInterface;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Exceptions;
+using TwinGet.TwincatInterface.Utils;
 
 namespace Test.Utils
 {
-    internal class TestPlcProject
+    internal class TestPlcProject : IPlcProjectMetadata
     {
         private readonly PlcProjectData _data;
 
-        public string Title { get => _data.PropertyGroup.Title; }
         public string Name { get => _data.PropertyGroup.Name; }
-        public string GUID { get => _data.PropertyGroup.ProjectGuid; }
-        public string AbsolutePath { get; }
+        public string? Company { get => _data.PropertyGroup.Company; }
+        public string Title { get => _data.PropertyGroup.Title; }
+        public string? ProjectVersion { get => _data.PropertyGroup.ProjectVersion; }
+        public string ProjectGuid { get => _data.PropertyGroup.ProjectGuid; }
+        public string FilePath { get; }
+        public bool IsManagedLibrary { get => TwincatUtils.IsManagedLibrary(this); }
 
         public TestPlcProject(string path)
         {
-            AbsolutePath = Path.GetFullPath(path);
+            FilePath = Path.GetFullPath(path);
 
-            string xmlContent = File.ReadAllText(AbsolutePath);
+            string xmlContent = File.ReadAllText(FilePath);
             XmlSerializer serializer = new(typeof(PlcProjectData));
 
             using (StringReader reader = new(xmlContent))

@@ -25,7 +25,7 @@ namespace Test.Utils
                 {
                     plcProject.Should().NotBeNull();
                     plcProject.Name.Should().NotBeNullOrEmpty();
-                    plcProject.AbsolutePath.Should().NotBeNullOrEmpty();
+                    plcProject.FilePath.Should().NotBeNullOrEmpty();
                 }
             }
         }

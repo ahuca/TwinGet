@@ -194,7 +194,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
             string expected = testTcProject.AbsolutePath;
 
             // Act
-            string actual = TwincatUtils.GetParentTwincatProjectFile(testPlcProject.AbsolutePath);
+            string actual = TwincatUtils.GetParentTwincatProjectFile(testPlcProject.FilePath);
 
             // Assert
             expected.Should().NotBeNullOrEmpty();
@@ -223,7 +223,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
             string expected = testTcProject.AbsolutePath;
 
             // Act
-            string actual = await TwincatUtils.GetParentTwincatProjectFileAsync(testPlcProject.AbsolutePath);
+            string actual = await TwincatUtils.GetParentTwincatProjectFileAsync(testPlcProject.FilePath);
 
             // Assert
             expected.Should().NotBeNullOrEmpty();
@@ -271,7 +271,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
             TestPlcProject? testPlcProject = testTcProject.PlcProjects[0];
 
             // Act
-            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.AbsolutePath, testProject.SolutionPath);
+            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.FilePath, testProject.SolutionPath);
 
             // Assert
             actual.Should().BeTrue();
@@ -287,7 +287,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
             TestPlcProject? testPlcProject = testTcProject.PlcProjects[0];
 
             // Act
-            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.AbsolutePath, testProject2.SolutionPath);
+            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.FilePath, testProject2.SolutionPath);
 
             // Assert
             actual.Should().BeFalse();

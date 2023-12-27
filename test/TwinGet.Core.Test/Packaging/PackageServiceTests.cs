@@ -51,10 +51,10 @@ namespace TwinGet.Core.Test.Packaging
         internal async void PackAsync_WithValidParameters_ShouldSucceedAsync(PackCommandConfig config)
         {
             // Arange
-            var testPlcProject = _testProject.GetPlcProjects().First();
+            var testPlcProject = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First();
             var packCommand = new PackCommand()
             {
-                Path = testPlcProject.AbsolutePath,
+                Path = testPlcProject.FilePath,
                 Solution = config.ProvideSolutionPath ? _testProject.SolutionPath : string.Empty,
                 OutputDirectory = _testProject.RootPath,
             };
@@ -64,7 +64,10 @@ namespace TwinGet.Core.Test.Packaging
             var result = await _sut.PackAsync(packCommand);
 
             // Assert
-            var exists = Directory.EnumerateFiles(packCommand.OutputDirectory, $"{plcProjectData.PropertyGroup.Title}*{NuGetConstants.PackageExtension}", SearchOption.TopDirectoryOnly).Any();
+            var exists = Directory.EnumerateFiles(
+                packCommand.OutputDirectory,
+                $"{plcProjectData.PropertyGroup.Title}*{NuGetConstants.PackageExtension}",
+                SearchOption.TopDirectoryOnly).Any();
             result.Should().BeTrue();
             exists.Should().BeTrue();
         }
@@ -91,10 +94,10 @@ namespace TwinGet.Core.Test.Packaging
         public async void PackAsync_WithNoOutputDirectory_ShouldThrowAsync()
         {
             // Arrange
-            var testPlcProject = _testProject.GetPlcProjects().First();
+            var testPlcProject = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First();
             var packCommand = new PackCommand()
             {
-                Path = testPlcProject.AbsolutePath,
+                Path = testPlcProject.FilePath,
                 Solution = _testProject.RootPath,
                 OutputDirectory = string.Empty,
             };

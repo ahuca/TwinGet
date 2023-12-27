@@ -356,5 +356,13 @@ namespace TwinGet.TwincatInterface.Utils
 
             return TwincatConstants.PlcProjectExtension.Equals(fileExtension, StringComparison.OrdinalIgnoreCase);
         }
+
+        public static bool IsManagedLibrary(IPlcProjectMetadata projectMetadata)
+        {
+            ArgumentNullException.ThrowIfNull(projectMetadata, nameof(projectMetadata));
+            return !string.IsNullOrEmpty(projectMetadata.Company)
+                && !string.IsNullOrEmpty(projectMetadata.Title)
+                && !string.IsNullOrEmpty(projectMetadata.ProjectVersion);
+        }
     }
 }
