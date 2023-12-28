@@ -68,10 +68,12 @@ public class PackCommand : Command
             catch (PackagingException ex)
             {
                 Logger?.LogError(ex.AsLogMessage());
+                return 1;
             }
             catch (Exception ex)
             {
                 Logger?.LogError(ex.Message);
+                return 1;
             }
 
             return 0;

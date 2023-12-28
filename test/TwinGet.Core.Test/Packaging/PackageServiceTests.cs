@@ -51,7 +51,7 @@ namespace TwinGet.Core.Test.Packaging
         internal async void PackAsync_WithValidParameters_ShouldSucceedAsync(PackCommandConfig config)
         {
             // Arange
-            var testPlcProject = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First();
+            var testPlcProject = _testProject.GetManagedPlcProjects().First();
             var packCommand = new PackCommand()
             {
                 Path = testPlcProject.AbsolutePath,
@@ -94,7 +94,7 @@ namespace TwinGet.Core.Test.Packaging
         public async void PackAsync_WithNoOutputDirectory_ShouldThrowAsync()
         {
             // Arrange
-            var testPlcProject = _testProject.GetPlcProjects().Where(x => x.IsManagedLibrary).First();
+            var testPlcProject = _testProject.GetManagedPlcProjects().First();
             var packCommand = new PackCommand()
             {
                 Path = testPlcProject.AbsolutePath,

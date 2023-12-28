@@ -33,4 +33,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Test.Utils"/>
+  </ItemGroup>
+
 </Project>

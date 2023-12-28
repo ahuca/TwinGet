@@ -47,6 +47,11 @@ namespace Test.Utils
             return TwincatProjects.SelectMany(t => t.PlcProjects);
         }
 
+        public IEnumerable<TestPlcProject> GetManagedPlcProjects()
+        {
+            return TwincatProjects.SelectMany(t => t.PlcProjects).Where(p => p.IsManagedLibrary);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)

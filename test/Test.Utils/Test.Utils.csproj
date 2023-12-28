@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <Description>Provides utilities for test projects.</Description>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestTwincatProject\TestNonTwincatProject1\**</DefaultItemExcludes>
+    <TwingetExePath>$(SolutionDir)src\TwinGet.Cli\bin\$(Configuration)\$(TargetFramework)\TwinGet.exe</TwingetExePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +26,16 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TwinGet.Cli\TwinGet.Cli.csproj" />
     <ProjectReference Include="..\..\src\TwinGet.TwincatInterface\TwinGet.TwincatInterface.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y $(TwingetExePath) $(TargetDir)" />
+  </Target>
+
+  <Target Name="CleanUp" BeforeTargets="Clean">
+    <Delete Files="$(TargetDir)TwinGet.exe" />
+  </Target>
 
 </Project>
