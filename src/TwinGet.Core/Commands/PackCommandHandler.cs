@@ -17,6 +17,13 @@ namespace TwinGet.Core.Commands
         private readonly IPackageService _packageService =
             packageService ?? throw new ArgumentNullException(nameof(packageService));
 
+        /// <summary>
+        /// Handles <see cref="PackCommand"/>.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>True if successful, false otherwise.</returns>
+        /// <exception cref="PackagingException"></exception>
         public async Task<bool> Handle(PackCommand request, CancellationToken cancellationToken)
         {
             FluentValidation.Results.ValidationResult result = await _validator.ValidateAsync(

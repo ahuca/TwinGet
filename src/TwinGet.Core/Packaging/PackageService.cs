@@ -55,7 +55,11 @@ namespace TwinGet.Core.Packaging
 
             if (string.IsNullOrEmpty(plcLibrary))
             {
-                throw new PackagingException($"Failed to save the {packCommand.Path} as library.");
+                packCommand.Logger?.LogError(
+                    PackagingErrors.FailedToSavePlcLibrary,
+                    packCommand.Path
+                );
+                return false;
             }
 
             bool result = BuildPackage(packCommand, plcLibrary);
@@ -157,15 +161,18 @@ namespace TwinGet.Core.Packaging
                     packCommand.Path
                 );
 
-                SafeExecute(
-                    () =>
-                        libraryPath = ai.SavePlcProject(
-                            packCommand.Path,
-                            packCommand.OutputDirectory,
-                            resolvedSolution
-                        ),
-                    packCommand.Logger
-                );
+                lock (libraryPath) // Just in case.
+                {
+                    SafeExecute(
+                        () =>
+                            libraryPath = ai.SavePlcProject(
+                                packCommand.Path,
+                                packCommand.OutputDirectory,
+                                resolvedSolution
+                            ),
+                        packCommand.Logger
+                    );
+                }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             });

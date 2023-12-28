@@ -3,7 +3,11 @@ param (
     [Parameter()]
     [string]
     [ValidateSet("Release", "Debug")]
-    $Configuration = "Debug"
+    $Configuration = "Debug",
+    
+    [Parameter()]
+    [switch]
+    $NoRestore
 )
 
 . "$PSScriptRoot\common.ps1"
@@ -18,5 +22,8 @@ $null = Test-Path $msBuildPath -ErrorAction Stop
 
 $solution = Join-Path -Path $PSScriptRoot -ChildPath 'TwinGet.sln'
 
-dotnet restore $solution
+if (-not $NoRestore) {
+    dotnet restore $solution
+}
+
 & $msBuildPath $solution -p:Configuration=$Configuration

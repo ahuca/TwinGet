@@ -53,6 +53,15 @@ namespace TwinGet.Cli.FuncTest.Commands
 
             // Assert
             result.ExitCode.Should().NotBe(0);
+            result.AllOuput.Should().Contain("The specified library is not a managed library.");
+            result
+                .AllOuput.Should()
+                .Contain(
+                    PackagingErrors.FailedToSavePlcLibrary.Replace(
+                        "{Path}",
+                        testPlcProject.AbsolutePath
+                    )
+                );
         }
 
         internal CommandRunnerResult RunPack(params string[] args)

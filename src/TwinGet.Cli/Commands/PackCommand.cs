@@ -63,9 +63,11 @@ public class PackCommand : Command
         )]
         public async Task<int> InvokeAsync(InvocationContext context)
         {
+            bool packOk = false;
+
             try
             {
-                await _mediator.Send(
+                packOk = await _mediator.Send(
                     new Core.Commands.PackCommand
                     {
                         Logger = this.Logger,
@@ -86,7 +88,7 @@ public class PackCommand : Command
                 return 1;
             }
 
-            return 0;
+            return packOk ? 0 : 1;
         }
     }
 }
