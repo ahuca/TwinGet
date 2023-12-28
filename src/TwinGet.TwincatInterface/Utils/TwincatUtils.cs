@@ -44,7 +44,7 @@ namespace TwinGet.TwincatInterface.Utils
             T? projectData =
                 TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile<T>(filePath)
                 ?? throw new InvalidProjectFileFormat(
-                    "The format of the TwinCAT project file is invalid.",
+                    ErrorStrings.InvalidProjectFileFormat,
                     filePath
                 );
 
@@ -64,7 +64,7 @@ namespace TwinGet.TwincatInterface.Utils
             T? projectData =
                 await TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFileAsync<T>(filePath)
                 ?? throw new InvalidProjectFileFormat(
-                    "The format of the TwinCAT project file is invalid.",
+                    ErrorStrings.InvalidProjectFileFormat,
                     filePath
                 );
 
@@ -80,77 +80,9 @@ namespace TwinGet.TwincatInterface.Utils
         /// <exception cref="FileNotFoundException"></exception>
         public static string GetParentTwincatProjectFile(string plcProjectPath, int upwardDepth = 5)
         {
-            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
-
-            if (!File.Exists(plcProjectPath))
-            {
-                throw new FileNotFoundException(
-                    $"Provided plc project file path does not exists.",
-                    plcProjectPath
-                );
-            }
-
-            // We first try to parse the plcproj file and throw if necessary.
-            PlcProjectData? plcProjectData = DeserializeXmlFileToProjectData<PlcProjectData>(
-                plcProjectPath
-            );
-
-            /// We recursively look up TwinCAT project files in parent folders with a depth of <param name="upwardDepth"/param>.
-            string parent = plcProjectPath;
-            for (int i = 0; i < upwardDepth - 1; i++)
-            {
-                parent = Directory.GetParent(parent)?.FullName ?? string.Empty;
-
-                if (string.IsNullOrEmpty(parent))
-                {
-                    // If we can't even get the first parent, we return.
-                    return string.Empty;
-                }
-
-                // We process each TwinCAT project file we found.
-                var candidates = Directory
-                    .EnumerateFiles(
-                        parent,
-                        $"*{TwincatConstants.TwincatProjectWildcardExtension}",
-                        SearchOption.TopDirectoryOnly
-                    )
-                    .Where(IsTwincatProjectFileExtension);
-
-                foreach (string candidate in candidates)
-                {
-                    TcSmProjectData? tcSmProject =
-                        TwinGet.Utils.Xml.XmlSerializer.TryDeserializeXmlFile<TcSmProjectData>(
-                            candidate
-                        );
-
-                    if (tcSmProject is null)
-                    {
-                        continue;
-                    }
-
-                    // We process each PLC project the TwinCAT project has.
-                    foreach (
-                        TwingetProjectElement plcProjectCandidate in tcSmProject
-                            .Project
-                            .Plc
-                            .Projects
-                    )
-                    {
-                        // Using GUID, if we find ourselves in the TwinCAT project candidate, we return the candidate.
-                        if (
-                            plcProjectCandidate.GUID.Equals(
-                                plcProjectData.PropertyGroup.ProjectGuid,
-                                StringComparison.OrdinalIgnoreCase
-                            )
-                        )
-                        {
-                            return candidate;
-                        }
-                    }
-                }
-            }
-
-            return string.Empty;
+            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath);
+            PlcProjectFileHelper helper = new(plcProjectPath);
+            return helper.GetParentTwincatProjectAsync(upwardDepth).Result;
         }
 
         /// <summary>
@@ -165,58 +97,9 @@ namespace TwinGet.TwincatInterface.Utils
             int upwardDepth = 5
         )
         {
-            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
-            if (!IsPlcProjectFileExtension(plcProjectPath))
-            {
-                return string.Empty;
-            }
-
-            if (!File.Exists(plcProjectPath))
-            {
-                throw new FileNotFoundException(
-                    $"Provided plc project file path does not exists.",
-                    plcProjectPath
-                );
-            }
-
-            Task<string> getPlcProjectGuidTask = new PlcProjectFileHelper(
-                plcProjectPath
-            ).GetProjectGuidAsync();
-
-            /// We recursively look up TwinCAT project files in parent folders with a depth of <param name="upwardDepth"/param>.
-            string parent = plcProjectPath;
-            for (int i = 0; i < upwardDepth - 1; i++)
-            {
-                parent = Directory.GetParent(parent)?.FullName ?? string.Empty;
-
-                if (string.IsNullOrEmpty(parent))
-                {
-                    // If we can't even get the first parent, we return.
-                    return string.Empty;
-                }
-
-                var candidates = Directory
-                    .EnumerateFiles(
-                        parent,
-                        $"*{TwincatConstants.TwincatProjectWildcardExtension}",
-                        SearchOption.TopDirectoryOnly
-                    )
-                    .Where(IsTwincatProjectFileExtension);
-
-                foreach (var candidate in candidates)
-                {
-                    var tcSmFileHelper = new TcSmProjectFileHelper(candidate);
-
-                    var plcGuid = await getPlcProjectGuidTask;
-
-                    if (await tcSmFileHelper.HasPlcProject(plcGuid))
-                    {
-                        return candidate;
-                    }
-                }
-            }
-
-            return string.Empty;
+            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath);
+            PlcProjectFileHelper helper = new(plcProjectPath);
+            return await helper.GetParentTwincatProjectAsync(upwardDepth);
         }
 
         /// <summary>

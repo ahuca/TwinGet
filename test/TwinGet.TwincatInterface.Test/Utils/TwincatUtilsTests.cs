@@ -196,7 +196,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
 
             // Assert
             expected.Should().NotBeNullOrEmpty();
-            expected.Should().Be(actual);
+            actual.Should().Be(expected);
         }
 
         [Fact]
@@ -227,7 +227,7 @@ namespace TwinGet.TwincatInterface.Test.Utils
 
             // Assert
             expected.Should().NotBeNullOrEmpty();
-            expected.Should().Be(actual);
+            actual.Should().Be(expected);
         }
 
         [Fact]
