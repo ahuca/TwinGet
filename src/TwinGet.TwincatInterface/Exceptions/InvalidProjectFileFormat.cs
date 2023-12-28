@@ -7,19 +7,16 @@ namespace TwinGet.TwincatInterface.Exceptions
     {
         public string? Path { get; }
 
-        public InvalidProjectFileFormat()
-        {
-        }
+        public InvalidProjectFileFormat() { }
 
-        public InvalidProjectFileFormat(string message) : base(message)
-        {
-        }
+        public InvalidProjectFileFormat(string message)
+            : base(message) { }
 
-        public InvalidProjectFileFormat(string message, Exception inner) : base(message, inner)
-        {
-        }
+        public InvalidProjectFileFormat(string message, Exception inner)
+            : base(message, inner) { }
 
-        public InvalidProjectFileFormat(string message, string filePath) : this(message)
+        public InvalidProjectFileFormat(string message, string filePath)
+            : this(message)
         {
             Path = filePath;
         }

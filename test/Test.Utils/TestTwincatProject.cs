@@ -11,7 +11,10 @@ namespace Test.Utils
         private readonly List<TestPlcProject> _plcProjects = [];
         public string Name { get; }
         public string AbsolutePath { get; }
-        public IReadOnlyList<TestPlcProject> PlcProjects { get => _plcProjects; }
+        public IReadOnlyList<TestPlcProject> PlcProjects
+        {
+            get => _plcProjects;
+        }
 
         public TestTwincatProject(string name, string absolutePath)
         {
@@ -24,14 +27,21 @@ namespace Test.Utils
 
             using (StringReader reader = new(xmlContent))
             {
-                TcSmProjectData tcSmProject = serializer.Deserialize(reader) as TcSmProjectData ?? throw new InvalidProjectFileFormat("The format of TwinCAT project file is invalid.", absolutePath);
+                TcSmProjectData tcSmProject =
+                    serializer.Deserialize(reader) as TcSmProjectData
+                    ?? throw new InvalidProjectFileFormat(
+                        "The format of TwinCAT project file is invalid.",
+                        absolutePath
+                    );
 
                 if (tcSmProject.Project.Plc?.Projects is not null)
                 {
-                    _plcProjects.AddRange(from ProjectElement project in tcSmProject.Project.Plc.Projects
-                                          let plcProject = new TestPlcProject(Path.Join(rootDir, project.PrjFilePath))
-                                          where plcProject is not null
-                                          select plcProject);
+                    _plcProjects.AddRange(
+                        from ProjectElement project in tcSmProject.Project.Plc.Projects
+                        let plcProject = new TestPlcProject(Path.Join(rootDir, project.PrjFilePath))
+                        where plcProject is not null
+                        select plcProject
+                    );
                 }
             }
         }

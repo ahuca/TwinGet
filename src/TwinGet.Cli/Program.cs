@@ -14,14 +14,19 @@ class Program
     static async Task<int> Main(string[] args)
     {
         Parser runner = BuildCommandLine()
-            .UseHost(_ => Host.CreateDefaultBuilder(args)
-            , (builder) => builder
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddCore();
-                services.AddLogger();
-            })
-            .UseCommandHandler<PackCommand, PackCommand.Handler>())
+            .UseHost(
+                _ => Host.CreateDefaultBuilder(args),
+                (builder) =>
+                    builder
+                        .ConfigureServices(
+                            (hostContext, services) =>
+                            {
+                                services.AddCore();
+                                services.AddLogger();
+                            }
+                        )
+                        .UseCommandHandler<PackCommand, PackCommand.Handler>()
+            )
             .UseDefaults()
             .Build();
 

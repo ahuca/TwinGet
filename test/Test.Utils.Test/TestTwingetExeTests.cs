@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿// This file is licensed to you under MIT license.
+
+using FluentAssertions;
 
 namespace Test.Utils.Test
 {

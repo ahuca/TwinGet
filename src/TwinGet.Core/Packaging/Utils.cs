@@ -9,9 +9,13 @@ namespace TwinGet.Core.Packaging
     {
         public static bool IsSupportedFileType(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath)) return false;
+            if (string.IsNullOrEmpty(filePath))
+                return false;
 
-            bool isNuspecExtension = filePath.EndsWith(ManifestExtension, StringComparison.OrdinalIgnoreCase);
+            bool isNuspecExtension = filePath.EndsWith(
+                ManifestExtension,
+                StringComparison.OrdinalIgnoreCase
+            );
             bool isPlcProjectExtension = TwincatUtils.IsPlcProjectFileExtension(filePath);
 
             return isNuspecExtension || isPlcProjectExtension;

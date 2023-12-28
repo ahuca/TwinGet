@@ -12,4 +12,3 @@ public class PackCommand : IRequest<bool>, IPackCommand
     public string Solution { get; set; }
     public string OutputDirectory { get; set; }
 }
-

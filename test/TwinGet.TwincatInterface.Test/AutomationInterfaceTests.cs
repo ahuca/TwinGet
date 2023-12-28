@@ -32,7 +32,6 @@ namespace TwinGet.TwincatInterface.Test
             SupportedProgIds.Should().Contain(sut.ProgId);
         }
 
-
         [StaFact]
         public void LoadSolution_WithValidPath_ShouldLoadSuccessfully()
         {
@@ -77,7 +76,9 @@ namespace TwinGet.TwincatInterface.Test
 
             sut.LoadSolution(testProject.SolutionPath);
 
-            IEnumerable<string> expected = testProject.TwincatProjects.SelectMany(t => t.PlcProjects).Select(p => p.AbsolutePath);
+            IEnumerable<string> expected = testProject
+                .TwincatProjects.SelectMany(t => t.PlcProjects)
+                .Select(p => p.AbsolutePath);
 
             IEnumerable<string> actual = sut.GetPlcProjects().Select(p => p.AbsolutePath);
 
@@ -113,11 +114,20 @@ namespace TwinGet.TwincatInterface.Test
             string outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             _output.WriteLine(outputDir);
 
-            TestPlcProject plcProject = testProject.TwincatProjects.SelectMany(t => t.PlcProjects).First();
-            string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
+            TestPlcProject plcProject = testProject
+                .TwincatProjects.SelectMany(t => t.PlcProjects)
+                .First();
+            string expected = Path.Combine(
+                outputDir,
+                $"{plcProject.Title}{TwincatPlcLibraryExtension}"
+            );
 
             // Act
-            var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir, testProject.SolutionPath);
+            var result = sut.SavePlcProject(
+                plcProject.AbsolutePath,
+                outputDir,
+                testProject.SolutionPath
+            );
 
             // Assert
             File.Exists(expected).Should().BeTrue();
@@ -136,8 +146,13 @@ namespace TwinGet.TwincatInterface.Test
             string outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             _output.WriteLine(outputDir);
 
-            TestPlcProject plcProject = testProject.TwincatProjects.SelectMany(t => t.PlcProjects).First();
-            string expected = Path.Combine(outputDir, $"{plcProject.Title}{TwincatPlcLibraryExtension}");
+            TestPlcProject plcProject = testProject
+                .TwincatProjects.SelectMany(t => t.PlcProjects)
+                .First();
+            string expected = Path.Combine(
+                outputDir,
+                $"{plcProject.Title}{TwincatPlcLibraryExtension}"
+            );
 
             // Act
             var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir);
@@ -147,7 +162,6 @@ namespace TwinGet.TwincatInterface.Test
             result.Should().NotBeNull();
             result.Should().Contain(expected);
         }
-
 
         protected virtual void Dispose(bool disposing)
         {

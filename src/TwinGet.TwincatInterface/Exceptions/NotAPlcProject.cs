@@ -5,16 +5,12 @@ namespace TwinGet.TwincatInterface.Exceptions
     [Serializable]
     public class NotAPlcProject : Exception
     {
-        public NotAPlcProject()
-        {
-        }
+        public NotAPlcProject() { }
 
-        public NotAPlcProject(string message) : base(message)
-        {
-        }
+        public NotAPlcProject(string message)
+            : base(message) { }
 
-        public NotAPlcProject(string message, Exception inner) : base(message, inner)
-        {
-        }
+        public NotAPlcProject(string message, Exception inner)
+            : base(message, inner) { }
     }
 }

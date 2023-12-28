@@ -12,16 +12,35 @@ namespace TwinGet.TwincatInterface
         private readonly ITcPlcIECProject3 _plcProject;
         private readonly PlcProjectData _plcProjectFile;
 
-        public string ProjectGuid { get => _plcProjectFile.PropertyGroup.ProjectGuid; }
-        public string Name { get => _plcProjectFile.PropertyGroup.Name; }
-        public string? Company { get => _plcProjectFile.PropertyGroup.Company; }
-        public string? Title { get => _plcProjectFile.PropertyGroup.Title; }
-        public string? ProjectVersion { get => _plcProjectFile.PropertyGroup.ProjectVersion; }
-        public bool IsManagedLibrary { get => TwincatUtils.IsManagedLibrary(this); }
+        public string ProjectGuid
+        {
+            get => _plcProjectFile.PropertyGroup.ProjectGuid;
+        }
+        public string Name
+        {
+            get => _plcProjectFile.PropertyGroup.Name;
+        }
+        public string? Company
+        {
+            get => _plcProjectFile.PropertyGroup.Company;
+        }
+        public string? Title
+        {
+            get => _plcProjectFile.PropertyGroup.Title;
+        }
+        public string? ProjectVersion
+        {
+            get => _plcProjectFile.PropertyGroup.ProjectVersion;
+        }
+        public bool IsManagedLibrary
+        {
+            get => TwincatUtils.IsManagedLibrary(this);
+        }
 
         public string AbsolutePath { get; }
 
-        public PlcProject(ITcSmTreeItem treeItem, string filePath) : this(filePath)
+        public PlcProject(ITcSmTreeItem treeItem, string filePath)
+            : this(filePath)
         {
             try
             {
@@ -29,11 +48,14 @@ namespace TwinGet.TwincatInterface
             }
             catch
             {
-                throw new NotAPlcProject($"The provided tree item {treeItem.Name} is not a PLC project.");
+                throw new NotAPlcProject(
+                    $"The provided tree item {treeItem.Name} is not a PLC project."
+                );
             }
         }
 
-        internal PlcProject(ITcPlcIECProject3 plcProject, string path) : this(path)
+        internal PlcProject(ITcPlcIECProject3 plcProject, string path)
+            : this(path)
         {
             _plcProject = plcProject;
         }
@@ -44,17 +66,30 @@ namespace TwinGet.TwincatInterface
         {
             ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
 
-            PlcProjectData plcProjectFile = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(filePath);
+            PlcProjectData plcProjectFile =
+                TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(filePath);
 
             _plcProjectFile = plcProjectFile;
 
             AbsolutePath = filePath;
         }
 
-        public void PlcOpenExport(string bstrFile, string bstrSelection) => _plcProject.PlcOpenExport(bstrFile, bstrSelection);
-        public void PlcOpenImport(string bstrFile, int options = 0, string bstrSelection = "", bool bSubTree = true) => _plcProject.PlcOpenImport(bstrFile, options, bstrSelection, bSubTree);
-        public void SaveAsLibrary(string bstrLibraryPath, bool binstall = false) => _plcProject.SaveAsLibrary(bstrLibraryPath, binstall);
+        public void PlcOpenExport(string bstrFile, string bstrSelection) =>
+            _plcProject.PlcOpenExport(bstrFile, bstrSelection);
+
+        public void PlcOpenImport(
+            string bstrFile,
+            int options = 0,
+            string bstrSelection = "",
+            bool bSubTree = true
+        ) => _plcProject.PlcOpenImport(bstrFile, options, bstrSelection, bSubTree);
+
+        public void SaveAsLibrary(string bstrLibraryPath, bool binstall = false) =>
+            _plcProject.SaveAsLibrary(bstrLibraryPath, binstall);
+
         public bool CheckAllObjects() => _plcProject.CheckAllObjects();
-        public void RunStaticAnalysis(bool bCheckAll = true) => _plcProject.RunStaticAnalysis(bCheckAll);
+
+        public void RunStaticAnalysis(bool bCheckAll = true) =>
+            _plcProject.RunStaticAnalysis(bCheckAll);
     }
 }

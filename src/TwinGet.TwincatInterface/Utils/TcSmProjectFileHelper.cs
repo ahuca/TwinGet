@@ -22,18 +22,29 @@ namespace TwinGet.TwincatInterface.Utils
 
         public async Task<string> GetProjectGuidAsync()
         {
-            using var reader = XmlReader.Create(_filePath, new XmlReaderSettings() { Async = true });
+            using var reader = XmlReader.Create(
+                _filePath,
+                new XmlReaderSettings() { Async = true }
+            );
 
             while (!reader.EOF)
             {
                 await reader.ReadAsync();
 
-                if (reader.NodeType == XmlNodeType.Element
-                    && reader.Name.Equals("Project", StringComparison.OrdinalIgnoreCase))
+                if (
+                    reader.NodeType == XmlNodeType.Element
+                    && reader.Name.Equals("Project", StringComparison.OrdinalIgnoreCase)
+                )
                 {
-                    if (!reader.HasAttributes) { continue; }
+                    if (!reader.HasAttributes)
+                    {
+                        continue;
+                    }
                     string? guid = reader.GetAttribute("ProjectGUID");
-                    if (string.IsNullOrEmpty(guid)) { continue; }
+                    if (string.IsNullOrEmpty(guid))
+                    {
+                        continue;
+                    }
                     return guid;
                 }
             }
@@ -45,15 +56,20 @@ namespace TwinGet.TwincatInterface.Utils
         {
             ArgumentException.ThrowIfNullOrEmpty(GUID, nameof(GUID));
 
-            using var reader = XmlReader.Create(_filePath, new XmlReaderSettings() { Async = true });
+            using var reader = XmlReader.Create(
+                _filePath,
+                new XmlReaderSettings() { Async = true }
+            );
 
             while (!reader.EOF)
             {
                 await reader.ReadAsync();
 
                 // Parse until Project element
-                if (reader.NodeType == XmlNodeType.Element
-                    && reader.Name.Equals("Project", StringComparison.OrdinalIgnoreCase))
+                if (
+                    reader.NodeType == XmlNodeType.Element
+                    && reader.Name.Equals("Project", StringComparison.OrdinalIgnoreCase)
+                )
                 {
                     if (!reader.HasAttributes)
                     {
@@ -67,8 +83,10 @@ namespace TwinGet.TwincatInterface.Utils
                     }
                 }
                 // End of PLC element found, quit early.
-                else if (reader.NodeType == XmlNodeType.EndElement
-                    && reader.Name.Equals("Plc", StringComparison.OrdinalIgnoreCase))
+                else if (
+                    reader.NodeType == XmlNodeType.EndElement
+                    && reader.Name.Equals("Plc", StringComparison.OrdinalIgnoreCase)
+                )
                 {
                     return false;
                 }

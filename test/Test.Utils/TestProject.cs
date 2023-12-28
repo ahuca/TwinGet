@@ -14,32 +14,43 @@ namespace Test.Utils
         private TestDirectory _testDirectory;
         private bool _disposedValue;
         private readonly List<TestTwincatProject> _twincatProjects = [];
-        public string RootPath { get => _testDirectory.Path; }
+        public string RootPath
+        {
+            get => _testDirectory.Path;
+        }
         public string SolutionPath { get; }
         public SolutionFile SolutionFile { get; }
-        public IReadOnlyList<TestTwincatProject> TwincatProjects { get => _twincatProjects; }
+        public IReadOnlyList<TestTwincatProject> TwincatProjects
+        {
+            get => _twincatProjects;
+        }
 
         public TestProject()
         {
             _testDirectory = TestDirectory.Create();
 
-            TwinGet.Utils.IO.Directory.CopyDirectory(
-                TestTwincatProjectConstants.s_testTwincatProject,
-                RootPath,
-                FileShare.Read).Wait();
+            TwinGet
+                .Utils.IO.Directory.CopyDirectory(
+                    TestTwincatProjectConstants.s_testTwincatProject,
+                    RootPath,
+                    FileShare.Read
+                )
+                .Wait();
 
-            SolutionPath = Directory.EnumerateFiles(
-                RootPath,
-                "*.sln",
-                SearchOption.AllDirectories).First();
+            SolutionPath = Directory
+                .EnumerateFiles(RootPath, "*.sln", SearchOption.AllDirectories)
+                .First();
 
             SolutionFile = SolutionFile.Parse(SolutionPath);
 
-            static bool isTwincatProject(string absolutePath) => TwincatProjectExtensions.Contains(Path.GetExtension(absolutePath));
+            static bool isTwincatProject(string absolutePath) =>
+                TwincatProjectExtensions.Contains(Path.GetExtension(absolutePath));
 
-            _twincatProjects = new(SolutionFile.ProjectsInOrder
-                .Where(x => isTwincatProject(x.AbsolutePath))
-                .Select(x => new TestTwincatProject(x.ProjectName, x.AbsolutePath)));
+            _twincatProjects = new(
+                SolutionFile
+                    .ProjectsInOrder.Where(x => isTwincatProject(x.AbsolutePath))
+                    .Select(x => new TestTwincatProject(x.ProjectName, x.AbsolutePath))
+            );
         }
 
         public IEnumerable<TestPlcProject> GetPlcProjects()

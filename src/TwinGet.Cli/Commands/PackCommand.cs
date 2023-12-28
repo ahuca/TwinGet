@@ -13,22 +13,26 @@ namespace TwinGet.Cli.Commands;
 
 public class PackCommand : Command
 {
-    public PackCommand() : base("pack", $"Pack a managed PLC project into a {PackageExtension}")
+    public PackCommand()
+        : base("pack", $"Pack a managed PLC project into a {PackageExtension}")
     {
         var fileArgument = new Argument<string>(
             name: "path",
             description: "The path to the PLC project file.",
-            getDefaultValue: () => string.Empty);
+            getDefaultValue: () => string.Empty
+        );
 
         var solutionOption = new Option<string>(
             name: "--solution",
             description: $"The solution to which the \"{PlcProjectExtension}\" belongs to.",
-            getDefaultValue: () => string.Empty);
+            getDefaultValue: () => string.Empty
+        );
 
         var outputDirectory = new Option<string>(
             name: "--output-directory",
             description: "Specifies the folder in which the created packages is stored. If no folder is specfified, the current folder is used.",
-            getDefaultValue: () => string.Empty);
+            getDefaultValue: () => string.Empty
+        );
 
         AddArgument(fileArgument);
         AddOption(solutionOption);
@@ -52,18 +56,24 @@ public class PackCommand : Command
 
         public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0003:Remove qualification", Justification = "For clarity.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Style",
+            "IDE0003:Remove qualification",
+            Justification = "For clarity."
+        )]
         public async Task<int> InvokeAsync(InvocationContext context)
         {
             try
             {
-                await _mediator.Send(new Core.Commands.PackCommand
-                {
-                    Logger = this.Logger,
-                    Path = this.Path,
-                    Solution = this.Solution,
-                    OutputDirectory = this.OutputDirectory
-                });
+                await _mediator.Send(
+                    new Core.Commands.PackCommand
+                    {
+                        Logger = this.Logger,
+                        Path = this.Path,
+                        Solution = this.Solution,
+                        OutputDirectory = this.OutputDirectory
+                    }
+                );
             }
             catch (PackagingException ex)
             {

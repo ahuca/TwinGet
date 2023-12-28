@@ -5,16 +5,12 @@ namespace TwinGet.TwincatInterface.Exceptions
     [Serializable]
     public class DteInstanceIsNullException : Exception
     {
-        public DteInstanceIsNullException()
-        {
-        }
+        public DteInstanceIsNullException() { }
 
-        public DteInstanceIsNullException(string message) : base(message)
-        {
-        }
+        public DteInstanceIsNullException(string message)
+            : base(message) { }
 
-        public DteInstanceIsNullException(string message, Exception inner) : base(message, inner)
-        {
-        }
+        public DteInstanceIsNullException(string message, Exception inner)
+            : base(message, inner) { }
     }
 }

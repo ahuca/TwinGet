@@ -13,22 +13,21 @@ namespace TwinGet.Cli
         {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile(
-                    "appsettings.json",
-                    optional: false,
-                    reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             IConfigurationRoot config = configurationBuilder.Build();
 
             using ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder =>
             {
                 loggingBuilder
-                .ClearProviders()
-                .AddConfiguration(config.GetSection("Logging"))
-                .AddConsole();
+                    .ClearProviders()
+                    .AddConfiguration(config.GetSection("Logging"))
+                    .AddConsole();
             });
 
-            ILogger logger = loggerFactory.CreateLogger(Assembly.GetExecutingAssembly().GetName().Name ?? "TwinGet");
+            ILogger logger = loggerFactory.CreateLogger(
+                Assembly.GetExecutingAssembly().GetName().Name ?? "TwinGet"
+            );
 
             services.AddSingleton(logger);
 

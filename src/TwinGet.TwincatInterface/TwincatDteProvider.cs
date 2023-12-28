@@ -31,15 +31,24 @@ namespace TwinGet.TwincatInterface
             {
                 Type? t = Type.GetTypeFromProgID(p);
 
-                if (t is null) { continue; }
+                if (t is null)
+                {
+                    continue;
+                }
 
                 EnvDTE80.DTE2? dte;
                 try
                 {
                     dte = (EnvDTE80.DTE2?)Activator.CreateInstance(t);
-                    if (dte is null) { continue; }
+                    if (dte is null)
+                    {
+                        continue;
+                    }
                 }
-                catch { continue; }
+                catch
+                {
+                    continue;
+                }
 
                 if (dte.IsTwinCatIntegrated())
                 {
@@ -51,7 +60,9 @@ namespace TwinGet.TwincatInterface
 
             if (Dte is null || string.IsNullOrEmpty(ProgId))
             {
-                throw new CouldNotCreateTwincatDteException($"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}");
+                throw new CouldNotCreateTwincatDteException(
+                    $"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}"
+                );
             }
 
             if (startMsgFiltering)

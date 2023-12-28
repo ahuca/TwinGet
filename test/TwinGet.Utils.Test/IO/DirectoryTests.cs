@@ -6,28 +6,32 @@ namespace TwinGet.Utils.Test.IOTests
     {
         private enum PathType
         {
-            Directory = 0, File = 1
+            Directory = 0,
+            File = 1
         }
 
-        private static readonly Dictionary<string, PathType> s_testDirContent = new()
-        {
-            {@"folder1", PathType.Directory},
-            {@"folder1/file1.txt", PathType.File},
-            {@"folder2", PathType.Directory},
-            {@"folder2/file1.txt", PathType.File},
-            {@"folder2/folder1", PathType.Directory},
-            {@"folder2/folder1/folder1", PathType.Directory},
-            {@"folder2/folder1/folder1/file1.txt", PathType.File},
-            {@"folder2/folder1/folder1/file2.txt", PathType.File},
-            {@"file1.txt", PathType.File},
-            {@"file2.txt", PathType.File},
-        };
+        private static readonly Dictionary<string, PathType> s_testDirContent =
+            new()
+            {
+                { @"folder1", PathType.Directory },
+                { @"folder1/file1.txt", PathType.File },
+                { @"folder2", PathType.Directory },
+                { @"folder2/file1.txt", PathType.File },
+                { @"folder2/folder1", PathType.Directory },
+                { @"folder2/folder1/folder1", PathType.Directory },
+                { @"folder2/folder1/folder1/file1.txt", PathType.File },
+                { @"folder2/folder1/folder1/file2.txt", PathType.File },
+                { @"file1.txt", PathType.File },
+                { @"file2.txt", PathType.File },
+            };
 
         /// <summary>
         /// Initialize a test directory and return the root path.
         /// </summary>
         /// <returns>The root path of the test directory.</returns>
-        private static string ProvisionTestDirectory(Dictionary<string, PathType> directoryStructure)
+        private static string ProvisionTestDirectory(
+            Dictionary<string, PathType> directoryStructure
+        )
         {
             string testDirectory = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(testDirectory);
@@ -37,9 +41,11 @@ namespace TwinGet.Utils.Test.IOTests
                 switch (type)
                 {
                     case PathType.Directory:
-                        Directory.CreateDirectory(path); break;
+                        Directory.CreateDirectory(path);
+                        break;
                     case PathType.File:
-                        File.Create(path)?.Close(); break;
+                        File.Create(path)?.Close();
+                        break;
                 }
             }
 

@@ -1,7 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 
-using EnvDTE;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using NuGet.Configuration;
 using Test.Utils;
 using TwinGet.Core.Packaging;
@@ -21,14 +19,11 @@ namespace TwinGet.Cli.FuncTest.Commands
         {
             // Arrange
             var testPlcProject = _testProject.GetManagedPlcProjects().First();
-            string[] args = [
-                testPlcProject.AbsolutePath,
-                "--solution",
-                _testProject.SolutionPath
-            ];
+            string[] args = [testPlcProject.AbsolutePath, "--solution", _testProject.SolutionPath];
             string expectedPackagePath = Path.Combine(
                 _testProject.RootPath,
-                $"{testPlcProject.Title}{NuGetConstants.PackageExtension}");
+                $"{testPlcProject.Title}{NuGetConstants.PackageExtension}"
+            );
 
             // Act
             var result = RunPack(args);
@@ -36,7 +31,9 @@ namespace TwinGet.Cli.FuncTest.Commands
 
             // Assert
             result.ExitCode.Should().Be(0);
-            result.AllOuput.Should().Contain(PackagingStrings.PackSuccess.Replace("{Path}", expectedPackagePath));
+            result
+                .AllOuput.Should()
+                .Contain(PackagingStrings.PackSuccess.Replace("{Path}", expectedPackagePath));
             File.Exists(expectedPackagePath).Should().BeTrue();
         }
 
@@ -44,12 +41,11 @@ namespace TwinGet.Cli.FuncTest.Commands
         public void Pack_WithUnmanagedPlcProject_ShouldFail()
         {
             // Arrange
-            var testPlcProject = _testProject.GetPlcProjects().Where(x => !x.IsManagedLibrary).First();
-            string[] args = [
-                testPlcProject.AbsolutePath,
-                "--solution",
-                _testProject.SolutionPath
-            ];
+            var testPlcProject = _testProject
+                .GetPlcProjects()
+                .Where(x => !x.IsManagedLibrary)
+                .First();
+            string[] args = [testPlcProject.AbsolutePath, "--solution", _testProject.SolutionPath];
 
             // Act
             var result = RunPack(args);
@@ -59,18 +55,16 @@ namespace TwinGet.Cli.FuncTest.Commands
             result.ExitCode.Should().NotBe(0);
         }
 
-
         internal CommandRunnerResult RunPack(params string[] args)
         {
             string[] pack = ["pack"];
             var allArgs = pack.Concat(args);
 
-            var result = _commandRunner.Run
-                (
-                    _twingetExe.Path,
-                    _testProject.RootPath,
-                    string.Join(" ", allArgs)
-                );
+            var result = _commandRunner.Run(
+                _twingetExe.Path,
+                _testProject.RootPath,
+                string.Join(" ", allArgs)
+            );
 
             return result;
         }

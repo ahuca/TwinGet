@@ -11,7 +11,9 @@ namespace TwinGet.Core
     {
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+            services.AddMediatR(
+                cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly())
+            );
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient<IPackageService, PackageService>();
 

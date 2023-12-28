@@ -15,6 +15,7 @@ namespace TwinGet.Core.Packaging
     public class PackageService : IPackageService
     {
         public PackageService() { }
+
         public bool Pack(IPackCommand packCommand)
         {
             return PackAsync(packCommand).Result;
@@ -28,7 +29,10 @@ namespace TwinGet.Core.Packaging
         public async Task<bool> PackAsync(IPackCommand packCommand)
         {
             ArgumentException.ThrowIfNullOrEmpty(packCommand.Path, nameof(packCommand.Path));
-            ArgumentException.ThrowIfNullOrEmpty(packCommand.OutputDirectory, nameof(packCommand.OutputDirectory));
+            ArgumentException.ThrowIfNullOrEmpty(
+                packCommand.OutputDirectory,
+                nameof(packCommand.OutputDirectory)
+            );
 
             if (TwincatUtils.IsPlcProjectFileExtension(packCommand.Path))
             {
@@ -42,7 +46,8 @@ namespace TwinGet.Core.Packaging
             return true;
         }
 
-        private Task<bool> PackFromNuspecFileAsync(IPackCommand packCommand) => throw new NotImplementedException();
+        private Task<bool> PackFromNuspecFileAsync(IPackCommand packCommand) =>
+            throw new NotImplementedException();
 
         private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
         {
@@ -68,15 +73,23 @@ namespace TwinGet.Core.Packaging
         {
             ArgumentException.ThrowIfNullOrEmpty(libraryPath, nameof(libraryPath));
 
-            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(packCommand.Path);
+            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(
+                packCommand.Path
+            );
 
-            ManifestMetadata metadata = new()
-            {
-                Authors = new List<string>() { plcProjectData.PropertyGroup.Author ?? string.Empty },
-                Version = new NuGetVersion(plcProjectData.PropertyGroup.ProjectVersion ?? string.Empty),
-                Id = plcProjectData.PropertyGroup.Title,
-                Description = plcProjectData.PropertyGroup.Description,
-            };
+            ManifestMetadata metadata =
+                new()
+                {
+                    Authors = new List<string>()
+                    {
+                        plcProjectData.PropertyGroup.Author ?? string.Empty
+                    },
+                    Version = new NuGetVersion(
+                        plcProjectData.PropertyGroup.ProjectVersion ?? string.Empty
+                    ),
+                    Id = plcProjectData.PropertyGroup.Title,
+                    Description = plcProjectData.PropertyGroup.Description,
+                };
 
             var files = new List<ManifestFile>()
             {
@@ -92,7 +105,10 @@ namespace TwinGet.Core.Packaging
             packageBuilder.Populate(metadata);
             packageBuilder.PopulateFiles(string.Empty, files);
 
-            string outputPath = Path.Combine(packCommand.OutputDirectory, $"{packageBuilder.Id}{PackageExtension}");
+            string outputPath = Path.Combine(
+                packCommand.OutputDirectory,
+                $"{packageBuilder.Id}{PackageExtension}"
+            );
             using FileStream stream = File.Open(outputPath, FileMode.OpenOrCreate);
             packageBuilder.Save(stream);
 
@@ -122,24 +138,34 @@ namespace TwinGet.Core.Packaging
                 {
                     await SafeExecuteAsync(
                         async () => resolvedSolution = await getSolutionTask,
-                        packCommand.Logger);
+                        packCommand.Logger
+                    );
 
                     // If we cannot find the solution, quit early.
                     if (string.IsNullOrEmpty(resolvedSolution))
                     {
-                        packCommand.Logger?.LogError(PackagingErrors.FailedToResolveSolutionFile, packCommand.Path);
+                        packCommand.Logger?.LogError(
+                            PackagingErrors.FailedToResolveSolutionFile,
+                            packCommand.Path
+                        );
                         return;
                     }
                 }
 
-                packCommand.Logger?.LogInformation(PackagingStrings.SavingPlcLibrary, packCommand.Path);
+                packCommand.Logger?.LogInformation(
+                    PackagingStrings.SavingPlcLibrary,
+                    packCommand.Path
+                );
 
                 SafeExecute(
-                    () => libraryPath = ai.SavePlcProject(
-                        packCommand.Path,
-                        packCommand.OutputDirectory,
-                        resolvedSolution),
-                    packCommand.Logger);
+                    () =>
+                        libraryPath = ai.SavePlcProject(
+                            packCommand.Path,
+                            packCommand.OutputDirectory,
+                            resolvedSolution
+                        ),
+                    packCommand.Logger
+                );
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             });

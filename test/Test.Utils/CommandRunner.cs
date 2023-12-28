@@ -17,7 +17,8 @@ internal class CommandRunner(ITestOutputHelper output)
         string workingDirectory,
         string arguments,
         int timeOutInMilliseconds = DefaultTimeoutInMilliseconds,
-        Action<StreamWriter>? inputAction = null)
+        Action<StreamWriter>? inputAction = null
+    )
     {
         StringBuilder output = new();
         StringBuilder error = new();
@@ -27,7 +28,8 @@ internal class CommandRunner(ITestOutputHelper output)
             EnableRaisingEvents = true,
             StartInfo = new ProcessStartInfo(
                 Path.GetFullPath(exePath, Path.GetFullPath(workingDirectory)),
-                arguments)
+                arguments
+            )
             {
                 WorkingDirectory = Path.GetFullPath(workingDirectory),
                 UseShellExecute = false,
@@ -69,7 +71,8 @@ internal class CommandRunner(ITestOutputHelper output)
                 process,
                 process.ExitCode,
                 output.ToString(),
-                error.ToString());
+                error.ToString()
+            );
         }
 
         try
@@ -84,7 +87,8 @@ internal class CommandRunner(ITestOutputHelper output)
             _output?.WriteLine(ex.StackTrace);
         }
 
-        throw new TimeoutException($"{process.StartInfo.FileName} {process.StartInfo.Arguments} timed out after {TimeSpan.FromMilliseconds(timeOutInMilliseconds).TotalSeconds:N0} seconds:{Environment.NewLine}Output:{output}{Environment.NewLine}Error:{error}");
-
+        throw new TimeoutException(
+            $"{process.StartInfo.FileName} {process.StartInfo.Arguments} timed out after {TimeSpan.FromMilliseconds(timeOutInMilliseconds).TotalSeconds:N0} seconds:{Environment.NewLine}Output:{output}{Environment.NewLine}Error:{error}"
+        );
     }
 }

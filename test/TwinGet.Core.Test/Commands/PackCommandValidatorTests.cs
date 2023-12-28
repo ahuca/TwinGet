@@ -18,7 +18,8 @@ namespace TwinGet.Core.Test.Commands
             _command.Path = string.Empty;
             var result = await _sut.TestValidateAsync(_command);
 
-            result.ShouldHaveValidationErrorFor(p => p.Path)
+            result
+                .ShouldHaveValidationErrorFor(p => p.Path)
                 .WithErrorMessage(PackagingErrors.InputFileNotSpecified);
         }
 
@@ -28,7 +29,8 @@ namespace TwinGet.Core.Test.Commands
             _command.Path = "foo.bar";
             var result = await _sut.TestValidateAsync(_command);
 
-            result.ShouldHaveValidationErrorFor(p => p.Path)
+            result
+                .ShouldHaveValidationErrorFor(p => p.Path)
                 .WithErrorMessage(string.Format(PackagingErrors.InputFileNotFound, _command.Path));
         }
 
@@ -38,7 +40,8 @@ namespace TwinGet.Core.Test.Commands
             _command.Path = "foo.plcproj";
             var result = await _sut.TestValidateAsync(_command);
 
-            result.ShouldHaveValidationErrorFor(p => p.Path)
+            result
+                .ShouldHaveValidationErrorFor(p => p.Path)
                 .WithErrorMessage(string.Format(PackagingErrors.InputFileNotFound, _command.Path));
         }
 
@@ -53,10 +56,10 @@ namespace TwinGet.Core.Test.Commands
             var result = await _sut.TestValidateAsync(_command);
             var expectedMsg = string.Format(
                 PackagingErrors.SolutionFileNotFound,
-                _command.Solution);
+                _command.Solution
+            );
 
-            result.ShouldHaveValidationErrorFor(p => p.Solution)
-                .WithErrorMessage(expectedMsg);
+            result.ShouldHaveValidationErrorFor(p => p.Solution).WithErrorMessage(expectedMsg);
         }
 
         [Fact]
@@ -71,10 +74,10 @@ namespace TwinGet.Core.Test.Commands
             var expectedMsg = string.Format(
                 PackagingErrors.SpecifiedInputFileDoesNotBelongToSolution,
                 _command.Path,
-                _command.Solution);
+                _command.Solution
+            );
 
-            result.ShouldHaveValidationErrorFor(p => p.Solution)
-                .WithErrorMessage(expectedMsg);
+            result.ShouldHaveValidationErrorFor(p => p.Solution).WithErrorMessage(expectedMsg);
         }
     }
 }

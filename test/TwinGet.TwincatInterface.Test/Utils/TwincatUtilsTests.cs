@@ -53,9 +53,9 @@ namespace TwinGet.TwincatInterface.Test.Utils
                     """,
                     new Dictionary<string, string>
                     {
-                        {"Name", "TestPlcProject1"},
-                        {"Title" , "TwinGet.TestTwincatProject1.TestPlcProject1" },
-                        {"Version", "0.1.0" },
+                        { "Name", "TestPlcProject1" },
+                        { "Title", "TwinGet.TestTwincatProject1.TestPlcProject1" },
+                        { "Version", "0.1.0" },
                     }
                 };
 
@@ -91,16 +91,17 @@ namespace TwinGet.TwincatInterface.Test.Utils
                     """,
                     new Dictionary<string, string>
                     {
-                        {"Name", "TestPlcProject1"},
-                        {"Title" , string.Empty },
-                        {"Version", string.Empty },
+                        { "Name", "TestPlcProject1" },
+                        { "Title", string.Empty },
+                        { "Version", string.Empty },
                     }
                 };
             }
 
             public static IEnumerable<object[]> TwincatProjectFiles()
             {
-                yield return new object[] {
+                yield return new object[]
+                {
                     """
                     <?xml version="1.0"?>
                     <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.53">
@@ -149,24 +150,21 @@ namespace TwinGet.TwincatInterface.Test.Utils
                     	</Project>
                     </TcSmProject>
                     """,
-                    new Dictionary<string, string>
-                    {
-                        { "TcVersion", "3.1.4024.53" }
-                    },
-                    new List<string>(){ "TestPlcProject1", "TestPlcProject2" } };
+                    new Dictionary<string, string> { { "TcVersion", "3.1.4024.53" } },
+                    new List<string>() { "TestPlcProject1", "TestPlcProject2" }
+                };
 
-                yield return new object[] {
+                yield return new object[]
+                {
                     """
                     <?xml version="1.0"?>
                     <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.53">
                     	<Project ProjectGUID="{CD779436-E0BF-4C3D-9866-879794D3B6A4}" ShowHideConfigurations="#x3c7"/>
                     </TcSmProject>
                     """,
-                    new Dictionary<string, string>
-                    {
-                        { "TcVersion", "3.1.4024.53" }
-                    },
-                    new List<string>() };
+                    new Dictionary<string, string> { { "TcVersion", "3.1.4024.53" } },
+                    new List<string>()
+                };
             }
         }
 
@@ -223,7 +221,9 @@ namespace TwinGet.TwincatInterface.Test.Utils
             string expected = testTcProject.AbsolutePath;
 
             // Act
-            string actual = await TwincatUtils.GetParentTwincatProjectFileAsync(testPlcProject.AbsolutePath);
+            string actual = await TwincatUtils.GetParentTwincatProjectFileAsync(
+                testPlcProject.AbsolutePath
+            );
 
             // Assert
             expected.Should().NotBeNullOrEmpty();
@@ -256,7 +256,9 @@ namespace TwinGet.TwincatInterface.Test.Utils
             string expected = testProject.SolutionPath;
 
             // Act
-            string actual = await TwincatUtils.GetParentSolutionFileAsync(testTcProject.AbsolutePath);
+            string actual = await TwincatUtils.GetParentSolutionFileAsync(
+                testTcProject.AbsolutePath
+            );
 
             // Assert
             expected.Should().Be(actual);
@@ -271,7 +273,10 @@ namespace TwinGet.TwincatInterface.Test.Utils
             TestPlcProject? testPlcProject = testTcProject.PlcProjects[0];
 
             // Act
-            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.AbsolutePath, testProject.SolutionPath);
+            bool actual = TwincatUtils.PlcProjectBelongToSolution(
+                testPlcProject.AbsolutePath,
+                testProject.SolutionPath
+            );
 
             // Assert
             actual.Should().BeTrue();
@@ -287,7 +292,10 @@ namespace TwinGet.TwincatInterface.Test.Utils
             TestPlcProject? testPlcProject = testTcProject.PlcProjects[0];
 
             // Act
-            bool actual = TwincatUtils.PlcProjectBelongToSolution(testPlcProject.AbsolutePath, testProject2.SolutionPath);
+            bool actual = TwincatUtils.PlcProjectBelongToSolution(
+                testPlcProject.AbsolutePath,
+                testProject2.SolutionPath
+            );
 
             // Assert
             actual.Should().BeFalse();
@@ -321,21 +329,30 @@ namespace TwinGet.TwincatInterface.Test.Utils
 
         [Theory]
         [MemberData(nameof(TestData.PlcProjectFiles), MemberType = typeof(TestData))]
-        public void DeserializeXmlFileToProjectData_WithValidPlcProjectFile_ShouldSucceed(string xmlContent, Dictionary<string, string> expected)
+        public void DeserializeXmlFileToProjectData_WithValidPlcProjectFile_ShouldSucceed(
+            string xmlContent,
+            Dictionary<string, string> expected
+        )
         {
             // Arrange
             var projectFile = Path.GetTempFileName();
             File.WriteAllText(projectFile, xmlContent);
 
             // Act
-            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(projectFile);
+            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(
+                projectFile
+            );
 
             // Assert
             plcProjectData.Should().NotBeNull();
             foreach (var (property, value) in expected)
             {
-                plcProjectData.GetType().GetProperty(property)?.GetValue(plcProjectData, null)
-                    .Should().Be(value);
+                plcProjectData
+                    .GetType()
+                    .GetProperty(property)
+                    ?.GetValue(plcProjectData, null)
+                    .Should()
+                    .Be(value);
             }
 
             File.Delete(projectFile);
@@ -343,24 +360,36 @@ namespace TwinGet.TwincatInterface.Test.Utils
 
         [Theory]
         [MemberData(nameof(TestData.TwincatProjectFiles), MemberType = typeof(TestData))]
-        public async void DeserializeXmlFileToProjectDataAsync_WithValidTwincatProjectFile_ShouldSucceedAsync(string xmlContent, Dictionary<string, string> expectedProperties, List<string> plcProjectNames)
+        public async void DeserializeXmlFileToProjectDataAsync_WithValidTwincatProjectFile_ShouldSucceedAsync(
+            string xmlContent,
+            Dictionary<string, string> expectedProperties,
+            List<string> plcProjectNames
+        )
         {
             // Arrange
             var projectFile = Path.GetTempFileName();
             File.WriteAllText(projectFile, xmlContent);
 
             // Act
-            TcSmProjectData tcProjectData = await TwincatUtils.DeserializeXmlFileToProjectDataAsync<TcSmProjectData>(projectFile);
+            TcSmProjectData tcProjectData =
+                await TwincatUtils.DeserializeXmlFileToProjectDataAsync<TcSmProjectData>(
+                    projectFile
+                );
 
             // Assert
             tcProjectData.Should().NotBeNull();
             foreach (var (property, value) in expectedProperties)
             {
-                tcProjectData.GetType().GetProperty(property)?.GetValue(tcProjectData, null)
-                    .Should().Be(value);
+                tcProjectData
+                    .GetType()
+                    .GetProperty(property)
+                    ?.GetValue(tcProjectData, null)
+                    .Should()
+                    .Be(value);
             }
 
-            var actualPlcProjectNames = tcProjectData.Project.Plc?.Projects.Select(x => x.Name) ?? new List<string>();
+            var actualPlcProjectNames =
+                tcProjectData.Project.Plc?.Projects.Select(x => x.Name) ?? new List<string>();
             plcProjectNames.Should().BeEquivalentTo(actualPlcProjectNames);
 
             File.Delete(projectFile);

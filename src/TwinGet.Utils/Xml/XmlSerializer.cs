@@ -26,7 +26,6 @@ namespace TwinGet.Utils.Xml
                     return projectFile;
                 }
                 catch { }
-
             }
 
             return default;
@@ -56,7 +55,6 @@ namespace TwinGet.Utils.Xml
                     return projectFile;
                 }
                 catch { }
-
             }
 
             return default;

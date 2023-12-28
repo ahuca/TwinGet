@@ -12,7 +12,12 @@ namespace TwinGet.Utils.IO
         /// <param name="share">A <see cref="FileShare"/>> value specifying the type of access other threads have to the file.</param>
         /// <param name="recursive">If true, copy the contents of all subdirectories. If false, copy only the contents of the current directory</param>
         /// <exception cref="DirectoryNotFoundException"></exception>
-        public static async Task CopyDirectory(string sourceDir, string destinationDir, FileShare share = FileShare.None, bool recursive = true)
+        public static async Task CopyDirectory(
+            string sourceDir,
+            string destinationDir,
+            FileShare share = FileShare.None,
+            bool recursive = true
+        )
         {
             // Get information about the source directory
             var dir = new DirectoryInfo(sourceDir);
@@ -24,13 +29,23 @@ namespace TwinGet.Utils.IO
             // Create the destination directory
             System.IO.Directory.CreateDirectory(destinationDir);
 
-
             // Get the files in the source directory and copy to the destination directory
             foreach (string filename in System.IO.Directory.EnumerateFiles(sourceDir))
             {
-                using (FileStream sourceStream = File.Open(filename, FileMode.Open, FileAccess.Read, share))
+                using (
+                    FileStream sourceStream = File.Open(
+                        filename,
+                        FileMode.Open,
+                        FileAccess.Read,
+                        share
+                    )
+                )
                 {
-                    using (FileStream destinationStream = File.Create(Path.Combine(destinationDir, Path.GetFileName(filename))))
+                    using (
+                        FileStream destinationStream = File.Create(
+                            Path.Combine(destinationDir, Path.GetFileName(filename))
+                        )
+                    )
                     {
                         await sourceStream.CopyToAsync(destinationStream);
                     }

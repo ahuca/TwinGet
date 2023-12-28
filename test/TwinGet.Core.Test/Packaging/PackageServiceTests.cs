@@ -29,14 +29,8 @@ namespace TwinGet.Core.Test.Packaging
             {
                 return new()
                 {
-                    new PackCommandConfig()
-                    {
-                        ProvideSolutionPath = true
-                    },
-                    new PackCommandConfig()
-                    {
-                        ProvideSolutionPath = false
-                    },
+                    new PackCommandConfig() { ProvideSolutionPath = true },
+                    new PackCommandConfig() { ProvideSolutionPath = false },
                 };
             }
         }
@@ -48,7 +42,9 @@ namespace TwinGet.Core.Test.Packaging
 
         [Theory]
         [MemberData(nameof(TestData.PackAsyncData), MemberType = typeof(TestData))]
-        internal async void PackAsync_WithValidParameters_ShouldSucceedAsync(PackCommandConfig config)
+        internal async void PackAsync_WithValidParameters_ShouldSucceedAsync(
+            PackCommandConfig config
+        )
         {
             // Arange
             var testPlcProject = _testProject.GetManagedPlcProjects().First();
@@ -58,16 +54,21 @@ namespace TwinGet.Core.Test.Packaging
                 Solution = config.ProvideSolutionPath ? _testProject.SolutionPath : string.Empty,
                 OutputDirectory = _testProject.RootPath,
             };
-            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(packCommand.Path);
+            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(
+                packCommand.Path
+            );
 
             // Act
             var result = await _sut.PackAsync(packCommand);
 
             // Assert
-            var exists = Directory.EnumerateFiles(
-                packCommand.OutputDirectory,
-                $"{plcProjectData.PropertyGroup.Title}*{NuGetConstants.PackageExtension}",
-                SearchOption.TopDirectoryOnly).Any();
+            var exists = Directory
+                .EnumerateFiles(
+                    packCommand.OutputDirectory,
+                    $"{plcProjectData.PropertyGroup.Title}*{NuGetConstants.PackageExtension}",
+                    SearchOption.TopDirectoryOnly
+                )
+                .Any();
             result.Should().BeTrue();
             exists.Should().BeTrue();
         }

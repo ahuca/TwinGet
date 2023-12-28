@@ -66,7 +66,10 @@ namespace TwinGet.TwincatInterface.Test
 
             // Act
 #pragma warning disable CS8604 // Possible null reference argument.
-            Action constructTwincatProject = () => { TwincatProject? tcProject = new(project); };
+            Action constructTwincatProject = () =>
+            {
+                TwincatProject? tcProject = new(project);
+            };
 #pragma warning restore CS8604 // Possible null reference argument.
 
             // Assert
@@ -83,7 +86,11 @@ namespace TwinGet.TwincatInterface.Test
 
             // Act, construct TwincatProjects
             List<TwincatProject> twincatProjects = [];
-            for (int i = ProjectItemStartingIndex; i <= dteProvider.Dte.Solution.Projects.Count; i++)
+            for (
+                int i = ProjectItemStartingIndex;
+                i <= dteProvider.Dte.Solution.Projects.Count;
+                i++
+            )
             {
                 EnvDTE.Project currentProject = dteProvider.Dte.Solution.Projects.Item(i);
                 if (currentProject.IsTwincatProject())
@@ -93,10 +100,16 @@ namespace TwinGet.TwincatInterface.Test
             // Assert
             foreach (TwincatProject twincatProject in twincatProjects)
             {
-                TestTwincatProject? testTwincatProject = testProject.TwincatProjects.Where(x => x.Name == twincatProject.Name).FirstOrDefault();
+                TestTwincatProject? testTwincatProject = testProject
+                    .TwincatProjects.Where(x => x.Name == twincatProject.Name)
+                    .FirstOrDefault();
 
-                IEnumerable<string>? expectedPlcProjectNames = testTwincatProject?.PlcProjects.Select(x => x.Name);
-                IEnumerable<string> actualPlcProjectNames = twincatProject.PlcProjects.Select(x => x.Name);
+                IEnumerable<string>? expectedPlcProjectNames = testTwincatProject
+                    ?.PlcProjects
+                    .Select(x => x.Name);
+                IEnumerable<string> actualPlcProjectNames = twincatProject.PlcProjects.Select(
+                    x => x.Name
+                );
 
                 expectedPlcProjectNames.Should().BeEquivalentTo(actualPlcProjectNames);
             }

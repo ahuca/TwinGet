@@ -22,20 +22,27 @@ namespace TwinGet.TwincatInterface.Utils
 
         public async Task<string> GetProjectGuidAsync()
         {
-            using XmlReader reader = XmlReader.Create(_filePath, new XmlReaderSettings() { Async = true });
+            using XmlReader reader = XmlReader.Create(
+                _filePath,
+                new XmlReaderSettings() { Async = true }
+            );
 
             while (!reader.EOF)
             {
                 await reader.ReadAsync();
 
-                if (reader.NodeType == XmlNodeType.Element
-                    && reader.Name.Equals("ProjectGuid", StringComparison.OrdinalIgnoreCase))
+                if (
+                    reader.NodeType == XmlNodeType.Element
+                    && reader.Name.Equals("ProjectGuid", StringComparison.OrdinalIgnoreCase)
+                )
                 {
                     return await reader.ReadInnerXmlAsync();
                 }
                 // End of PropertyGroup element found, quit early.
-                else if (reader.NodeType == XmlNodeType.EndElement
-                    && reader.Name.Equals("PropertyGroup", StringComparison.OrdinalIgnoreCase))
+                else if (
+                    reader.NodeType == XmlNodeType.EndElement
+                    && reader.Name.Equals("PropertyGroup", StringComparison.OrdinalIgnoreCase)
+                )
                 {
                     return string.Empty;
                 }

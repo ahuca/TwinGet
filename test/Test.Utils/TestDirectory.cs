@@ -36,7 +36,9 @@ namespace Test.Utils
                 return new(fullPath);
             }
 
-            throw new TestDirectoryCreationException($"Failed to create new test directory. Retried {retries} time(s)");
+            throw new TestDirectoryCreationException(
+                $"Failed to create new test directory. Retried {retries} time(s)"
+            );
         }
 
         public void Dispose() => Directory.Delete(Path, recursive: true);

@@ -13,14 +13,22 @@ namespace TwinGet.TwincatInterface
         private readonly EnvDTE.Project _project;
         private readonly ITcSysManagerAlias _systemManager;
         private readonly List<PlcProject> _plcProjects;
-        public IReadOnlyList<IPlcProject> PlcProjects { get => _plcProjects; }
-        public string AbsolutePath { get => FullName; }
+        public IReadOnlyList<IPlcProject> PlcProjects
+        {
+            get => _plcProjects;
+        }
+        public string AbsolutePath
+        {
+            get => FullName;
+        }
 
         public TwincatProject(EnvDTE.Project project)
         {
             if (!project.IsTwincatProject())
             {
-                throw new NotATwincatProject($"The provided {project.Name} is not a TwinCAT project.");
+                throw new NotATwincatProject(
+                    $"The provided {project.Name} is not a TwinCAT project."
+                );
             }
 
             _project = project;
@@ -28,29 +36,40 @@ namespace TwinGet.TwincatInterface
 
             if (_systemManager is null)
             {
-                throw new CouldNotGetSystemManager($"Failed to get the system manager object from project {_project.Name}");
+                throw new CouldNotGetSystemManager(
+                    $"Failed to get the system manager object from project {_project.Name}"
+                );
             }
 
             _plcProjects = new(TryGetPlcProjects(_systemManager, _project.FullName));
         }
 
-        private static IReadOnlyList<PlcProject> TryGetPlcProjects(ITcSysManagerAlias systemManager, string filePath)
+        private static IReadOnlyList<PlcProject> TryGetPlcProjects(
+            ITcSysManagerAlias systemManager,
+            string filePath
+        )
         {
             List<PlcProject> plcProjects = new();
 
             ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
 
-            TcSmProjectData? tcSmProject = TwincatUtils.DeserializeXmlFileToProjectData<TcSmProjectData>(filePath);
+            TcSmProjectData? tcSmProject =
+                TwincatUtils.DeserializeXmlFileToProjectData<TcSmProjectData>(filePath);
 
             string? rootDir = Path.GetDirectoryName(filePath);
 
             if (tcSmProject.Project.Plc?.Projects is not null)
             {
 #pragma warning disable CS8604 // Possible null reference argument.
-                plcProjects.AddRange(from ProjectElement project in tcSmProject.Project.Plc.Projects
-                                     let plcProject = new PlcProject(systemManager.LookUpPlcProject(project.Name), Path.Join(rootDir, project.PrjFilePath))
-                                     where plcProject is not null
-                                     select plcProject);
+                plcProjects.AddRange(
+                    from ProjectElement project in tcSmProject.Project.Plc.Projects
+                    let plcProject = new PlcProject(
+                        systemManager.LookUpPlcProject(project.Name),
+                        Path.Join(rootDir, project.PrjFilePath)
+                    )
+                    where plcProject is not null
+                    select plcProject
+                );
 #pragma warning restore CS8604 // Possible null reference argument.
             }
 
@@ -58,14 +77,24 @@ namespace TwinGet.TwincatInterface
         }
 
         public void SaveAs(string NewFileName) => _project.SaveAs(NewFileName);
+
         public void Save(string FileName = "") => _project.Save(FileName);
+
         public void Delete() => _project.Delete();
 
-        public string Name { get => _project.Name; set => _project.Name = value; }
+        public string Name
+        {
+            get => _project.Name;
+            set => _project.Name = value;
+        }
 
         public string FileName => _project.FileName;
 
-        public bool IsDirty { get => _project.IsDirty; set => _project.IsDirty = value; }
+        public bool IsDirty
+        {
+            get => _project.IsDirty;
+            set => _project.IsDirty = value;
+        }
 
         public Projects Collection => _project.Collection;
 
@@ -89,7 +118,11 @@ namespace TwinGet.TwincatInterface
 
         public string FullName => _project.FullName;
 
-        public bool Saved { get => _project.Saved; set => _project.Saved = value; }
+        public bool Saved
+        {
+            get => _project.Saved;
+            set => _project.Saved = value;
+        }
 
         public ConfigurationManager ConfigurationManager => _project.ConfigurationManager;
 
@@ -98,6 +131,5 @@ namespace TwinGet.TwincatInterface
         public ProjectItem ParentProjectItem => _project.ParentProjectItem;
 
         public CodeModel CodeModel => _project.CodeModel;
-
     }
 }

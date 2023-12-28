@@ -5,7 +5,10 @@ namespace Test.Utils
     [Serializable]
     public class TestDirectoryCreationException : Exception
     {
-        public TestDirectoryCreationException() : base() { }
-        public TestDirectoryCreationException(string msg) : base(msg) { }
+        public TestDirectoryCreationException()
+            : base() { }
+
+        public TestDirectoryCreationException(string msg)
+            : base(msg) { }
     }
 }
