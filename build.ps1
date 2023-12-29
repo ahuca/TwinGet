@@ -7,7 +7,11 @@ param (
     
     [Parameter()]
     [switch]
-    $NoRestore
+    $NoRestore,
+
+    [Parameter()]
+    [switch]
+    $Test
 )
 
 . "$PSScriptRoot\common.ps1"
@@ -27,3 +31,7 @@ if (-not $NoRestore) {
 }
 
 & $msBuildPath $solution -p:Configuration=$Configuration
+
+if ($Test) {
+    dotnet test --configuration $Configuration --no-build --logger "trx;verbosity=detailed;LogFileName=test_results.xml" $PSScriptRoot\TwinGet.sln
+}

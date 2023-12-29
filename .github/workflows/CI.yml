@@ -5,6 +5,8 @@ jobs:
   CI:
     name: Build project
     runs-on: [self-hosted, Windows, x64, TwinCAT]
+    permissions: 
+      checks: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -17,4 +19,11 @@ jobs:
       - name: Run tests
         shell: pwsh
         run: |
-          dotnet test --configuration Release --no-build --logger "console;verbosity=detailed" .\TwinGet.sln
+          dotnet test --configuration Release --no-build --logger "trx;verbosity=detailed;LogFileName=test_results.trx" .\TwinGet.sln
+
+      - name: Test results reporting
+        uses: dorny/test-reporter@v1
+        with:
+          name: xUnit tests
+          path: ./test/*/TestResults/*.trx
+          reporter: dotnet-trx
