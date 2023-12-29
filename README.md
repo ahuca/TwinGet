@@ -1,3 +1,6 @@
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/ahuca/TwinGet/blob/main/LICENSE)
+[![example workflow](https://github.com/ahuca/TwinGet/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ahuca/TwinGet/actions/workflows/CI.yml?query=branch%3Amain)
+
 # TwinGet
 
 A package manager for TwinCAT libraries
