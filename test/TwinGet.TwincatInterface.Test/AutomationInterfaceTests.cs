@@ -13,7 +13,7 @@ namespace TwinGet.TwincatInterface.Test
         [Fact]
         public void PathExists_ShouldSupportRelativePath()
         {
-            Path.Exists(@"TestTwincatProject\TestTwincatProject.sln").Should().BeTrue();
+            Path.Exists(@$"TestTwincatProject\TestTwincatProject{TwincatConstants.SolutionExtension}").Should().BeTrue();
         }
 
         [StaFact]
@@ -49,7 +49,7 @@ namespace TwinGet.TwincatInterface.Test
         {
             using AutomationInterface sut = new();
 
-            string invalidSolution = $"{Guid.NewGuid()}.sln";
+            string invalidSolution = $"{Guid.NewGuid()}{TwincatConstants.SolutionExtension}";
             Action loadSolution = () => sut.LoadSolution(invalidSolution);
 
             loadSolution.Should().Throw<FileNotFoundException>();

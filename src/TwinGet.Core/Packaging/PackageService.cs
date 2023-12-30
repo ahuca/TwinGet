@@ -6,6 +6,7 @@ using NuGet.Versioning;
 using TwinGet.Core.Commands;
 using TwinGet.TwincatInterface;
 using TwinGet.TwincatInterface.Dto;
+using TwinGet.TwincatInterface.ProjectFileUtils;
 using TwinGet.TwincatInterface.Utils;
 using static NuGet.Configuration.NuGetConstants;
 using Task = System.Threading.Tasks.Task;
@@ -220,8 +221,8 @@ namespace TwinGet.Core.Packaging
 
         private static async Task<string> GetParentSolutionFileAsync(string plcProjectPath)
         {
-            var tcProjectPath = await TwincatUtils.GetParentTwincatProjectFileAsync(plcProjectPath);
-            return await TwincatUtils.GetParentSolutionFileAsync(tcProjectPath);
+            var helper = PlcProjectFileHelper.Create(plcProjectPath);
+            return await helper.GetParentSolutionFileAsync();
         }
     }
 }

@@ -3,6 +3,7 @@
 using Test.Utils;
 using TwinGet.Core.Commands;
 using TwinGet.Core.Packaging;
+using TwinGet.TwincatInterface;
 
 namespace TwinGet.Core.Test.Commands
 {
@@ -51,7 +52,7 @@ namespace TwinGet.Core.Test.Commands
             using TestProject testProject2 = new();
 
             _command.Path = _testProject.GetManagedPlcProjects().First().AbsolutePath;
-            _command.Solution = "foo.sln";
+            _command.Solution = $"foo{TwincatConstants.SolutionExtension}";
 
             var result = await _sut.TestValidateAsync(_command);
             var expectedMsg = string.Format(

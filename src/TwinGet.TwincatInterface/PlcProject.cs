@@ -32,7 +32,7 @@ namespace TwinGet.TwincatInterface
         {
             get => _plcProjectFile.PropertyGroup.ProjectVersion;
         }
-        public bool IsManagedLibrary
+        public bool IsManagedLibrary // TODO: make extension method instead of this
         {
             get => TwincatUtils.IsManagedLibrary(this);
         }

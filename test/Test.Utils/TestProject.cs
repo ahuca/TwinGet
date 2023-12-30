@@ -1,6 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
 using Microsoft.Build.Construction;
+using TwinGet.TwincatInterface;
 using static TwinGet.TwincatInterface.TwincatConstants;
 
 namespace Test.Utils
@@ -38,7 +39,7 @@ namespace Test.Utils
                 .Wait();
 
             SolutionPath = Directory
-                .EnumerateFiles(RootPath, "*.sln", SearchOption.AllDirectories)
+                .EnumerateFiles(RootPath, $"*{SolutionExtension}", SearchOption.AllDirectories)
                 .First();
 
             SolutionFile = SolutionFile.Parse(SolutionPath);

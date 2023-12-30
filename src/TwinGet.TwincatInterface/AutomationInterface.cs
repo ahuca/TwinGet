@@ -2,6 +2,7 @@
 
 using System.Runtime.Versioning;
 using TwinGet.TwincatInterface.Exceptions;
+using TwinGet.TwincatInterface.ProjectFileUtils;
 using TwinGet.TwincatInterface.Utils;
 using static TwinGet.TwincatInterface.TwincatConstants;
 
@@ -156,10 +157,8 @@ namespace TwinGet.TwincatInterface
             // If the given solution path is null or empty, we try to find the right solution.
             if (string.IsNullOrEmpty(solutionPath))
             {
-                string twincatProject = TwincatUtils.GetParentTwincatProjectFile(
-                    fullPlcProjectPath
-                );
-                resolvedSolutionPath = TwincatUtils.GetParentSolutionFile(twincatProject);
+                var helper = PlcProjectFileHelper.Create(plcProjectPath);
+                resolvedSolutionPath = helper.GetParentSolutionFile();
             }
 
             // If the solution is not already loaded, we load it.

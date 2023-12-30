@@ -72,167 +72,6 @@ namespace TwinGet.TwincatInterface.Utils
         }
 
         /// <summary>
-        /// Try to find the TwinCAT project that the given PLC project belongs to.
-        /// </summary>
-        /// <param name="plcProjectPath">The path to the <c>.plcproj</c> file.</param>
-        /// <param name="upwardDepth">The upward depth of parents to search.</param>
-        /// <returns>The absolute path to the TwinCAT project file if successfully found, otherwise <see cref="string.Empty"/>.</returns>
-        /// <exception cref="FileNotFoundException"></exception>
-        public static string GetParentTwincatProjectFile(string plcProjectPath, int upwardDepth = 5)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath);
-            PlcProjectFileHelper helper = new(plcProjectPath);
-            return helper.GetParentTwincatProjectAsync(upwardDepth).Result;
-        }
-
-        /// <summary>
-        /// Try to find the TwinCAT project that the given PLC project belongs to.
-        /// </summary>
-        /// <param name="plcProjectPath">The path to the <c>.plcproj</c> file.</param>
-        /// <param name="upwardDepth">The upward depth of parents to search.</param>
-        /// <returns>The absolute path to the TwinCAT project file if successfully found, otherwise <see cref="string.Empty"/>.</returns>
-        /// <exception cref="FileNotFoundException"></exception>
-        public static async Task<string> GetParentTwincatProjectFileAsync(
-            string plcProjectPath,
-            int upwardDepth = 5
-        )
-        {
-            ArgumentException.ThrowIfNullOrEmpty(plcProjectPath);
-            PlcProjectFileHelper helper = new(plcProjectPath);
-            return await helper.GetParentTwincatProjectAsync(upwardDepth);
-        }
-
-        /// <summary>
-        /// Try to find the solution file that the given TwinCAT project belongs to.
-        /// </summary>
-        /// <param name="twincatProjectPath">The path to the TwinCAT project file.</param>
-        /// <param name="upwardDepth">The upward depth of parents to search.</param>
-        /// <returns>The absolute path to the solution file if successfully found, otherwise <see cref="string.Empty"/>.</returns>
-        /// <exception cref="FileNotFoundException"></exception>
-        public static string GetParentSolutionFile(string twincatProjectPath, int upwardDepth = 5)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(twincatProjectPath, nameof(twincatProjectPath));
-
-            if (!File.Exists(twincatProjectPath))
-            {
-                throw new FileNotFoundException(
-                    $"Provided plc project file path does not exists.",
-                    twincatProjectPath
-                );
-            }
-
-            // We first try to parse the TwinCAT project file and throw if necessary.
-            TcSmProjectData? tcSmProjectData = DeserializeXmlFileToProjectData<TcSmProjectData>(
-                twincatProjectPath
-            );
-
-            /// We recursively look up solution files in parent folders with a depth of <param name="upwardDepth"/param>.
-            string parent = twincatProjectPath;
-            for (int i = 0; i < upwardDepth - 1; i++)
-            {
-                parent = Directory.GetParent(parent)?.FullName ?? string.Empty;
-
-                if (string.IsNullOrEmpty(parent))
-                {
-                    break;
-                }
-
-                var solutionFileCandidates = Directory.EnumerateFiles(
-                    parent,
-                    $"*{TwincatConstants.SolutionExtension}"
-                );
-
-                // We process each solution file we found.
-                foreach (string solutionCandidate in solutionFileCandidates)
-                {
-                    // We should parse the solution file rather than simply reading a raw text file and string-match the GUID.
-                    SolutionFile? solution = SolutionFile.Parse(solutionCandidate);
-
-                    if (solution is null)
-                    {
-                        continue;
-                    }
-
-                    // If that solution contains our GUID, we return it.
-                    if (solution.ProjectsByGuid.ContainsKey(tcSmProjectData.Project.ProjectGUID))
-                    {
-                        return solutionCandidate;
-                    }
-                }
-            }
-
-            return "";
-        }
-
-        /// <summary>
-        /// Try to find the solution file that the given TwinCAT project belongs to.
-        /// </summary>
-        /// <param name="twincatProjectPath">The path to the TwinCAT project file.</param>
-        /// <param name="upwardDepth">The upward depth of parents to search.</param>
-        /// <returns>The absolute path to the solution file if successfully found, otherwise <see cref="string.Empty"/>.</returns>
-        /// <exception cref="FileNotFoundException"></exception>
-        public static async Task<string> GetParentSolutionFileAsync(
-            string twincatProjectPath,
-            int upwardDepth = 5
-        )
-        {
-            ArgumentException.ThrowIfNullOrEmpty(twincatProjectPath, nameof(twincatProjectPath));
-
-            if (!File.Exists(twincatProjectPath))
-            {
-                throw new FileNotFoundException(
-                    $"Provided plc project file path does not exists.",
-                    twincatProjectPath
-                );
-            }
-
-            // We first try to parse the TwinCAT project file and throw if necessary.
-            //TcSmProjectData? tcSmProjectData = DeserializeXmlFileToProjectData<TcSmProjectData>(twincatProjectPath);
-            Task<string> getTcProjectGuidTask = new TcSmProjectFileHelper(
-                twincatProjectPath
-            ).GetProjectGuidAsync();
-
-            /// We recursively look up solution files in parent folders with a depth of <param name="upwardDepth"/param>.
-            string parent = twincatProjectPath;
-            for (int i = 0; i < upwardDepth - 1; i++)
-            {
-                parent = Directory.GetParent(parent)?.FullName ?? string.Empty;
-
-                if (string.IsNullOrEmpty(parent))
-                {
-                    break;
-                }
-
-                var solutionFileCandidates = Directory.EnumerateFiles(
-                    parent,
-                    $"*{TwincatConstants.SolutionExtension}",
-                    SearchOption.TopDirectoryOnly
-                );
-
-                // We process each solution file we found.
-                foreach (string solutionCandidate in solutionFileCandidates)
-                {
-                    // We should parse the solution file rather than simply reading a raw text file and string-match the GUID.
-                    SolutionFile? solution = SolutionFile.Parse(solutionCandidate);
-
-                    if (solution is null)
-                    {
-                        continue;
-                    }
-
-                    var tcProjectGuid = await getTcProjectGuidTask;
-                    // If that solution contains our GUID, we return it.
-                    if (solution.ProjectsByGuid.ContainsKey(tcProjectGuid))
-                    {
-                        return solutionCandidate;
-                    }
-                }
-            }
-
-            return string.Empty;
-        }
-
-        /// <summary>
         /// Verify if the PLC project belongs to the solution.
         /// </summary>
         /// <param name="plcProjectPath">The path to the PLC project file.</param>
@@ -267,14 +106,7 @@ namespace TwinGet.TwincatInterface.Utils
                         project.AbsolutePath
                     );
 
-                    static bool doesNotHavePlcProject(TcSmProjectData tcProject)
-                    {
-                        return tcProject.Project.Plc is null
-                            || tcProject.Project.Plc?.Projects is null
-                            || tcProject.Project.Plc?.Projects.Count == 0;
-                    }
-
-                    if (tcProject is null || doesNotHavePlcProject(tcProject))
+                    if (tcProject is null || !tcProject.HasProject())
                     {
                         continue;
                     }
@@ -346,7 +178,7 @@ namespace TwinGet.TwincatInterface.Utils
             );
         }
 
-        public static bool IsManagedLibrary(IPlcProjectMetadata projectMetadata)
+        public static bool IsManagedLibrary(IPlcProjectMetadata projectMetadata) // TODO: make extension method for IPlcProjectMetadata instead of this
         {
             ArgumentNullException.ThrowIfNull(projectMetadata, nameof(projectMetadata));
             return !string.IsNullOrEmpty(projectMetadata.Company)
