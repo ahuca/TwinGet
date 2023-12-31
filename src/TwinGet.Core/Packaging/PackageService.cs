@@ -8,6 +8,7 @@ using TwinGet.TwincatInterface;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.ProjectFileUtils;
 using TwinGet.TwincatInterface.Utils;
+using TwinGet.Utils.Threading.Tasks;
 using static NuGet.Configuration.NuGetConstants;
 using Task = System.Threading.Tasks.Task;
 
@@ -52,7 +53,7 @@ namespace TwinGet.Core.Packaging
 
         private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
         {
-            string? plcLibrary = SavePlcLibrary(packCommand);
+            string? plcLibrary = await SavePlcLibraryAsync(packCommand);
 
             if (string.IsNullOrEmpty(plcLibrary))
             {
@@ -122,107 +123,108 @@ namespace TwinGet.Core.Packaging
             return true;
         }
 
-        private static string? SavePlcLibrary(IPackCommand packCommand)
+        private static async Task<string?> SavePlcLibraryAsync(IPackCommand packCommand)
         {
+            object libraryPathLock = new();
             string libraryPath = string.Empty;
 
+            // Begin resolving solution if needed.
             Task<string>? getSolutionTask = null;
             if (string.IsNullOrEmpty(packCommand.Solution))
             {
-                getSolutionTask = GetParentSolutionFileAsync(packCommand.Path);
+                getSolutionTask = GetParentSolutionFileAsync(packCommand);
             }
 
-            var thread = new Thread(async () =>
+            StaTaskScheduler staTaskScheduler = new(1);
+            var context = TaskScheduler.FromCurrentSynchronizationContext();
+
+            using var ai = new ThreadLocal<AutomationInterface>(() => new AutomationInterface());
+
+            // Begin AutomationInterface.
+            var initAiTask = Task.Factory.StartNew(
+                () =>
+                {
+                    var _ = ai.Value; // We do this so that ThreadLocal inititalize AutomationInterface();
+
+                    //return ai;
+                },
+                CancellationToken.None,
+                TaskCreationOptions.None,
+                staTaskScheduler
+            );
+
+            string resolvedSolution;
+            if (getSolutionTask is not null)
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                using AutomationInterface ai = new();
-                string resolvedSolution = packCommand.Solution;
+                resolvedSolution = await getSolutionTask;
+            }
+            else
+            {
+                resolvedSolution = packCommand.Solution;
+            }
 
-                // If no solution is provided, we try to find it.
-                if (string.IsNullOrEmpty(resolvedSolution))
+            // Begin saving PLC as library.
+            var savePlcLibTask = initAiTask.ContinueWith(
+                (prevTask) =>
                 {
-                    await SafeExecuteAsync(
-                        async () => resolvedSolution = await getSolutionTask,
-                        packCommand.Logger
-                    );
+                    prevTask.Wait();
 
-                    // If we cannot find the solution, quit early.
-                    if (string.IsNullOrEmpty(resolvedSolution))
+                    lock (libraryPathLock)
                     {
-                        packCommand.Logger?.LogError(
-                            PackagingErrors.FailedToResolveSolutionFile,
-                            packCommand.Path
-                        );
-                        return;
+                        try
+                        {
+                            libraryPath =
+                                ai.Value.SavePlcProject(
+                                    packCommand.Path,
+                                    packCommand.OutputDirectory,
+                                    resolvedSolution
+                                ) ?? string.Empty;
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle the custom exception.
+                            if (ex is PackagingException packagingException)
+                            {
+                                packCommand.Logger?.LogError(packagingException.AsLogMessage());
+                                if (!string.IsNullOrEmpty(packagingException.Source))
+                                {
+                                    packCommand.Logger?.LogError(packagingException.Source);
+                                }
+                                if (!string.IsNullOrEmpty(packagingException.HelpLink))
+                                {
+                                    packCommand.Logger?.LogError(packagingException.HelpLink);
+                                }
+                                packCommand.Logger?.LogError(packagingException.StackTrace);
+                            }
+                            // Rethrow any other exception.
+                            else
+                            {
+                                throw;
+                            }
+                        }
                     }
-                }
+                },
+                CancellationToken.None,
+                TaskContinuationOptions.None,
+                staTaskScheduler
+            );
 
-                packCommand.Logger?.LogInformation(
-                    PackagingStrings.SavingPlcLibrary,
-                    packCommand.Path
-                );
-
-                lock (libraryPath) // Just in case.
-                {
-                    SafeExecute(
-                        () =>
-                            libraryPath = ai.SavePlcProject(
-                                packCommand.Path,
-                                packCommand.OutputDirectory,
-                                resolvedSolution
-                            ),
-                        packCommand.Logger
-                    );
-                }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
+            await savePlcLibTask;
 
             return libraryPath;
         }
 
-        private static bool SafeExecute(Action action, ILogger? logger)
+        private static async Task<string> GetParentSolutionFileAsync(IPackCommand packCommand)
         {
-            try
+            string? result = await PlcProjectFileHelper
+                .Create(packCommand.Path)
+                .GetParentSolutionFileAsync();
+            if (string.IsNullOrEmpty(result))
             {
-                action.Invoke();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler(logger, ex);
+                throw new PackagingException(PackagingErrors.FailedToResolveSolutionFile);
             }
 
-            return false;
-        }
-
-        private static async Task<bool> SafeExecuteAsync(Func<Task> func, ILogger? logger)
-        {
-            try
-            {
-                await func();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler(logger, ex);
-            }
-
-            return false;
-        }
-
-        private static void ExceptionHandler(ILogger? logger, Exception ex)
-        {
-            logger?.LogError(ex.Message);
-        }
-
-        private static async Task<string> GetParentSolutionFileAsync(string plcProjectPath)
-        {
-            var helper = PlcProjectFileHelper.Create(plcProjectPath);
-            return await helper.GetParentSolutionFileAsync();
+            return result;
         }
     }
 }

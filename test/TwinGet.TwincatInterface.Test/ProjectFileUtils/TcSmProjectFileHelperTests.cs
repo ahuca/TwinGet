@@ -13,29 +13,26 @@ public class TcSmProjectFileHelperTests(ITestOutputHelper output)
     [Fact]
     public void Guid_ShouldWork()
     {
+        // Arrange
+        using var testDirectory = TestDirectory.Create();
+        string twincatProjectPath = Path.Combine(
+            testDirectory.Path,
+            $"TestPlcProject1{TwincatConstants.TwincatXaeProjectExtension}"
+        );
+        File.Create(twincatProjectPath).Close();
+        File.WriteAllText(twincatProjectPath, TwincatFileContent);
+        string expected = TwincatProjectGuid;
 
-    // Arrange
-    using var testDirectory = TestDirectory.Create();
-    string twincatProjectPath = Path.Combine(
-        testDirectory.Path,
-        $"TestPlcProject1{TwincatConstants.TwincatXaeProjectExtension}"
-    );
-    File.Create(twincatProjectPath).Close();
-    File.WriteAllText(twincatProjectPath, TwincatFileContent);
-    string expected = TwincatProjectGuid;
+        // Act
+        string actual = TcSmProjectFileHelper.Create(twincatProjectPath).Guid();
 
-    // Act
-    string actual = TcSmProjectFileHelper.Create(twincatProjectPath).Guid();
-
-    // Assert
-    actual.Should().Be(expected);
+        // Assert
+        actual.Should().Be(expected);
     }
-
 
     [Fact]
     public async Task GuidAsync_ShouldWorkAsync()
     {
-
         // Arrange
         using var testDirectory = TestDirectory.Create();
         string twincatProjectPath = Path.Combine(
@@ -53,7 +50,7 @@ public class TcSmProjectFileHelperTests(ITestOutputHelper output)
         actual.Should().Be(expected);
     }
 
-[Theory]
+    [Theory]
     [InlineData(6, 5, true)]
     [InlineData(5, 5, false)]
     [InlineData(3, 5, false)]
@@ -88,7 +85,9 @@ public class TcSmProjectFileHelperTests(ITestOutputHelper output)
         _output.WriteLine($"TwinCAT project file: {twincatProjectPath}");
 
         // Act
-        string actual = TcSmProjectFileHelper.Create(twincatProjectPath).GetParentSolutionFile(searchDepth);
+        string actual = TcSmProjectFileHelper
+            .Create(twincatProjectPath)
+            .GetParentSolutionFile(searchDepth);
 
         // Assert
         bool foundParent = string.IsNullOrEmpty(actual);
@@ -101,7 +100,11 @@ public class TcSmProjectFileHelperTests(ITestOutputHelper output)
     [InlineData(6, 5, true)]
     [InlineData(5, 5, false)]
     [InlineData(3, 5, false)]
-    public async Task GetParentSolutionFile_SpecsAsync(int actualDepth, int searchDepth, bool resultIsEmpty)
+    public async Task GetParentSolutionFile_SpecsAsync(
+        int actualDepth,
+        int searchDepth,
+        bool resultIsEmpty
+    )
     {
         // Arrange
         using var testDirectory = TestDirectory.Create();
@@ -132,7 +135,9 @@ public class TcSmProjectFileHelperTests(ITestOutputHelper output)
         _output.WriteLine($"TwinCAT project file: {twincatProjectPath}");
 
         // Act
-        string actual = await TcSmProjectFileHelper.Create(twincatProjectPath).GetParentSolutionFileAsync(searchDepth);
+        string actual = await TcSmProjectFileHelper
+            .Create(twincatProjectPath)
+            .GetParentSolutionFileAsync(searchDepth);
 
         // Assert
         bool foundParent = string.IsNullOrEmpty(actual);

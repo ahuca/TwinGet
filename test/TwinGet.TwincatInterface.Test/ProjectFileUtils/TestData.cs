@@ -1,8 +1,9 @@
+// This file is licensed to you under MIT license.
+
 namespace TwinGet.TwincatInterface.Test.ProjectFileUtils;
 
 internal static class TestData
 {
-
     public const string SolutionFileContent = """
         Microsoft Visual Studio Solution File, Format Version 12.00
         # Visual Studio 15
@@ -173,7 +174,6 @@ internal static class TestData
         EndGlobal
 
         """;
-
 
     public const string TwincatProjectGuid = "{AF0AA87D-6A50-4129-B38E-8931819C4FEB}";
     public const string TwincatFileContent = $$"""
