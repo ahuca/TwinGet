@@ -2,7 +2,6 @@
 
 using TCatSysManagerLib;
 
-namespace TwinGet.TwincatInterface
-{
-    public interface IPlcProject : IPlcProjectMetadata, ITcPlcIECProject3 { }
-}
+namespace TwinGet.TwincatInterface;
+
+public interface IPlcProject : IPlcProjectMetadata, ITcPlcIECProject3 { }

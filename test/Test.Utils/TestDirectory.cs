@@ -2,45 +2,44 @@
 
 using IOPath = System.IO.Path;
 
-namespace Test.Utils
+namespace Test.Utils;
+
+internal class TestDirectory : IDisposable
 {
-    internal class TestDirectory : IDisposable
+    public const int NumberOfRetries = 5;
+    public string Path { get; }
+    public DirectoryInfo Info { get; }
+
+    private TestDirectory(string path)
     {
-        public const int NumberOfRetries = 5;
-        public string Path { get; }
-        public DirectoryInfo Info { get; }
+        Path = path;
+        Info = new DirectoryInfo(path);
+    }
 
-        private TestDirectory(string path)
+    public static TestDirectory Create()
+    {
+        int retries = 0;
+        while (retries < NumberOfRetries)
         {
-            Path = path;
-            Info = new DirectoryInfo(path);
-        }
+            string guid = Guid.NewGuid().ToString();
 
-        public static TestDirectory Create()
-        {
-            int retries = 0;
-            while (retries < NumberOfRetries)
+            string fullPath = IOPath.Combine(IOPath.GetTempPath(), guid);
+
+            // Temporary folder with the same name already exists, retry.
+            if (Directory.Exists(fullPath))
             {
-                string guid = Guid.NewGuid().ToString();
-
-                string fullPath = IOPath.Combine(IOPath.GetTempPath(), guid);
-
-                // Temporary folder with the same name already exists, retry.
-                if (Directory.Exists(fullPath))
-                {
-                    retries++;
-                    continue;
-                }
-
-                Directory.CreateDirectory(fullPath);
-                return new(fullPath);
+                retries++;
+                continue;
             }
 
-            throw new TestDirectoryCreationException(
-                $"Failed to create new test directory. Retried {retries} time(s)"
-            );
+            Directory.CreateDirectory(fullPath);
+            return new(fullPath);
         }
 
-        public void Dispose() => Directory.Delete(Path, recursive: true);
+        throw new TestDirectoryCreationException(
+            $"Failed to create new test directory. Retried {retries} time(s)"
+        );
     }
+
+    public void Dispose() => Directory.Delete(Path, recursive: true);
 }

@@ -1,9 +1,8 @@
 ﻿// This file is licensed to you under MIT license.
 
-namespace TwinGet.Core
+namespace TwinGet.Core;
+
+public interface ILogMessageException
 {
-    public interface ILogMessageException
-    {
-        public string AsLogMessage();
-    }
+    public string AsLogMessage();
 }

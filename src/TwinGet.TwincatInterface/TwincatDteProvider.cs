@@ -5,105 +5,104 @@ using TwinGet.TwincatInterface.ComMessageFilter;
 using TwinGet.TwincatInterface.Exceptions;
 using TwinGet.TwincatInterface.Utils;
 
-namespace TwinGet.TwincatInterface
+namespace TwinGet.TwincatInterface;
+
+public class TwincatDteProvider : IDisposable
 {
-    public class TwincatDteProvider : IDisposable
+    private bool _disposedValue;
+    private readonly bool _startedMsgFiltering = false;
+
+    public object Owner { get; }
+    public string ProgId { get; }
+    public EnvDTE80.DTE2 Dte { get; }
+
+    /// <summary>
+    /// Construct the wrapper class for a TwinCAT DTE instance.
+    /// </summary>
+    /// <param name="owner">The object that created this object.</param>
+    /// <param name="startMsgFiltering">Start message filtering <see cref="MessageFilter.Register()"/> if this is true. Default value is <code>true</code>.</param>
+    /// <exception cref="CouldNotCreateTwincatDteException">Throw this exception when it fails to create a TwinCAT DTE instance.</exception>
+    public TwincatDteProvider(object owner, bool startMsgFiltering = true)
     {
-        private bool _disposedValue;
-        private readonly bool _startedMsgFiltering = false;
+        ArgumentNullException.ThrowIfNull(owner, nameof(owner));
+        Owner = owner;
 
-        public object Owner { get; }
-        public string ProgId { get; }
-        public EnvDTE80.DTE2 Dte { get; }
-
-        /// <summary>
-        /// Construct the wrapper class for a TwinCAT DTE instance.
-        /// </summary>
-        /// <param name="owner">The object that created this object.</param>
-        /// <param name="startMsgFiltering">Start message filtering <see cref="MessageFilter.Register()"/> if this is true. Default value is <code>true</code>.</param>
-        /// <exception cref="CouldNotCreateTwincatDteException">Throw this exception when it fails to create a TwinCAT DTE instance.</exception>
-        public TwincatDteProvider(object owner, bool startMsgFiltering = true)
+        foreach (string p in TwincatConstants.SupportedProgIds)
         {
-            ArgumentNullException.ThrowIfNull(owner, nameof(owner));
-            Owner = owner;
+            Type? t = Type.GetTypeFromProgID(p);
 
-            foreach (string p in TwincatConstants.SupportedProgIds)
+            if (t is null)
             {
-                Type? t = Type.GetTypeFromProgID(p);
+                continue;
+            }
 
-                if (t is null)
+            EnvDTE80.DTE2? dte;
+            try
+            {
+                dte = (EnvDTE80.DTE2?)Activator.CreateInstance(t);
+                if (dte is null)
                 {
                     continue;
                 }
-
-                EnvDTE80.DTE2? dte;
-                try
-                {
-                    dte = (EnvDTE80.DTE2?)Activator.CreateInstance(t);
-                    if (dte is null)
-                    {
-                        continue;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-
-                if (dte.IsTwinCatIntegrated())
-                {
-                    ProgId = p;
-                    Dte = dte;
-                    break;
-                }
             }
-
-            if (Dte is null || string.IsNullOrEmpty(ProgId))
+            catch
             {
-                throw new CouldNotCreateTwincatDteException(
-                    $"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}"
-                );
+                continue;
             }
 
-            if (startMsgFiltering)
+            if (dte.IsTwinCatIntegrated())
             {
-                _startedMsgFiltering = true;
-                MessageFilter.Register();
+                ProgId = p;
+                Dte = dte;
+                break;
             }
         }
 
-        protected virtual void Dispose(bool disposing)
+        if (Dte is null || string.IsNullOrEmpty(ProgId))
         {
-            if (!_disposedValue)
-            {
-                if (disposing) { }
+            throw new CouldNotCreateTwincatDteException(
+                $"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}"
+            );
+        }
 
-                if (Dte is not null)
+        if (startMsgFiltering)
+        {
+            _startedMsgFiltering = true;
+            MessageFilter.Register();
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing) { }
+
+            if (Dte is not null)
+            {
+                Dte.Quit();
+                Marshal.ReleaseComObject(Dte);
+
+                if (_startedMsgFiltering)
                 {
-                    Dte.Quit();
-                    Marshal.ReleaseComObject(Dte);
-
-                    if (_startedMsgFiltering)
-                    {
-                        MessageFilter.Revoke();
-                    }
+                    MessageFilter.Revoke();
                 }
-
-                _disposedValue = true;
             }
-        }
 
-        ~TwincatDteProvider()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
+            _disposedValue = true;
         }
+    }
 
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+    ~TwincatDteProvider()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: false);
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

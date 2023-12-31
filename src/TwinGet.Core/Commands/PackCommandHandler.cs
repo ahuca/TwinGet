@@ -5,59 +5,56 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using TwinGet.Core.Packaging;
 
-namespace TwinGet.Core.Commands
+namespace TwinGet.Core.Commands;
+
+public class PackCommandHander(IValidator<PackCommand> validator, IPackageService packageService)
+    : IRequestHandler<PackCommand, bool>
 {
-    public class PackCommandHander(
-        IValidator<PackCommand> validator,
-        IPackageService packageService
-    ) : IRequestHandler<PackCommand, bool>
+    private readonly IValidator<PackCommand> _validator =
+        validator ?? throw new ArgumentNullException(nameof(validator));
+    private readonly IPackageService _packageService =
+        packageService ?? throw new ArgumentNullException(nameof(packageService));
+
+    /// <summary>
+    /// Handles <see cref="PackCommand"/>.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>True if successful, false otherwise.</returns>
+    /// <exception cref="PackagingException"></exception>
+    public async Task<bool> Handle(PackCommand request, CancellationToken cancellationToken)
     {
-        private readonly IValidator<PackCommand> _validator =
-            validator ?? throw new ArgumentNullException(nameof(validator));
-        private readonly IPackageService _packageService =
-            packageService ?? throw new ArgumentNullException(nameof(packageService));
+        FluentValidation.Results.ValidationResult result = await _validator.ValidateAsync(
+            request,
+            cancellationToken
+        );
 
-        /// <summary>
-        /// Handles <see cref="PackCommand"/>.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>True if successful, false otherwise.</returns>
-        /// <exception cref="PackagingException"></exception>
-        public async Task<bool> Handle(PackCommand request, CancellationToken cancellationToken)
+        if (!result.IsValid)
         {
-            FluentValidation.Results.ValidationResult result = await _validator.ValidateAsync(
-                request,
-                cancellationToken
-            );
-
-            if (!result.IsValid)
-            {
-                throw new PackagingException(result.Errors.ToList());
-            }
-
-            request.Logger?.LogInformation(
-                PackagingStrings.AttemptingToBuildPackage,
-                Path.GetFileName(request.Path)
-            );
-
-            request.Path = Path.GetFullPath(request.Path);
-
-            if (!string.IsNullOrEmpty(request.Solution))
-            {
-                request.Solution = Path.GetFullPath(request.Solution);
-            }
-
-            if (!string.IsNullOrEmpty(request.OutputDirectory))
-            {
-                request.OutputDirectory = Path.GetFullPath(request.OutputDirectory);
-            }
-            else
-            {
-                request.OutputDirectory = Directory.GetCurrentDirectory();
-            }
-
-            return await _packageService.PackAsync(request);
+            throw new PackagingException(result.Errors.ToList());
         }
+
+        request.Logger?.LogInformation(
+            PackagingStrings.AttemptingToBuildPackage,
+            Path.GetFileName(request.Path)
+        );
+
+        request.Path = Path.GetFullPath(request.Path);
+
+        if (!string.IsNullOrEmpty(request.Solution))
+        {
+            request.Solution = Path.GetFullPath(request.Solution);
+        }
+
+        if (!string.IsNullOrEmpty(request.OutputDirectory))
+        {
+            request.OutputDirectory = Path.GetFullPath(request.OutputDirectory);
+        }
+        else
+        {
+            request.OutputDirectory = Directory.GetCurrentDirectory();
+        }
+
+        return await _packageService.PackAsync(request);
     }
 }

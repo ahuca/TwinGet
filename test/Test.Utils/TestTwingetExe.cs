@@ -2,18 +2,17 @@
 
 using IOPath = System.IO.Path;
 
-namespace Test.Utils
+namespace Test.Utils;
+
+internal class TestTwingetExe
 {
-    internal class TestTwingetExe
+    public string Path { get; } = string.Empty;
+
+    public TestTwingetExe()
     {
-        public string Path { get; } = string.Empty;
+        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        string exeName = "TwinGet.exe";
 
-        public TestTwingetExe()
-        {
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string exeName = "TwinGet.exe";
-
-            Path = IOPath.Combine(baseDir, exeName);
-        }
+        Path = IOPath.Combine(baseDir, exeName);
     }
 }

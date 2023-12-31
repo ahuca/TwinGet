@@ -12,219 +12,215 @@ using TwinGet.Utils.Threading.Tasks;
 using static NuGet.Configuration.NuGetConstants;
 using Task = System.Threading.Tasks.Task;
 
-namespace TwinGet.Core.Packaging
+namespace TwinGet.Core.Packaging;
+
+public class PackageService : IPackageService
 {
-    public class PackageService : IPackageService
+    public PackageService() { }
+
+    public bool Pack(IPackCommand packCommand)
     {
-        public PackageService() { }
+        return PackAsync(packCommand).Result;
+    }
 
-        public bool Pack(IPackCommand packCommand)
+    /// <summary>
+    /// Package a PLC project into a NuGet package.
+    /// </summary>
+    /// <param name="packCommand"></param>
+    /// <returns>True if successful, otherwise false.</returns>
+    public async Task<bool> PackAsync(IPackCommand packCommand)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(packCommand.Path, nameof(packCommand.Path));
+        ArgumentException.ThrowIfNullOrEmpty(
+            packCommand.OutputDirectory,
+            nameof(packCommand.OutputDirectory)
+        );
+
+        if (TwincatUtils.IsPlcProjectFileExtension(packCommand.Path))
         {
-            return PackAsync(packCommand).Result;
+            return await PackFromProjectFileAsync(packCommand);
+        }
+        else if (Utils.IsNuspecExtension(packCommand.Path))
+        {
+            return await PackFromNuspecFileAsync(packCommand);
         }
 
-        /// <summary>
-        /// Package a PLC project into a NuGet package.
-        /// </summary>
-        /// <param name="packCommand"></param>
-        /// <returns>True if successful, otherwise false.</returns>
-        public async Task<bool> PackAsync(IPackCommand packCommand)
+        return true;
+    }
+
+    private Task<bool> PackFromNuspecFileAsync(IPackCommand packCommand) =>
+        throw new NotImplementedException();
+
+    private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
+    {
+        string? plcLibrary = await SavePlcLibraryAsync(packCommand);
+
+        if (string.IsNullOrEmpty(plcLibrary))
         {
-            ArgumentException.ThrowIfNullOrEmpty(packCommand.Path, nameof(packCommand.Path));
-            ArgumentException.ThrowIfNullOrEmpty(
-                packCommand.OutputDirectory,
-                nameof(packCommand.OutputDirectory)
-            );
-
-            if (TwincatUtils.IsPlcProjectFileExtension(packCommand.Path))
-            {
-                return await PackFromProjectFileAsync(packCommand);
-            }
-            else if (Utils.IsNuspecExtension(packCommand.Path))
-            {
-                return await PackFromNuspecFileAsync(packCommand);
-            }
-
-            return true;
+            packCommand.Logger?.LogError(PackagingErrors.FailedToSavePlcLibrary, packCommand.Path);
+            return false;
         }
 
-        private Task<bool> PackFromNuspecFileAsync(IPackCommand packCommand) =>
-            throw new NotImplementedException();
+        bool result = BuildPackage(packCommand, plcLibrary);
 
-        private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
+        // Delete the library once we are done packing.
+        if (!string.IsNullOrEmpty(plcLibrary))
         {
-            string? plcLibrary = await SavePlcLibraryAsync(packCommand);
-
-            if (string.IsNullOrEmpty(plcLibrary))
-            {
-                packCommand.Logger?.LogError(
-                    PackagingErrors.FailedToSavePlcLibrary,
-                    packCommand.Path
-                );
-                return false;
-            }
-
-            bool result = BuildPackage(packCommand, plcLibrary);
-
-            // Delete the library once we are done packing.
-            if (!string.IsNullOrEmpty(plcLibrary))
-            {
-                File.Delete(plcLibrary);
-            }
-
-            return result;
+            File.Delete(plcLibrary);
         }
 
-        private static bool BuildPackage(IPackCommand packCommand, string libraryPath)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(libraryPath, nameof(libraryPath));
+        return result;
+    }
 
-            var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(
-                packCommand.Path
-            );
+    private static bool BuildPackage(IPackCommand packCommand, string libraryPath)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(libraryPath, nameof(libraryPath));
 
-            ManifestMetadata metadata =
-                new()
+        var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(
+            packCommand.Path
+        );
+
+        ManifestMetadata metadata =
+            new()
+            {
+                Authors = new List<string>()
                 {
-                    Authors = new List<string>()
-                    {
-                        plcProjectData.PropertyGroup.Author ?? string.Empty
-                    },
-                    Version = new NuGetVersion(
-                        plcProjectData.PropertyGroup.ProjectVersion ?? string.Empty
-                    ),
-                    Id = plcProjectData.PropertyGroup.Title,
-                    Description = plcProjectData.PropertyGroup.Description,
-                };
-
-            var files = new List<ManifestFile>()
-            {
-                new() { Source = libraryPath, Target = "lib" }
+                    plcProjectData.PropertyGroup.Author ?? string.Empty
+                },
+                Version = new NuGetVersion(
+                    plcProjectData.PropertyGroup.ProjectVersion ?? string.Empty
+                ),
+                Id = plcProjectData.PropertyGroup.Title,
+                Description = plcProjectData.PropertyGroup.Description,
             };
 
-            if (!Directory.Exists(packCommand.OutputDirectory))
-            {
-                Directory.CreateDirectory(packCommand.OutputDirectory);
-            }
+        var files = new List<ManifestFile>()
+        {
+            new() { Source = libraryPath, Target = "lib" }
+        };
 
-            var packageBuilder = new PackageBuilder();
-            packageBuilder.Populate(metadata);
-            packageBuilder.PopulateFiles(string.Empty, files);
-
-            string outputPath = Path.Combine(
-                packCommand.OutputDirectory,
-                $"{packageBuilder.Id}{PackageExtension}"
-            );
-            using FileStream stream = File.Open(outputPath, FileMode.OpenOrCreate);
-            packageBuilder.Save(stream);
-
-            packCommand.Logger?.LogInformation(PackagingStrings.PackSuccess, outputPath);
-
-            return true;
+        if (!Directory.Exists(packCommand.OutputDirectory))
+        {
+            Directory.CreateDirectory(packCommand.OutputDirectory);
         }
 
-        private static async Task<string?> SavePlcLibraryAsync(IPackCommand packCommand)
+        var packageBuilder = new PackageBuilder();
+        packageBuilder.Populate(metadata);
+        packageBuilder.PopulateFiles(string.Empty, files);
+
+        string outputPath = Path.Combine(
+            packCommand.OutputDirectory,
+            $"{packageBuilder.Id}{PackageExtension}"
+        );
+        using FileStream stream = File.Open(outputPath, FileMode.OpenOrCreate);
+        packageBuilder.Save(stream);
+
+        packCommand.Logger?.LogInformation(PackagingStrings.PackSuccess, outputPath);
+
+        return true;
+    }
+
+    private static async Task<string?> SavePlcLibraryAsync(IPackCommand packCommand)
+    {
+        object libraryPathLock = new();
+        string libraryPath = string.Empty;
+
+        // Begin resolving solution if needed.
+        Task<string>? getSolutionTask = null;
+        if (string.IsNullOrEmpty(packCommand.Solution))
         {
-            object libraryPathLock = new();
-            string libraryPath = string.Empty;
+            getSolutionTask = GetParentSolutionFileAsync(packCommand);
+        }
 
-            // Begin resolving solution if needed.
-            Task<string>? getSolutionTask = null;
-            if (string.IsNullOrEmpty(packCommand.Solution))
+        StaTaskScheduler staTaskScheduler = new(1);
+        var context = TaskScheduler.FromCurrentSynchronizationContext();
+
+        using var ai = new ThreadLocal<AutomationInterface>(() => new AutomationInterface());
+
+        // Begin AutomationInterface.
+        var initAiTask = Task.Factory.StartNew(
+            () =>
             {
-                getSolutionTask = GetParentSolutionFileAsync(packCommand);
-            }
+                var _ = ai.Value; // We do this so that ThreadLocal inititalize AutomationInterface();
 
-            StaTaskScheduler staTaskScheduler = new(1);
-            var context = TaskScheduler.FromCurrentSynchronizationContext();
+                //return ai;
+            },
+            CancellationToken.None,
+            TaskCreationOptions.None,
+            staTaskScheduler
+        );
 
-            using var ai = new ThreadLocal<AutomationInterface>(() => new AutomationInterface());
+        string resolvedSolution;
+        if (getSolutionTask is not null)
+        {
+            resolvedSolution = await getSolutionTask;
+        }
+        else
+        {
+            resolvedSolution = packCommand.Solution;
+        }
 
-            // Begin AutomationInterface.
-            var initAiTask = Task.Factory.StartNew(
-                () =>
+        // Begin saving PLC as library.
+        var savePlcLibTask = initAiTask.ContinueWith(
+            (prevTask) =>
+            {
+                prevTask.Wait();
+
+                lock (libraryPathLock)
                 {
-                    var _ = ai.Value; // We do this so that ThreadLocal inititalize AutomationInterface();
-
-                    //return ai;
-                },
-                CancellationToken.None,
-                TaskCreationOptions.None,
-                staTaskScheduler
-            );
-
-            string resolvedSolution;
-            if (getSolutionTask is not null)
-            {
-                resolvedSolution = await getSolutionTask;
-            }
-            else
-            {
-                resolvedSolution = packCommand.Solution;
-            }
-
-            // Begin saving PLC as library.
-            var savePlcLibTask = initAiTask.ContinueWith(
-                (prevTask) =>
-                {
-                    prevTask.Wait();
-
-                    lock (libraryPathLock)
+                    try
                     {
-                        try
+                        libraryPath =
+                            ai.Value.SavePlcProject(
+                                packCommand.Path,
+                                packCommand.OutputDirectory,
+                                resolvedSolution
+                            ) ?? string.Empty;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle the custom exception.
+                        if (ex is PackagingException packagingException)
                         {
-                            libraryPath =
-                                ai.Value.SavePlcProject(
-                                    packCommand.Path,
-                                    packCommand.OutputDirectory,
-                                    resolvedSolution
-                                ) ?? string.Empty;
+                            packCommand.Logger?.LogError(packagingException.AsLogMessage());
+                            if (!string.IsNullOrEmpty(packagingException.Source))
+                            {
+                                packCommand.Logger?.LogError(packagingException.Source);
+                            }
+                            if (!string.IsNullOrEmpty(packagingException.HelpLink))
+                            {
+                                packCommand.Logger?.LogError(packagingException.HelpLink);
+                            }
+                            packCommand.Logger?.LogError(packagingException.StackTrace);
                         }
-                        catch (Exception ex)
+                        // Rethrow any other exception.
+                        else
                         {
-                            // Handle the custom exception.
-                            if (ex is PackagingException packagingException)
-                            {
-                                packCommand.Logger?.LogError(packagingException.AsLogMessage());
-                                if (!string.IsNullOrEmpty(packagingException.Source))
-                                {
-                                    packCommand.Logger?.LogError(packagingException.Source);
-                                }
-                                if (!string.IsNullOrEmpty(packagingException.HelpLink))
-                                {
-                                    packCommand.Logger?.LogError(packagingException.HelpLink);
-                                }
-                                packCommand.Logger?.LogError(packagingException.StackTrace);
-                            }
-                            // Rethrow any other exception.
-                            else
-                            {
-                                throw;
-                            }
+                            throw;
                         }
                     }
-                },
-                CancellationToken.None,
-                TaskContinuationOptions.None,
-                staTaskScheduler
-            );
+                }
+            },
+            CancellationToken.None,
+            TaskContinuationOptions.None,
+            staTaskScheduler
+        );
 
-            await savePlcLibTask;
+        await savePlcLibTask;
 
-            return libraryPath;
-        }
+        return libraryPath;
+    }
 
-        private static async Task<string> GetParentSolutionFileAsync(IPackCommand packCommand)
+    private static async Task<string> GetParentSolutionFileAsync(IPackCommand packCommand)
+    {
+        string? result = await PlcProjectFileHelper
+            .Create(packCommand.Path)
+            .GetParentSolutionFileAsync();
+        if (string.IsNullOrEmpty(result))
         {
-            string? result = await PlcProjectFileHelper
-                .Create(packCommand.Path)
-                .GetParentSolutionFileAsync();
-            if (string.IsNullOrEmpty(result))
-            {
-                throw new PackagingException(PackagingErrors.FailedToResolveSolutionFile);
-            }
-
-            return result;
+            throw new PackagingException(PackagingErrors.FailedToResolveSolutionFile);
         }
+
+        return result;
     }
 }

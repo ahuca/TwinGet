@@ -5,33 +5,32 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace TwinGet.Cli
+namespace TwinGet.Cli;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddLogger(this IServiceCollection services)
     {
-        public static IServiceCollection AddLogger(this IServiceCollection services)
+        IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+        IConfigurationRoot config = configurationBuilder.Build();
+
+        using ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder =>
         {
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            loggingBuilder
+                .ClearProviders()
+                .AddConfiguration(config.GetSection("Logging"))
+                .AddConsole();
+        });
 
-            IConfigurationRoot config = configurationBuilder.Build();
+        ILogger logger = loggerFactory.CreateLogger(
+            Assembly.GetExecutingAssembly().GetName().Name ?? "TwinGet"
+        );
 
-            using ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder =>
-            {
-                loggingBuilder
-                    .ClearProviders()
-                    .AddConfiguration(config.GetSection("Logging"))
-                    .AddConsole();
-            });
+        services.AddSingleton(logger);
 
-            ILogger logger = loggerFactory.CreateLogger(
-                Assembly.GetExecutingAssembly().GetName().Name ?? "TwinGet"
-            );
-
-            services.AddSingleton(logger);
-
-            return services;
-        }
+        return services;
     }
 }
