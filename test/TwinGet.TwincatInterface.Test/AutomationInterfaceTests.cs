@@ -125,7 +125,7 @@ public class AutomationInterfaceTests(ITestOutputHelper output) : IDisposable
         );
 
         // Act
-        var result = sut.SavePlcProject(
+        string result = sut.SavePlcProject(
             plcProject.AbsolutePath,
             outputDir,
             testProject.SolutionPath
@@ -157,7 +157,7 @@ public class AutomationInterfaceTests(ITestOutputHelper output) : IDisposable
         );
 
         // Act
-        var result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir);
+        string result = sut.SavePlcProject(plcProject.AbsolutePath, outputDir);
 
         // Assert
         File.Exists(expected).Should().BeTrue();

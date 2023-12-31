@@ -131,25 +131,17 @@ public class PlcProjectFileHelper : IPlcProjectFileHelper
         var getGuid = GuidAsync();
         var tcSmProject = TwincatUtils.DeserializeXmlFileToProjectData<TcSmProjectData>(path);
 
-        if (!tcSmProject.HasProject())
-        {
-            return false;
-        }
-
-        if (tcSmProject.Project.Plc is null)
-        {
-            return false;
-        }
-
         string myGuid = await getGuid;
 
-        var myself = tcSmProject.Project.Plc.Projects.Where(
-            x =>
-                x.GUID.Equals(myGuid, StringComparison.OrdinalIgnoreCase)
-                && IOPath
-                    .GetFullPath(x.PrjFilePath, path)
-                    .Equals(Path, StringComparison.OrdinalIgnoreCase)
-        );
+        var myself = tcSmProject
+            .EnumerateProjects()
+            .Where(
+                x =>
+                    x.GUID.Equals(myGuid, StringComparison.OrdinalIgnoreCase)
+                    && IOPath
+                        .GetFullPath(x.PrjFilePath, path)
+                        .Equals(Path, StringComparison.OrdinalIgnoreCase)
+            );
 
         return myself is not null;
     }

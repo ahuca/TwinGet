@@ -22,7 +22,7 @@ internal class TestPlcProject : IPlcProjectMetadata
     }
     public string Title
     {
-        get => _data.PropertyGroup.Title;
+        get => _data.PropertyGroup.Title ?? string.Empty;
     }
     public string? ProjectVersion
     {

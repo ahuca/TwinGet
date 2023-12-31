@@ -39,20 +39,15 @@ public class PackCommand : Command
         AddOption(outputDirectory);
     }
 
-    public new class Handler : ICommandHandler, IPackCommand
+    public new class Handler(IMediator mediator, ILogger logger) : ICommandHandler, IPackCommand
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator _mediator =
+            mediator ?? throw new ArgumentNullException(nameof(mediator));
 
-        public string Path { get; set; }
-        public string Solution { get; set; }
-        public string OutputDirectory { get; set; }
-        public ILogger Logger { get; set; }
-
-        public Handler(IMediator mediator, ILogger logger)
-        {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            Logger = logger;
-        }
+        public string Path { get; set; } = string.Empty;
+        public string Solution { get; set; } = string.Empty;
+        public string OutputDirectory { get; set; } = string.Empty;
+        public ILogger? Logger { get; set; } = logger;
 
         public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
 
@@ -60,6 +55,11 @@ public class PackCommand : Command
             "Style",
             "IDE0003:Remove qualification",
             Justification = "For clarity."
+        )]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Style",
+            "IDE0059:Unnecessary assignment of a value",
+            Justification = "For explicitness"
         )]
         public async Task<int> InvokeAsync(InvocationContext context)
         {

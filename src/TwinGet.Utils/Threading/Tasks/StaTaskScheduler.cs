@@ -15,7 +15,7 @@ namespace TwinGet.Utils.Threading.Tasks;
 public sealed class StaTaskScheduler : TaskScheduler, IDisposable
 {
     /// <summary>Stores the queued tasks to be executed by our pool of STA threads.</summary>
-    private BlockingCollection<Task> _tasks;
+    private BlockingCollection<Task>? _tasks;
 
     /// <summary>The STA threads used by the scheduler.</summary>
     private readonly List<Thread> _threads;
@@ -25,10 +25,7 @@ public sealed class StaTaskScheduler : TaskScheduler, IDisposable
     public StaTaskScheduler(int numberOfThreads)
     {
         // Validate arguments
-        if (numberOfThreads < 1)
-        {
-            throw new ArgumentOutOfRangeException(nameof(numberOfThreads));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(numberOfThreads, 1);
 
         // Initialize the tasks collection
         _tasks = [];
@@ -63,13 +60,13 @@ public sealed class StaTaskScheduler : TaskScheduler, IDisposable
     /// <param name="task">The task to be executed.</param>
     protected override void QueueTask(Task task) =>
         // Push it into the blocking collection of tasks
-        _tasks.Add(task);
+        _tasks?.Add(task);
 
     /// <summary>Provides a list of the scheduled tasks for the debugger to consume.</summary>
     /// <returns>An enumerable of all tasks currently scheduled.</returns>
     protected override IEnumerable<Task> GetScheduledTasks() =>
         // Serialize the contents of the blocking collection of tasks for the debugger
-        _tasks;
+        _tasks ?? Enumerable.Empty<Task>();
 
     /// <summary>Determines whether a Task may be inlined.</summary>
     /// <param name="task">The task to be executed.</param>

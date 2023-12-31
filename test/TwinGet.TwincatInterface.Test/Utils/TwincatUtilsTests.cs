@@ -241,7 +241,7 @@ public class TwincatUtilsTests(ITestOutputHelper output)
     )
     {
         // Arrange
-        var projectFile = Path.GetTempFileName();
+        string projectFile = Path.GetTempFileName();
         File.WriteAllText(projectFile, xmlContent);
 
         // Act
@@ -273,7 +273,7 @@ public class TwincatUtilsTests(ITestOutputHelper output)
     )
     {
         // Arrange
-        var projectFile = Path.GetTempFileName();
+        string projectFile = Path.GetTempFileName();
         File.WriteAllText(projectFile, xmlContent);
 
         // Act

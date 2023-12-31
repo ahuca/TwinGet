@@ -53,7 +53,20 @@ public class PackageService : IPackageService
 
     private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
     {
-        string? plcLibrary = await SavePlcLibraryAsync(packCommand);
+        string plcLibrary = string.Empty;
+
+        try
+        {
+            plcLibrary = await SavePlcLibraryAsync(packCommand);
+        }
+        catch (PackagingException ex)
+        {
+            packCommand.Logger?.LogError(ex.AsLogMessage());
+        }
+        catch (Exception ex)
+        {
+            packCommand.Logger?.LogError(ex.Message);
+        }
 
         if (string.IsNullOrEmpty(plcLibrary))
         {
@@ -120,7 +133,7 @@ public class PackageService : IPackageService
         return true;
     }
 
-    private static async Task<string?> SavePlcLibraryAsync(IPackCommand packCommand)
+    private static async Task<string> SavePlcLibraryAsync(IPackCommand packCommand)
     {
         object libraryPathLock = new();
         string libraryPath = string.Empty;
@@ -133,7 +146,6 @@ public class PackageService : IPackageService
         }
 
         StaTaskScheduler staTaskScheduler = new(1);
-        var context = TaskScheduler.FromCurrentSynchronizationContext();
 
         using var ai = new ThreadLocal<AutomationInterface>(() => new AutomationInterface());
 
@@ -142,8 +154,6 @@ public class PackageService : IPackageService
             () =>
             {
                 var _ = ai.Value; // We do this so that ThreadLocal inititalize AutomationInterface();
-
-                //return ai;
             },
             CancellationToken.None,
             TaskCreationOptions.None,
@@ -170,12 +180,15 @@ public class PackageService : IPackageService
                 {
                     try
                     {
+                        // Suppress because we are in try block.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                         libraryPath =
                             ai.Value.SavePlcProject(
                                 packCommand.Path,
                                 packCommand.OutputDirectory,
                                 resolvedSolution
                             ) ?? string.Empty;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                     }
                     catch (Exception ex)
                     {

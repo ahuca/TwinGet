@@ -9,8 +9,8 @@ namespace TwinGet.Cli.FuncTest.Commands;
 
 public class PackCommandTests(ITestOutputHelper output)
 {
-    private static readonly TestTwingetExe _twingetExe = new();
-    private static TestProject _testProject = new();
+    private static readonly TestTwingetExe s_twingetExe = new();
+    private static readonly TestProject s_testProject = new();
     private readonly CommandRunner _commandRunner = new(output);
     private readonly ITestOutputHelper _output = output;
 
@@ -18,10 +18,10 @@ public class PackCommandTests(ITestOutputHelper output)
     public void Pack_WithManagedPlcProject_ShouldSucceed()
     {
         // Arrange
-        var testPlcProject = _testProject.GetManagedPlcProjects().First();
-        string[] args = [testPlcProject.AbsolutePath, "--solution", _testProject.SolutionPath];
+        var testPlcProject = s_testProject.GetManagedPlcProjects().First();
+        string[] args = [testPlcProject.AbsolutePath, "--solution", s_testProject.SolutionPath];
         string expectedPackagePath = Path.Combine(
-            _testProject.RootPath,
+            s_testProject.RootPath,
             $"{testPlcProject.Title}{NuGetConstants.PackageExtension}"
         );
 
@@ -41,8 +41,8 @@ public class PackCommandTests(ITestOutputHelper output)
     public void Pack_WithUnmanagedPlcProject_ShouldFail()
     {
         // Arrange
-        var testPlcProject = _testProject.GetPlcProjects().Where(x => !x.IsManagedLibrary).First();
-        string[] args = [testPlcProject.AbsolutePath, "--solution", _testProject.SolutionPath];
+        var testPlcProject = s_testProject.GetPlcProjects().Where(x => !x.IsManagedLibrary).First();
+        string[] args = [testPlcProject.AbsolutePath, "--solution", s_testProject.SolutionPath];
 
         // Act
         var result = RunPack(args);
@@ -67,8 +67,8 @@ public class PackCommandTests(ITestOutputHelper output)
         var allArgs = pack.Concat(args);
 
         var result = _commandRunner.Run(
-            _twingetExe.Path,
-            _testProject.RootPath,
+            s_twingetExe.Path,
+            s_testProject.RootPath,
             string.Join(" ", allArgs)
         );
 

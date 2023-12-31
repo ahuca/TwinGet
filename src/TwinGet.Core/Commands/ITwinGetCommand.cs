@@ -6,5 +6,5 @@ namespace TwinGet.Core.Commands;
 
 public interface ITwinGetCommand
 {
-    public ILogger Logger { get; set; }
+    public ILogger? Logger { get; set; }
 }

@@ -29,7 +29,7 @@ public class TwincatDteProvider : IDisposable
 
         foreach (string p in TwincatConstants.SupportedProgIds)
         {
-            Type? t = Type.GetTypeFromProgID(p);
+            var t = Type.GetTypeFromProgID(p);
 
             if (t is null)
             {

@@ -87,29 +87,19 @@ public static class TwincatUtils
         foreach (ProjectInSolution? project in solutionFile.ProjectsInOrder)
         {
             // We skip any project that does not have TwinCAT project file extension.
+            /// TODO: should we use the file extension, or should we use the <see cref="TwincatConstants.TwincatXaeProjectKind"/> and <see cref="TwincatConstants.TwincatPlcProjectKind"/>?
             if (!IsTwincatProjectFileExtension(project.RelativePath))
             {
                 continue;
             }
 
             // We parse the TwinCAT project file.
-            TcSmProjectData? tcProject = null;
-            try
-            {
-                tcProject = DeserializeXmlFileToProjectData<TcSmProjectData>(project.AbsolutePath);
-
-                if (tcProject is null || !tcProject.HasProject())
-                {
-                    continue;
-                }
-            }
-            catch
-            {
-                continue;
-            }
+            TcSmProjectData tcProject = DeserializeXmlFileToProjectData<TcSmProjectData>(
+                project.AbsolutePath
+            );
 
             // We process through each PLC project the TwinCAT project contains.
-            foreach (TwingetProjectElement plcProject in tcProject.Project.Plc?.Projects)
+            foreach (TwingetProjectElement plcProject in tcProject.EnumerateProjects())
             {
                 string candidatePath = Path.Combine(
                     Path.GetDirectoryName(project.AbsolutePath) ?? "",

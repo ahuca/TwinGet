@@ -2,6 +2,7 @@
 
 using FluentValidation;
 using TwinGet.Core.Packaging;
+using TwinGet.TwincatInterface.Utils;
 
 namespace TwinGet.Core.Commands;
 
@@ -37,10 +38,17 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
             .Must(
                 (packCommand, _) =>
                 {
-                    return VerifyPlcProjectRelationWithSolution(
-                        packCommand.Path,
-                        packCommand.Solution
-                    );
+                    // We only verify this if the given file is a PLC project file.
+                    // TODO: dependency inject a verification interface instead of direct dependency like this?
+                    if (TwincatUtils.IsPlcProjectFileExtension(packCommand.Path))
+                    {
+                        return VerifyPlcProjectRelationWithSolution(
+                            packCommand.Path,
+                            packCommand.Solution
+                        );
+                    }
+
+                    return true;
                 }
             )
             .WithMessage(
@@ -60,8 +68,8 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
     /// <param name="solutionPath"></param>
     /// <returns>True if no solution is provided (empty or null), or the PLC project is verified to belong the solution. False otherwise.</returns>
     private static bool VerifyPlcProjectRelationWithSolution(
-        string? plcProjectPath,
-        string? solutionPath
+        string plcProjectPath,
+        string solutionPath
     )
     {
         // Solution file is optional, so if it's not provided we pass this validation.

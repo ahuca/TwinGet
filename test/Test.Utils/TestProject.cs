@@ -11,7 +11,7 @@ namespace Test.Utils;
 /// </summary>
 internal class TestProject : IDisposable
 {
-    private TestDirectory _testDirectory;
+    private readonly TestDirectory _testDirectory;
     private bool _disposedValue;
     private readonly List<TestTwincatProject> _twincatProjects = [];
     public string RootPath
