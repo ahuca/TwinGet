@@ -42,12 +42,12 @@ public class TwincatProject : ITwincatProject
         _plcProjects = new(TryGetPlcProjects(_systemManager, _project.FullName));
     }
 
-    private static IReadOnlyList<PlcProject> TryGetPlcProjects(
+    private static List<PlcProject> TryGetPlcProjects(
         ITcSysManagerAlias systemManager,
         string filePath
     )
     {
-        List<PlcProject> plcProjects = new();
+        List<PlcProject> plcProjects = [];
 
         ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
 

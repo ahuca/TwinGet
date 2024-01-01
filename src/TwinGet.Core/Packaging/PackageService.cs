@@ -168,13 +168,11 @@ public class PackageService : IPackageService
 
         StaTaskScheduler staTaskScheduler = new(1);
 
-        using var ai = new ThreadLocal<AutomationInterface>(() => new AutomationInterface());
-
         // Begin AutomationInterface.
         var initAiTask = Task.Factory.StartNew(
             () =>
             {
-                var _ = ai.Value; // We do this so that ThreadLocal inititalize AutomationInterface();
+                return new AutomationInterface();
             },
             CancellationToken.None,
             TaskCreationOptions.None,
@@ -195,21 +193,19 @@ public class PackageService : IPackageService
         var savePlcLibTask = initAiTask.ContinueWith(
             (prevTask) =>
             {
-                prevTask.Wait();
+                using AutomationInterface ai = prevTask.Result;
 
                 lock (libraryPathLock)
                 {
                     try
                     {
                         // Suppress because we are in try block.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                         libraryPath =
-                            ai.Value.SavePlcProject(
+                            ai.SavePlcProject(
                                 packCommand.Path,
                                 packCommand.OutputDirectory,
                                 resolvedSolution
                             ) ?? string.Empty;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
                     }
                     catch (PackagingException ex)
                     {

@@ -1,7 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 using FluentAssertions;
 
-namespace Test.Utils;
+namespace Test.Utils.Test;
 
 public class TestTwincatProjectTests
 {
