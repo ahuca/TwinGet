@@ -51,6 +51,11 @@ public class PackageService : IPackageService
     private Task<bool> PackFromNuspecFileAsync(IPackCommand packCommand) =>
         throw new NotImplementedException();
 
+    /// <summary>
+    /// Pack a TwinGet package when given a PLC project file.
+    /// </summary>
+    /// <param name="packCommand"></param>
+    /// <returns>True if successul, otherwise false.</returns>
     private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
     {
         string plcLibrary = string.Empty;
@@ -61,7 +66,7 @@ public class PackageService : IPackageService
         }
         catch (PackagingException ex)
         {
-            packCommand.Logger?.LogError(ex.AsLogMessage());
+            ex.LogWith(packCommand.Logger);
         }
         catch (Exception ex)
         {
@@ -85,9 +90,20 @@ public class PackageService : IPackageService
         return result;
     }
 
+    /// <summary>
+    /// Build a TwinGet package from the given library file as artifact.
+    /// </summary>
+    /// <param name="packCommand"></param>
+    /// <param name="libraryPath">The absolute path to the library file.</param>
+    /// <returns>True if successful, otherwise false.</returns>
+    /// <exception cref="FileNotFoundException"></exception>
     private static bool BuildPackage(IPackCommand packCommand, string libraryPath)
     {
         ArgumentException.ThrowIfNullOrEmpty(libraryPath, nameof(libraryPath));
+        if (!File.Exists(libraryPath))
+        {
+            throw new FileNotFoundException(libraryPath);
+        }
 
         var plcProjectData = TwincatUtils.DeserializeXmlFileToProjectData<PlcProjectData>(
             packCommand.Path
@@ -133,6 +149,11 @@ public class PackageService : IPackageService
         return true;
     }
 
+    /// <summary>
+    /// Save the PLC project as a library.
+    /// </summary>
+    /// <param name="packCommand"></param>
+    /// <returns>The path to the library if successful. Otherwise <see cref="string.Empty"/>.</returns>
     private static async Task<string> SavePlcLibraryAsync(IPackCommand packCommand)
     {
         object libraryPathLock = new();
@@ -190,27 +211,13 @@ public class PackageService : IPackageService
                             ) ?? string.Empty;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
                     }
-                    catch (Exception ex)
+                    catch (PackagingException ex)
                     {
-                        // Handle the custom exception.
-                        if (ex is PackagingException packagingException)
-                        {
-                            packCommand.Logger?.LogError(packagingException.AsLogMessage());
-                            if (!string.IsNullOrEmpty(packagingException.Source))
-                            {
-                                packCommand.Logger?.LogError(packagingException.Source);
-                            }
-                            if (!string.IsNullOrEmpty(packagingException.HelpLink))
-                            {
-                                packCommand.Logger?.LogError(packagingException.HelpLink);
-                            }
-                            packCommand.Logger?.LogError(packagingException.StackTrace);
-                        }
-                        // Rethrow any other exception.
-                        else
-                        {
-                            throw;
-                        }
+                        ex.LogWith(packCommand.Logger);
+                    }
+                    catch
+                    {
+                        throw;
                     }
                 }
             },

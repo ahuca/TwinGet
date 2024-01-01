@@ -79,7 +79,7 @@ public class PackCommand : Command
             }
             catch (PackagingException ex)
             {
-                Logger?.LogError(ex.AsLogMessage());
+                ex.LogWith(Logger);
                 return 1;
             }
             catch (Exception ex)
