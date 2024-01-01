@@ -29,13 +29,33 @@ public class PackCommandHander(IValidator<PackCommand> validator, IPackageServic
             cancellationToken
         );
 
-        if (!result.IsValid)
+        var errors = result.Errors.Where(e => e.Severity == Severity.Error);
+        var warningsAndInfos = result.Errors.Where(
+            e => e.Severity == Severity.Warning || e.Severity == Severity.Info
+        );
+
+        /// We throw when there are errors instead of checking <see cref="FluentValidation.Results.ValidationResult.IsValid"/>.
+        /// See: https://github.com/FluentValidation/FluentValidation/issues/1519
+        if (errors.Any())
         {
             throw new PackagingException(result.Errors.ToList());
         }
 
+        // Log any errors with severity lower than Severity.Error
+        foreach (var wi in warningsAndInfos)
+        {
+            if (wi.Severity == Severity.Warning)
+            {
+                request.Logger?.LogWarning(wi.ErrorMessage);
+            }
+            else if (wi.Severity == Severity.Info)
+            {
+                request.Logger?.LogWarning(wi.ErrorMessage);
+            }
+        }
+
         request.Logger?.LogInformation(
-            PackagingStrings.AttemptingToBuildPackage,
+            OtherStrings.AttemptingToBuildPackage,
             Path.GetFileName(request.Path)
         );
 

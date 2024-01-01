@@ -75,7 +75,9 @@ public class PackageService : IPackageService
 
         if (string.IsNullOrEmpty(plcLibrary))
         {
-            packCommand.Logger?.LogError(PackagingErrors.FailedToSavePlcLibrary, packCommand.Path);
+            packCommand.Logger?.LogError(ErrorStrings.FailedToSavePlcLibrary, packCommand.Path);
+            packCommand.Logger?.LogError(SuggestionStrings.MustSpecifySolutionFile);
+
             return false;
         }
 
@@ -144,7 +146,7 @@ public class PackageService : IPackageService
         using FileStream stream = File.Open(outputPath, FileMode.OpenOrCreate);
         packageBuilder.Save(stream);
 
-        packCommand.Logger?.LogInformation(PackagingStrings.PackSuccess, outputPath);
+        packCommand.Logger?.LogInformation(OtherStrings.PackSuccess, outputPath);
 
         return true;
     }
@@ -189,6 +191,20 @@ public class PackageService : IPackageService
             resolvedSolution = packCommand.Solution;
         }
 
+        // Return if we cannot resovle the solution.
+        if (string.IsNullOrEmpty(resolvedSolution))
+        {
+            packCommand.Logger?.LogError(
+                ErrorStrings.FailedToResolveSolutionFile,
+                packCommand.Path
+            );
+            packCommand.Logger?.LogError(
+                ErrorStrings.FailedToResolveSolutionFile,
+                packCommand.Path
+            );
+            return string.Empty;
+        }
+
         // Begin saving PLC as library.
         var savePlcLibTask = initAiTask.ContinueWith(
             (prevTask) =>
@@ -229,13 +245,9 @@ public class PackageService : IPackageService
 
     private static async Task<string> GetParentSolutionFileAsync(IPackCommand packCommand)
     {
-        string? result = await PlcProjectFileHelper
+        string result = await PlcProjectFileHelper
             .Create(packCommand.Path)
             .GetParentSolutionFileAsync();
-        if (string.IsNullOrEmpty(result))
-        {
-            throw new PackagingException(PackagingErrors.FailedToResolveSolutionFile);
-        }
 
         return result;
     }

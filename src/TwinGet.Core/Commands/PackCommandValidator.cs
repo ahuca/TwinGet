@@ -15,16 +15,22 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
         RuleFor(p => p.Path)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
-            .WithMessage(PackagingErrors.InputFileNotSpecified)
+            .WithMessage(ErrorStrings.InputFileNotSpecified)
             .NotNull()
-            .WithMessage(PackagingErrors.InputFileNotSpecified)
+            .WithMessage(ErrorStrings.InputFileNotSpecified)
             .Must(File.Exists)
-            .WithMessage(p => string.Format(PackagingErrors.InputFileNotFound, p.Path))
+            .WithMessage(p => string.Format(ErrorStrings.InputFileNotFound, p.Path))
             .Must(Packaging.Utils.IsSupportedFileType)
-            .WithMessage(PackagingErrors.InputFileNotSupported);
+            .WithMessage(ErrorStrings.InputFileNotSupported);
 
         RuleFor(p => p.Solution)
             .Cascade(CascadeMode.Stop)
+            .NotNull()
+            .WithSeverity(Severity.Warning)
+            .WithMessage(SuggestionStrings.SpecifySolutionFileForBetterPerformance)
+            .NotEmpty()
+            .WithSeverity(Severity.Warning)
+            .WithMessage(SuggestionStrings.SpecifySolutionFileForBetterPerformance)
             .Must(
                 (solution) =>
                 {
@@ -34,7 +40,7 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
                     return File.Exists(solution);
                 }
             )
-            .WithMessage(p => string.Format(PackagingErrors.SolutionFileNotFound, p.Solution))
+            .WithMessage(p => string.Format(ErrorStrings.SolutionFileNotFound, p.Solution))
             .Must(
                 (packCommand, _) =>
                 {
@@ -54,7 +60,7 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
             .WithMessage(
                 p =>
                     string.Format(
-                        PackagingErrors.SpecifiedInputFileDoesNotBelongToSolution,
+                        ErrorStrings.SpecifiedInputFileDoesNotBelongToSolution,
                         p.Path,
                         p.Solution
                     )

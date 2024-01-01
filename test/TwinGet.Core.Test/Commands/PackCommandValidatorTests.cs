@@ -21,7 +21,7 @@ public class PackCommandValidatorTests
 
         result
             .ShouldHaveValidationErrorFor(p => p.Path)
-            .WithErrorMessage(PackagingErrors.InputFileNotSpecified);
+            .WithErrorMessage(Core.Packaging.ErrorStrings.InputFileNotSpecified);
     }
 
     [Fact]
@@ -32,7 +32,9 @@ public class PackCommandValidatorTests
 
         result
             .ShouldHaveValidationErrorFor(p => p.Path)
-            .WithErrorMessage(string.Format(PackagingErrors.InputFileNotFound, _command.Path));
+            .WithErrorMessage(
+                string.Format(Core.Packaging.ErrorStrings.InputFileNotFound, _command.Path)
+            );
     }
 
     [Fact]
@@ -43,7 +45,9 @@ public class PackCommandValidatorTests
 
         result
             .ShouldHaveValidationErrorFor(p => p.Path)
-            .WithErrorMessage(string.Format(PackagingErrors.InputFileNotFound, _command.Path));
+            .WithErrorMessage(
+                string.Format(Core.Packaging.ErrorStrings.InputFileNotFound, _command.Path)
+            );
     }
 
     [Fact]
@@ -55,7 +59,10 @@ public class PackCommandValidatorTests
         _command.Solution = $"foo{TwincatConstants.SolutionExtension}";
 
         var result = await _sut.TestValidateAsync(_command);
-        var expectedMsg = string.Format(PackagingErrors.SolutionFileNotFound, _command.Solution);
+        var expectedMsg = string.Format(
+            Core.Packaging.ErrorStrings.SolutionFileNotFound,
+            _command.Solution
+        );
 
         result.ShouldHaveValidationErrorFor(p => p.Solution).WithErrorMessage(expectedMsg);
     }
@@ -70,11 +77,30 @@ public class PackCommandValidatorTests
 
         var result = await _sut.TestValidateAsync(_command);
         var expectedMsg = string.Format(
-            PackagingErrors.SpecifiedInputFileDoesNotBelongToSolution,
+            Core.Packaging.ErrorStrings.SpecifiedInputFileDoesNotBelongToSolution,
             _command.Path,
             _command.Solution
         );
 
         result.ShouldHaveValidationErrorFor(p => p.Solution).WithErrorMessage(expectedMsg);
+    }
+
+    [Fact]
+    public async Task ShouldWarn_WhenNoSolutionWasProvided()
+    {
+        // Arrange
+        _command.Path = _testProject.GetManagedPlcProjects().First().AbsolutePath;
+        _command.Solution = string.Empty;
+
+        // Act
+        var result = await _sut.TestValidateAsync(_command);
+        var actual = result.Errors.Where(e => e.Severity == FluentValidation.Severity.Warning);
+
+        // Assert
+        actual.Should().NotBeEmpty();
+        actual
+            .First()
+            .ErrorMessage.Should()
+            .Be(SuggestionStrings.SpecifySolutionFileForBetterPerformance);
     }
 }

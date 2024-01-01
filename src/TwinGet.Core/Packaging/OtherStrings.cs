@@ -2,7 +2,7 @@
 
 namespace TwinGet.Core.Packaging;
 
-public static class PackagingStrings
+public static class OtherStrings
 {
     public const string AttemptingToBuildPackage = "Attempting to build package from '{Path}'.";
     public const string SavingPlcLibrary = "Saving PLC library from '{Path}'.";

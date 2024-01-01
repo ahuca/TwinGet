@@ -14,12 +14,19 @@ public class PackCommandTests(ITestOutputHelper output)
     private readonly CommandRunner _commandRunner = new(output);
     private readonly ITestOutputHelper _output = output;
 
-    [Fact]
-    public void Pack_WithManagedPlcProject_ShouldSucceed()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Pack_WithManagedPlcProject_ShouldSucceed(bool provideSolution)
     {
         // Arrange
         var testPlcProject = s_testProject.GetManagedPlcProjects().First();
-        string[] args = [testPlcProject.AbsolutePath, "--solution", s_testProject.SolutionPath];
+        string[] args = [testPlcProject.AbsolutePath];
+        if (provideSolution)
+        {
+            args = [.. args, .. new string[2] { "--solution", s_testProject.SolutionPath }];
+        }
+
         string expectedPackagePath = Path.Combine(
             s_testProject.RootPath,
             $"{testPlcProject.Title}{NuGetConstants.PackageExtension}"
@@ -33,7 +40,14 @@ public class PackCommandTests(ITestOutputHelper output)
         result.ExitCode.Should().Be(0);
         result
             .AllOuput.Should()
-            .Contain(PackagingStrings.PackSuccess.Replace("{Path}", expectedPackagePath));
+            .Contain(OtherStrings.PackSuccess.Replace("{Path}", expectedPackagePath));
+        if (!provideSolution)
+        {
+            result
+                .AllOuput.Should()
+                .Contain(SuggestionStrings.SpecifySolutionFileForBetterPerformance);
+        }
+
         File.Exists(expectedPackagePath).Should().BeTrue();
     }
 
@@ -54,10 +68,7 @@ public class PackCommandTests(ITestOutputHelper output)
         result
             .AllOuput.Should()
             .Contain(
-                PackagingErrors.FailedToSavePlcLibrary.Replace(
-                    "{Path}",
-                    testPlcProject.AbsolutePath
-                )
+                ErrorStrings.FailedToSavePlcLibrary.Replace("{Path}", testPlcProject.AbsolutePath)
             );
     }
 

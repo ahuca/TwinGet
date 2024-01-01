@@ -5,7 +5,7 @@ using static TwinGet.TwincatInterface.TwincatConstants;
 
 namespace TwinGet.Core.Packaging;
 
-public static class PackagingErrors
+public static class ErrorStrings
 {
     public static readonly string InputFileNotSpecified =
         $"Specify a {PlcProjectExtension} or a {ManifestExtension} file to use.";

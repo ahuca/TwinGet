@@ -4,7 +4,7 @@ using FluentValidation.Results;
 
 namespace TwinGet.Core.Packaging;
 
-public class PackagingException : Exception, ILogMessageException
+public partial class PackagingException : Exception, ILogMessageException
 {
     public IDictionary<string, string[]> Errors { get; }
 
