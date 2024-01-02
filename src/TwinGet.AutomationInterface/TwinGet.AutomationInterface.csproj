@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
+    <InternalsVisibleTo Include="TwinGet.AutomationInterface.Test" />
   </ItemGroup>
 
 </Project>
