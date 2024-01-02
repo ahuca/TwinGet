@@ -33,10 +33,6 @@ internal class TestPlcProject : IPlcProjectMetadata
         get => _data.PropertyGroup.ProjectGuid;
     }
     public string AbsolutePath { get; }
-    public bool IsManagedLibrary
-    {
-        get => TwincatUtils.IsManagedLibrary(this);
-    }
 
     public TestPlcProject(string path)
     {

@@ -32,11 +32,6 @@ public class PlcProject : IPlcProject
     {
         get => _plcProjectFile.PropertyGroup.ProjectVersion;
     }
-    public bool IsManagedLibrary // TODO: make extension method instead of this
-    {
-        get => TwincatUtils.IsManagedLibrary(this);
-    }
-
     public string AbsolutePath { get; }
 
     public PlcProject(ITcSmTreeItem treeItem, string filePath)

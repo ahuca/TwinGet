@@ -3,7 +3,9 @@
 using NuGet.Configuration;
 using Test.Utils;
 using TwinGet.Core.Packaging;
+using TwinGet.TwincatInterface;
 using Xunit.Abstractions;
+using CoreErrorStrings = TwinGet.Core.Packaging.ErrorStrings;
 
 namespace TwinGet.Cli.FuncTest.Commands;
 
@@ -55,7 +57,10 @@ public class PackCommandTests(ITestOutputHelper output)
     public void Pack_WithUnmanagedPlcProject_ShouldFail()
     {
         // Arrange
-        var testPlcProject = s_testProject.GetPlcProjects().Where(x => !x.IsManagedLibrary).First();
+        var testPlcProject = s_testProject
+            .GetPlcProjects()
+            .Where(x => !x.IsManagedLibrary())
+            .First();
         string[] args = [testPlcProject.AbsolutePath, "--solution", s_testProject.SolutionPath];
 
         // Act
@@ -68,7 +73,10 @@ public class PackCommandTests(ITestOutputHelper output)
         result
             .AllOuput.Should()
             .Contain(
-                ErrorStrings.FailedToSavePlcLibrary.Replace("{Path}", testPlcProject.AbsolutePath)
+                CoreErrorStrings.FailedToSavePlcLibrary.Replace(
+                    "{Path}",
+                    testPlcProject.AbsolutePath
+                )
             );
     }
 

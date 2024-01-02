@@ -159,12 +159,4 @@ public static class TwincatUtils
             StringComparison.OrdinalIgnoreCase
         );
     }
-
-    public static bool IsManagedLibrary(IPlcProjectMetadata projectMetadata) // TODO: make extension method for IPlcProjectMetadata instead of this
-    {
-        ArgumentNullException.ThrowIfNull(projectMetadata, nameof(projectMetadata));
-        return !string.IsNullOrEmpty(projectMetadata.Company)
-            && !string.IsNullOrEmpty(projectMetadata.Title)
-            && !string.IsNullOrEmpty(projectMetadata.ProjectVersion);
-    }
 }

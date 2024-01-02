@@ -1,6 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
 using Microsoft.Build.Construction;
+using TwinGet.TwincatInterface;
 using static TwinGet.TwincatInterface.TwincatConstants;
 
 namespace Test.Utils;
@@ -60,7 +61,7 @@ internal class TestProject : IDisposable
 
     public IEnumerable<TestPlcProject> GetManagedPlcProjects()
     {
-        return TwincatProjects.SelectMany(t => t.PlcProjects).Where(p => p.IsManagedLibrary);
+        return TwincatProjects.SelectMany(t => t.PlcProjects).Where(p => p.IsManagedLibrary());
     }
 
     protected virtual void Dispose(bool disposing)
