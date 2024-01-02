@@ -22,6 +22,7 @@ jobs:
           dotnet test --configuration Release --no-build --logger "trx;verbosity=detailed;LogFileName=test_results.trx" .\TwinGet.sln
 
       - name: Test results reporting
+        if: success() || failure() 
         uses: dorny/test-reporter@v1
         with:
           name: xUnit tests
