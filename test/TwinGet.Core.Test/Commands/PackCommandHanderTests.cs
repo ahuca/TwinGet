@@ -14,7 +14,8 @@ public class PackCommandHanderTests
     private readonly TestProject _testProject = new();
     private readonly PackCommand _command;
     private readonly Mock<IValidator<PackCommand>> _validator = new();
-    private readonly Mock<IPackageService> _packageService = new();
+    private readonly IPackStrategy _strategy = new PlcProjectPackStrategy(null);
+    private readonly Mock<IPackStrategyFactory> _strategyFactory = new();
     private readonly PackCommandHander _sut;
     private readonly ITestOutputHelper _output;
 
@@ -26,9 +27,13 @@ public class PackCommandHanderTests
         _validator
             .Setup(v => v.ValidateAsync(It.IsAny<PackCommand>(), default))
             .ReturnsAsync(validationResult.Object);
+        _validator
+            .Setup(v => v.ValidateAsync(It.IsAny<IValidationContext>(), default))
+            .ReturnsAsync(validationResult.Object);
 
         // Setup SUT.
-        _sut = new(_validator.Object, _packageService.Object);
+        _strategyFactory.Setup(x => x.CreateStrategy(It.IsAny<string>())).Returns(_strategy);
+        _sut = new(_validator.Object, _strategyFactory.Object, null);
 
         // Template the pack command. Test methods can still override needed properties.
         _command = new()
@@ -41,16 +46,6 @@ public class PackCommandHanderTests
         _output = output;
         Directory.SetCurrentDirectory(_testProject.RootPath);
         _output.WriteLine($"Current directory: '{Directory.GetCurrentDirectory()}'");
-    }
-
-    [Fact]
-    public async Task Handle_ShouldDeletegateToPackageServiceAsync()
-    {
-        // Act
-        await _sut.Handle(_command, default);
-
-        // Assert
-        _packageService.Verify(x => x.PackAsync(It.IsAny<PackCommand>()), Times.Once);
     }
 
     [Fact]

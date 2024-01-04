@@ -9,7 +9,6 @@ public static class ErrorStrings
 {
     public static readonly string InputFileNotSpecified =
         $"Specify a {PlcProjectExtension} or a {ManifestExtension} file to use.";
-    public static readonly string InputFileNotSupported = InputFileNotSpecified;
     public const string InputFileNotFound = "Input file not found at '{0}'.";
     public const string SolutionFileNotFound = "Solution file not found at '{0}',";
     public const string SpecifiedInputFileDoesNotBelongToSolution =

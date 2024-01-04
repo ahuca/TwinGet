@@ -4,7 +4,6 @@ using System.Xml.Serialization;
 using TwinGet.TwincatInterface;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Exceptions;
-using TwinGet.TwincatInterface.Utils;
 
 namespace Test.Utils;
 

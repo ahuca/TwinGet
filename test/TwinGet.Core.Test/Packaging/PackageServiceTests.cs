@@ -14,7 +14,7 @@ namespace TwinGet.Core.Test.Packaging;
 public class PackageServiceTests
 {
     private readonly TestProject _testProject = new();
-    private readonly PackageService _sut = new();
+    private readonly PlcProjectPackStrategy _sut = new(null);
     private readonly ITestOutputHelper _output;
 
     public PackageServiceTests(ITestOutputHelper output)

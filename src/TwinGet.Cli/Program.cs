@@ -21,8 +21,7 @@ class Program
                         .ConfigureServices(
                             (hostContext, services) =>
                             {
-                                services.AddCore();
-                                services.AddLogger();
+                                services.AddLogger().AddCli().AddCore();
                             }
                         )
                         .UseCommandHandler<PackCommand, PackCommand.Handler>()

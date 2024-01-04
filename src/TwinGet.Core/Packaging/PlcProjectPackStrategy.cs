@@ -1,5 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
 using NuGet.Versioning;
@@ -14,9 +16,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace TwinGet.Core.Packaging;
 
-public class PackageService : IPackageService
+public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
 {
-    public PackageService() { }
+    private readonly ILogger? _logger = logger;
 
     public bool Pack(IPackCommand packCommand)
     {
@@ -250,5 +252,40 @@ public class PackageService : IPackageService
             .GetParentSolutionFileAsync();
 
         return result;
+    }
+
+    public IPackStrategy DoCustomValidation(IValidationContext validationContext)
+    {
+        _logger?.LogDebug($"Doing specific '{nameof(PlcProjectPackStrategy)}' validations.");
+        // Throw if the validation object type is not correct.
+        if (validationContext.InstanceToValidate.GetType() != typeof(PackCommand))
+        {
+            throw new PackagingException("Unexpected validation object type.");
+        }
+
+        var command = (PackCommand)validationContext.InstanceToValidate;
+
+        if (!string.IsNullOrEmpty(command.Solution))
+        {
+            try
+            {
+                if (!Utils.PlcProjectBelongToSolution(command.Path, command.Solution))
+                {
+                    validationContext.RootContextData[PackCommand.CustomSolutionValidation] = new ValidationFailure(
+                        nameof(IPackCommand.Solution),
+                        string.Format(
+                            ErrorStrings.SpecifiedInputFileDoesNotBelongToSolution,
+                            command.Path,
+                            command.Solution));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex.Message);
+                return this;
+            }
+        }
+
+        return this;
     }
 }

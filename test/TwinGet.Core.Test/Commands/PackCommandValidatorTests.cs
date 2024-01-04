@@ -10,7 +10,7 @@ namespace TwinGet.Core.Test.Commands;
 public class PackCommandValidatorTests
 {
     private readonly PackCommand _command = new();
-    private readonly PackCommandValidator _sut = new();
+    private readonly PackCommandValidator _sut = new(null);
     private readonly TestProject _testProject = new();
 
     [Fact]
@@ -61,24 +61,6 @@ public class PackCommandValidatorTests
         var result = await _sut.TestValidateAsync(_command);
         var expectedMsg = string.Format(
             Core.Packaging.ErrorStrings.SolutionFileNotFound,
-            _command.Solution
-        );
-
-        result.ShouldHaveValidationErrorFor(p => p.Solution).WithErrorMessage(expectedMsg);
-    }
-
-    [Fact]
-    public async Task ShouldHaveError_WhenPlcProjectDoesNotBelongToSolutionAsync()
-    {
-        using TestProject testProject2 = new();
-
-        _command.Path = _testProject.GetManagedPlcProjects().First().AbsolutePath;
-        _command.Solution = testProject2.SolutionPath;
-
-        var result = await _sut.TestValidateAsync(_command);
-        var expectedMsg = string.Format(
-            Core.Packaging.ErrorStrings.SpecifiedInputFileDoesNotBelongToSolution,
-            _command.Path,
             _command.Solution
         );
 

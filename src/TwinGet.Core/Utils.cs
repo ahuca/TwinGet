@@ -3,24 +3,10 @@
 using TwinGet.TwincatInterface.Utils;
 using static NuGet.Configuration.NuGetConstants;
 
-namespace TwinGet.Core.Packaging;
+namespace TwinGet.Core;
 
 public static class Utils
 {
-    public static bool IsSupportedFileType(string filePath)
-    {
-        if (string.IsNullOrEmpty(filePath))
-            return false;
-
-        bool isNuspecExtension = filePath.EndsWith(
-            ManifestExtension,
-            StringComparison.OrdinalIgnoreCase
-        );
-        bool isPlcProjectExtension = TwincatUtils.IsPlcProjectFileExtension(filePath);
-
-        return isNuspecExtension || isPlcProjectExtension;
-    }
-
     /// <summary>
     /// Verify that the given file has a nuspec extension.
     /// </summary>
@@ -39,5 +25,10 @@ public static class Utils
     public static bool PlcProjectBelongToSolution(string plcProjectPath, string solutionPath)
     {
         return TwincatUtils.PlcProjectBelongToSolution(plcProjectPath, solutionPath);
+    }
+
+    public static bool IsPlcProjectFileExtension(string path)
+    {
+        return TwincatUtils.IsPlcProjectFileExtension(path);
     }
 }

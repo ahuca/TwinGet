@@ -7,6 +7,9 @@ namespace TwinGet.Core.Commands;
 
 public class PackCommand : IRequest<bool>, IPackCommand
 {
+    public const string CustomPathValidation = "CustomPathValidation";
+    public const string CustomSolutionValidation = "CustomSolutionValidation";
+
     public ILogger? Logger { get; set; }
     public string Path { get; set; }
     public string Solution { get; set; }

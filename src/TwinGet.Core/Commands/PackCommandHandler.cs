@@ -7,13 +7,16 @@ using TwinGet.Core.Packaging;
 
 namespace TwinGet.Core.Commands;
 
-public class PackCommandHander(IValidator<PackCommand> validator, IPackageService packageService)
-    : IRequestHandler<PackCommand, bool>
+public class PackCommandHander(
+    IValidator<PackCommand> validator,
+    IPackStrategyFactory strategyFactory,
+    ILogger? logger
+) : IRequestHandler<PackCommand, bool>
 {
     private readonly IValidator<PackCommand> _validator =
         validator ?? throw new ArgumentNullException(nameof(validator));
-    private readonly IPackageService _packageService =
-        packageService ?? throw new ArgumentNullException(nameof(packageService));
+    private readonly IPackStrategyFactory _strategyFactory = strategyFactory;
+    private readonly ILogger? _logger = logger;
 
     /// <summary>
     /// Handles <see cref="PackCommand"/>.
@@ -24,8 +27,16 @@ public class PackCommandHander(IValidator<PackCommand> validator, IPackageServic
     /// <exception cref="PackagingException"></exception>
     public async Task<bool> Handle(PackCommand request, CancellationToken cancellationToken)
     {
+        var context = new ValidationContext<PackCommand>(request);
+
+        IPackStrategy strategy = _strategyFactory
+            .CreateStrategy(request.Path)
+            .DoCustomValidation(context);
+
+        ArgumentNullException.ThrowIfNull(strategy, nameof(strategy));
+
         FluentValidation.Results.ValidationResult result = await _validator.ValidateAsync(
-            request,
+            context,
             cancellationToken
         );
 
@@ -75,6 +86,6 @@ public class PackCommandHander(IValidator<PackCommand> validator, IPackageServic
             request.OutputDirectory = Directory.GetCurrentDirectory();
         }
 
-        return await _packageService.PackAsync(request);
+        return await strategy.PackAsync(request);
     }
 }

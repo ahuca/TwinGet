@@ -2,7 +2,7 @@
   "profiles": {
     "TwinGet.Cli": {
         "commandName": "Project",
-        "commandLineArgs": ""
+        "commandLineArgs": "pack C:\\Users\\nhgia\\projects\\twinget\\test\\Test.Utils\\TestTwincatProject\\TestTwincatProject1\\TestPlcProject1\\TestPlcProject1.plcproj"
     }
   }
 }

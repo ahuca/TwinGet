@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TwinGet.Core.Packaging;
 
 namespace TwinGet.Cli;
 
@@ -30,6 +31,13 @@ public static class ServiceCollectionExtensions
         );
 
         services.AddSingleton(logger);
+
+        return services;
+    }
+
+    public static IServiceCollection AddCli(this IServiceCollection services)
+    {
+        services.AddTransient<IPackStrategyFactory, PackStrategyFactory>();
 
         return services;
     }

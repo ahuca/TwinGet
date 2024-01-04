@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Utils", "test\Test.Uti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli.FuncTest", "test\TwinGet.Cli.FuncTest\TwinGet.Cli.FuncTest.csproj", "{7FA80F24-E312-4B98-B6F3-F5A273B8D00C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Utils.Test", "test\Test.Utils.Test\Test.Utils.Test.csproj", "{0BAD79FB-472D-4191-9680-07AE27DFCEEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Utils.Test", "test\Test.Utils.Test\Test.Utils.Test.csproj", "{0BAD79FB-472D-4191-9680-07AE27DFCEEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Cli.Test", "test\TwinGet.Cli.Test\TwinGet.Cli.Test.csproj", "{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +81,10 @@ Global
 		{0BAD79FB-472D-4191-9680-07AE27DFCEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BAD79FB-472D-4191-9680-07AE27DFCEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BAD79FB-472D-4191-9680-07AE27DFCEEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 		{7FA80F24-E312-4B98-B6F3-F5A273B8D00C} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 		{0BAD79FB-472D-4191-9680-07AE27DFCEEC} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42610935-EABE-41BA-A9A9-57FB7A657F65}

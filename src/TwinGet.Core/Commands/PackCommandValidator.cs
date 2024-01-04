@@ -1,15 +1,20 @@
 ﻿// This file is licensed to you under MIT license.
 
 using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 using TwinGet.Core.Packaging;
-using TwinGet.TwincatInterface.Utils;
 
 namespace TwinGet.Core.Commands;
 
 public class PackCommandValidator : AbstractValidator<PackCommand>
 {
-    public PackCommandValidator()
+    private readonly ILogger? _logger;
+
+    public PackCommandValidator(ILogger? logger)
     {
+        _logger = logger;
+
         ClassLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(p => p.Path)
@@ -20,8 +25,28 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
             .WithMessage(ErrorStrings.InputFileNotSpecified)
             .Must(File.Exists)
             .WithMessage(p => string.Format(ErrorStrings.InputFileNotFound, p.Path))
-            .Must(Packaging.Utils.IsSupportedFileType)
-            .WithMessage(ErrorStrings.InputFileNotSupported);
+            .Custom(
+                (x, context) =>
+                {
+                    if (
+                        context.RootContextData.TryGetValue(
+                            PackCommand.CustomPathValidation,
+                            out object? value
+                        )
+                    )
+                    {
+                        try
+                        {
+                            var failure = (ValidationFailure)value;
+                            context.AddFailure(failure);
+                        }
+                        catch
+                        {
+                            context.AddFailure("Failed custom validation.");
+                        }
+                    }
+                }
+            );
 
         RuleFor(p => p.Solution)
             .Cascade(CascadeMode.Stop)
@@ -41,56 +66,27 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
                 }
             )
             .WithMessage(p => string.Format(ErrorStrings.SolutionFileNotFound, p.Solution))
-            .Must(
-                (packCommand, _) =>
+            .Custom(
+                (x, context) =>
                 {
-                    // We only verify this if the given file is a PLC project file.
-                    // TODO: dependency inject a verification interface instead of direct dependency like this?
-                    if (TwincatUtils.IsPlcProjectFileExtension(packCommand.Path))
-                    {
-                        return VerifyPlcProjectRelationWithSolution(
-                            packCommand.Path,
-                            packCommand.Solution
-                        );
-                    }
-
-                    return true;
-                }
-            )
-            .WithMessage(
-                p =>
-                    string.Format(
-                        ErrorStrings.SpecifiedInputFileDoesNotBelongToSolution,
-                        p.Path,
-                        p.Solution
+                    if (
+                        context.RootContextData.TryGetValue(
+                            PackCommand.CustomSolutionValidation,
+                            out object? value
+                        )
                     )
+                    {
+                        try
+                        {
+                            var failure = (ValidationFailure)value;
+                            context.AddFailure(failure);
+                        }
+                        catch
+                        {
+                            context.AddFailure("Failed custom validation.");
+                        }
+                    }
+                }
             );
-    }
-
-    /// <summary>
-    /// This method verify the relation between the given PLC project file and the solution file.
-    /// </summary>
-    /// <param name="plcProjectPath"></param>
-    /// <param name="solutionPath"></param>
-    /// <returns>True if no solution is provided (empty or null), or the PLC project is verified to belong the solution. False otherwise.</returns>
-    private static bool VerifyPlcProjectRelationWithSolution(
-        string plcProjectPath,
-        string solutionPath
-    )
-    {
-        // Solution file is optional, so if it's not provided we pass this validation.
-        if (string.IsNullOrEmpty(solutionPath))
-        {
-            return true;
-        }
-
-        try
-        {
-            return Packaging.Utils.PlcProjectBelongToSolution(plcProjectPath, solutionPath);
-        }
-        catch
-        {
-            return false;
-        }
     }
 }

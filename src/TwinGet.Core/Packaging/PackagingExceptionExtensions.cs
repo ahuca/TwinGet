@@ -24,15 +24,11 @@ public static class PackagingExceptionExtensions
         if (logger is not null)
         {
             logger.LogError(exception.AsLogMessage());
-            if (!string.IsNullOrEmpty(exception.Source))
-            {
-                logger.LogError(exception.Source);
-            }
             if (!string.IsNullOrEmpty(exception.HelpLink))
             {
-                logger.LogError(exception.HelpLink);
+                logger.LogDebug(exception.HelpLink);
             }
-            logger.LogError(exception.StackTrace);
+            logger.LogDebug(exception.StackTrace);
 
             return true;
         }
