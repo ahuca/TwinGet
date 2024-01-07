@@ -1,6 +1,7 @@
 ﻿// This file is licensed to you under MIT license.
 
 
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace TwinGet.Core.Packaging;
@@ -23,12 +24,16 @@ public static class PackagingExceptionExtensions
     {
         if (logger is not null)
         {
-            logger.LogError(exception.AsLogMessage());
+            StringBuilder stringBuilder = new(exception.AsLogMessage());
+            //logger.LogError(exception.AsLogMessage());
             if (!string.IsNullOrEmpty(exception.HelpLink))
             {
-                logger.LogDebug(exception.HelpLink);
+                stringBuilder.AppendLine(exception.HelpLink);
+                //logger.LogDebug(exception.HelpLink);
             }
-            logger.LogDebug(exception.StackTrace);
+            stringBuilder.AppendLine(exception.StackTrace);
+            //logger.LogDebug(exception.StackTrace);
+            logger.LogDebug(stringBuilder.ToString());
 
             return true;
         }

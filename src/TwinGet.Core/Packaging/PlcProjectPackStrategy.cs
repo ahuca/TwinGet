@@ -1,7 +1,5 @@
 ﻿// This file is licensed to you under MIT license.
 
-using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
 using NuGet.Versioning;
@@ -38,28 +36,6 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
             nameof(packCommand.OutputDirectory)
         );
 
-        if (TwincatUtils.IsPlcProjectFileExtension(packCommand.Path))
-        {
-            return await PackFromProjectFileAsync(packCommand);
-        }
-        else if (Utils.IsNuspecExtension(packCommand.Path))
-        {
-            return await PackFromNuspecFileAsync(packCommand);
-        }
-
-        return true;
-    }
-
-    private Task<bool> PackFromNuspecFileAsync(IPackCommand packCommand) =>
-        throw new NotImplementedException();
-
-    /// <summary>
-    /// Pack a TwinGet package when given a PLC project file.
-    /// </summary>
-    /// <param name="packCommand"></param>
-    /// <returns>True if successul, otherwise false.</returns>
-    private static async Task<bool> PackFromProjectFileAsync(IPackCommand packCommand)
-    {
         string plcLibrary = string.Empty;
 
         try
@@ -68,17 +44,16 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
         }
         catch (PackagingException ex)
         {
-            ex.LogWith(packCommand.Logger);
+            ex.LogWith(_logger);
         }
         catch (Exception ex)
         {
-            packCommand.Logger?.LogError(ex.Message);
+            _logger?.LogError(ex.Message);
         }
 
         if (string.IsNullOrEmpty(plcLibrary))
         {
-            packCommand.Logger?.LogError(ErrorStrings.FailedToSavePlcLibrary, packCommand.Path);
-            packCommand.Logger?.LogError(SuggestionStrings.MustSpecifySolutionFile);
+            _logger?.LogError(ErrorStrings.FailedToSavePlcLibrary, packCommand.Path);
 
             return false;
         }
@@ -86,7 +61,7 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
         bool result = BuildPackage(packCommand, plcLibrary);
 
         // Delete the library once we are done packing.
-        if (!string.IsNullOrEmpty(plcLibrary))
+        if (!string.IsNullOrEmpty(plcLibrary) && File.Exists(plcLibrary))
         {
             File.Delete(plcLibrary);
         }
@@ -101,7 +76,7 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
     /// <param name="libraryPath">The absolute path to the library file.</param>
     /// <returns>True if successful, otherwise false.</returns>
     /// <exception cref="FileNotFoundException"></exception>
-    private static bool BuildPackage(IPackCommand packCommand, string libraryPath)
+    private bool BuildPackage(IPackCommand packCommand, string libraryPath)
     {
         ArgumentException.ThrowIfNullOrEmpty(libraryPath, nameof(libraryPath));
         if (!File.Exists(libraryPath))
@@ -148,7 +123,7 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
         using FileStream stream = File.Open(outputPath, FileMode.OpenOrCreate);
         packageBuilder.Save(stream);
 
-        packCommand.Logger?.LogInformation(OtherStrings.PackSuccess, outputPath);
+        _logger?.LogInformation(OtherStrings.PackSuccess, outputPath);
 
         return true;
     }
@@ -158,7 +133,7 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
     /// </summary>
     /// <param name="packCommand"></param>
     /// <returns>The path to the library if successful. Otherwise <see cref="string.Empty"/>.</returns>
-    private static async Task<string> SavePlcLibraryAsync(IPackCommand packCommand)
+    private async Task<string> SavePlcLibraryAsync(IPackCommand packCommand)
     {
         object libraryPathLock = new();
         string libraryPath = string.Empty;
@@ -193,17 +168,22 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
             resolvedSolution = packCommand.Solution;
         }
 
-        // Return if we cannot resovle the solution.
+        if (!Utils.PlcProjectBelongToSolution(packCommand.Path, resolvedSolution))
+        {
+            _logger?.LogError(
+                ErrorStrings.SpecifiedInputFileDoesNotBelongToSolution,
+                packCommand.Path,
+                packCommand.Solution
+            );
+            return string.Empty;
+        }
+
+        // Return if we cannot resolve the solution.
         if (string.IsNullOrEmpty(resolvedSolution))
         {
-            packCommand.Logger?.LogError(
-                ErrorStrings.FailedToResolveSolutionFile,
-                packCommand.Path
-            );
-            packCommand.Logger?.LogError(
-                ErrorStrings.FailedToResolveSolutionFile,
-                packCommand.Path
-            );
+            _logger?.LogError(ErrorStrings.FailedToResolveSolutionFile, packCommand.Path);
+
+            _logger?.LogError(SuggestionStrings.MustSpecifySolutionFile);
             return string.Empty;
         }
 
@@ -227,7 +207,7 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
                     }
                     catch (PackagingException ex)
                     {
-                        ex.LogWith(packCommand.Logger);
+                        ex.LogWith(_logger);
                     }
                     catch
                     {
@@ -252,40 +232,5 @@ public class PlcProjectPackStrategy(ILogger? logger) : IPackStrategy
             .GetParentSolutionFileAsync();
 
         return result;
-    }
-
-    public IPackStrategy DoCustomValidation(IValidationContext validationContext)
-    {
-        _logger?.LogDebug($"Doing specific '{nameof(PlcProjectPackStrategy)}' validations.");
-        // Throw if the validation object type is not correct.
-        if (validationContext.InstanceToValidate.GetType() != typeof(PackCommand))
-        {
-            throw new PackagingException("Unexpected validation object type.");
-        }
-
-        var command = (PackCommand)validationContext.InstanceToValidate;
-
-        if (!string.IsNullOrEmpty(command.Solution))
-        {
-            try
-            {
-                if (!Utils.PlcProjectBelongToSolution(command.Path, command.Solution))
-                {
-                    validationContext.RootContextData[PackCommand.CustomSolutionValidation] = new ValidationFailure(
-                        nameof(IPackCommand.Solution),
-                        string.Format(
-                            ErrorStrings.SpecifiedInputFileDoesNotBelongToSolution,
-                            command.Path,
-                            command.Solution));
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex.Message);
-                return this;
-            }
-        }
-
-        return this;
     }
 }

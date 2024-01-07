@@ -11,13 +11,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace TwinGet.Core.Test.Packaging;
 
-public class PackageServiceTests
+public class PlcProjectPackStrategyTests
 {
     private readonly TestProject _testProject = new();
     private readonly PlcProjectPackStrategy _sut = new(null);
     private readonly ITestOutputHelper _output;
 
-    public PackageServiceTests(ITestOutputHelper output)
+    public PlcProjectPackStrategyTests(ITestOutputHelper output)
     {
         _output = output;
         _output.WriteLine(_testProject.RootPath);

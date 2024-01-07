@@ -15,7 +15,8 @@ public class PackCommandHander(
 {
     private readonly IValidator<PackCommand> _validator =
         validator ?? throw new ArgumentNullException(nameof(validator));
-    private readonly IPackStrategyFactory _strategyFactory = strategyFactory;
+    private readonly IPackStrategyFactory _strategyFactory =
+        strategyFactory ?? throw new ArgumentNullException(nameof(strategyFactory));
     private readonly ILogger? _logger = logger;
 
     /// <summary>
@@ -27,16 +28,8 @@ public class PackCommandHander(
     /// <exception cref="PackagingException"></exception>
     public async Task<bool> Handle(PackCommand request, CancellationToken cancellationToken)
     {
-        var context = new ValidationContext<PackCommand>(request);
-
-        IPackStrategy strategy = _strategyFactory
-            .CreateStrategy(request.Path)
-            .DoCustomValidation(context);
-
-        ArgumentNullException.ThrowIfNull(strategy, nameof(strategy));
-
         FluentValidation.Results.ValidationResult result = await _validator.ValidateAsync(
-            context,
+            request,
             cancellationToken
         );
 
@@ -85,6 +78,10 @@ public class PackCommandHander(
         {
             request.OutputDirectory = Directory.GetCurrentDirectory();
         }
+
+        IPackStrategy strategy = _strategyFactory.CreateStrategy(request.Path);
+
+        ArgumentNullException.ThrowIfNull(strategy, nameof(strategy));
 
         return await strategy.PackAsync(request);
     }

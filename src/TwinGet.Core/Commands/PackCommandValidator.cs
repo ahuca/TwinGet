@@ -1,7 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using TwinGet.Core.Packaging;
 
@@ -24,29 +23,7 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
             .NotNull()
             .WithMessage(ErrorStrings.InputFileNotSpecified)
             .Must(File.Exists)
-            .WithMessage(p => string.Format(ErrorStrings.InputFileNotFound, p.Path))
-            .Custom(
-                (x, context) =>
-                {
-                    if (
-                        context.RootContextData.TryGetValue(
-                            PackCommand.CustomPathValidation,
-                            out object? value
-                        )
-                    )
-                    {
-                        try
-                        {
-                            var failure = (ValidationFailure)value;
-                            context.AddFailure(failure);
-                        }
-                        catch
-                        {
-                            context.AddFailure("Failed custom validation.");
-                        }
-                    }
-                }
-            );
+            .WithMessage(p => string.Format(ErrorStrings.InputFileNotFound, p.Path));
 
         RuleFor(p => p.Solution)
             .Cascade(CascadeMode.Stop)
@@ -65,28 +42,6 @@ public class PackCommandValidator : AbstractValidator<PackCommand>
                     return File.Exists(solution);
                 }
             )
-            .WithMessage(p => string.Format(ErrorStrings.SolutionFileNotFound, p.Solution))
-            .Custom(
-                (x, context) =>
-                {
-                    if (
-                        context.RootContextData.TryGetValue(
-                            PackCommand.CustomSolutionValidation,
-                            out object? value
-                        )
-                    )
-                    {
-                        try
-                        {
-                            var failure = (ValidationFailure)value;
-                            context.AddFailure(failure);
-                        }
-                        catch
-                        {
-                            context.AddFailure("Failed custom validation.");
-                        }
-                    }
-                }
-            );
+            .WithMessage(p => string.Format(ErrorStrings.SolutionFileNotFound, p.Solution));
     }
 }
