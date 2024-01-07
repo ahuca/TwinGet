@@ -1,12 +1,37 @@
-$vsInstallationPath = .\tools\vswhere.exe -latest -property installationPath
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [string]
+    [ValidateSet("Release", "Debug")]
+    $Configuration = "Debug",
+    
+    [Parameter()]
+    [switch]
+    $NoRestore,
 
-$msBuildPath = Join-Path -Path $vsInstallationPath -ChildPath 'MSBuild\Current\Bin\MSBuild.exe'
+    [Parameter()]
+    [switch]
+    $Test
+)
+
+. "$PSScriptRoot\common.ps1"
+
+$msBuildPath = Resolve-MsBuildPath -ErrorAction Stop
+
+if (!$msBuildPath) {
+    throw "Could not resolve MSBuild path."
+}
 
 $null = Test-Path $msBuildPath -ErrorAction Stop
 
-$null = Get-Command nuget -ErrorAction Stop
-
 $solution = Join-Path -Path $PSScriptRoot -ChildPath 'TwinGet.sln'
 
-dotnet restore $solution
-& $msBuildPath $solution -p:Configuration=Release
+if (-not $NoRestore) {
+    dotnet restore $solution
+}
+
+& $msBuildPath $solution -p:Configuration=$Configuration
+
+if ($Test) {
+    dotnet test --configuration $Configuration --no-build --no-restore --logger "trx;verbosity=detailed;LogFileName=test_results.trx" $PSScriptRoot\TwinGet.sln
+}
