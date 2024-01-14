@@ -7,7 +7,7 @@ using TwinGet.Core.Packaging;
 
 namespace TwinGet.Core.Commands;
 
-public class PackCommandHander(
+public class PackCommandHandler(
     IValidator<PackCommand> validator,
     IPackStrategyFactory strategyFactory,
     ILogger? logger

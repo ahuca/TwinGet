@@ -9,17 +9,17 @@ using Xunit.Abstractions;
 
 namespace TwinGet.Core.Test.Commands;
 
-public class PackCommandHanderTests
+public class PackCommandHandlerTests
 {
     private readonly TestProject _testProject = new();
     private readonly PackCommand _command;
     private readonly Mock<IValidator<PackCommand>> _validator = new();
     private readonly IPackStrategy _strategy = new PlcProjectPackStrategy(null);
     private readonly Mock<IPackStrategyFactory> _strategyFactory = new();
-    private readonly PackCommandHander _sut;
+    private readonly PackCommandHandler _sut;
     private readonly ITestOutputHelper _output;
 
-    public PackCommandHanderTests(ITestOutputHelper output)
+    public PackCommandHandlerTests(ITestOutputHelper output)
     {
         // We mock validation so that it always pass.
         Mock<FluentValidation.Results.ValidationResult> validationResult = new();
