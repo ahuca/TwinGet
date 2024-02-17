@@ -1,15 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+    <DefaultItemExcludes>$(DefaultItemExcludes);TestTwincatProject\TestNonTwincatProject1\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.Build" Version="17.8.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -25,6 +27,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
+    <ProjectReference Include="..\..\src\TwinGet.Utils\TwinGet.Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="$(ProjectDir)TestTwincatProject\**" Exclude="$(ProjectDir)TestTwincatProject\TestNonTwincatProject1\**;$(ProjectDir)TestTwincatProject\.vs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="TestTwincatProject\" />
+  </ItemGroup>
+  
 </Project>

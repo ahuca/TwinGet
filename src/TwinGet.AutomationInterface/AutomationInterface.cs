@@ -1,38 +1,55 @@
 ﻿// This file is licensed to you under MIT license.
 
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using TwinGet.AutomationInterface.ComMessageFilter;
 using TwinGet.AutomationInterface.Exceptions;
 using TwinGet.AutomationInterface.Utils;
+using static TwinGet.AutomationInterface.AutomationInterfaceConstants;
 
 namespace TwinGet.AutomationInterface
 {
     [SupportedOSPlatform("windows")]
     public class AutomationInterface : IDisposable
     {
-        public string ProgId { get => _progId; }
-        private string _progId;
-        private readonly EnvDTE80.DTE2? _dte;
         private bool _disposedValue;
+        private readonly TwincatDteProvider _dteProvider;
+        private EnvDTE80.DTE2 _dte { get => _dteProvider.Dte; }
+        private EnvDTE.Solution? _solution;
+        private EnvDTE.SolutionBuild? _solutionBuild;
+        private readonly List<TwincatProject> _twincatProjects = new();
+
+        public string ProgId { get => _dteProvider.ProgId; }
+        public bool IsSolutionOpen { get => _solution?.IsOpen ?? false; }
+        public string LoadedSolutionFile { get => _solution?.FileName ?? string.Empty; }
+        public IReadOnlyList<TwincatProject> TwincatProjects { get => _twincatProjects; }
 
         public AutomationInterface()
         {
             MessageFilter.Register();
-            _dte = TryInitializeDte(out _progId);
-            ThrowIfFailToInitializeDte(_dte);
+            _dteProvider = new(this, true);
+        }
+
+        protected bool TryCleanUpDteProvider()
+        {
+            if (_dteProvider is null) { return false; }
+
+            /// We only dispose the <see cref="_dteProvider"/> that we created.
+            if (_dteProvider.Owner == this)
+            {
+                _dteProvider.Dispose();
+                return true;
+            }
+
+            return false;
         }
 
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
-                if (disposing)
-                {
-                    ;
-                }
+                if (disposing) { }
 
-                CleanUp();
+                TryCleanUpDteProvider();
                 _disposedValue = true;
             }
         }
@@ -48,57 +65,43 @@ namespace TwinGet.AutomationInterface
             GC.SuppressFinalize(this);
         }
 
-        private void CleanUp()
+        private void ThrowIfDteIsNull()
         {
-            _progId = string.Empty;
-
-            if (_dte is not null)
-            {
-                _dte.Quit();
-                Marshal.ReleaseComObject(_dte);
-                MessageFilter.Revoke();
-            }
+            if (_dte is null) { throw new DteInstanceIsNullException($"No {nameof(EnvDTE80.DTE2)} instance available."); }
         }
 
-        private void ThrowIfFailToInitializeDte(EnvDTE80.DTE2? dte)
+        private static void ThrowSolutionPathNotFound(string solutionPath)
         {
-            if (dte is null)
-            {
-                throw new CouldNotCreateTwinCatDte($"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {AutomationInterfaceConstants.TwincatXaeDownloadUrl}");
-            }
+            throw new FileNotFoundException($"Provided solution path does not exists.", solutionPath);
         }
 
-        /// <summary>
-        /// Try to create a Visual Studio (or TwinCAT XAE) DTE instance.
-        /// </summary>
-        /// <param name="progId">The ProgId of the created instance if successful, empty string if not.</param>
-        /// <returns>The created DTE instance if successful, null if not.</returns>
-        private static EnvDTE80.DTE2? TryInitializeDte(out string progId)
+        public void LoadSolution(string filePath)
         {
-            foreach (string p in AutomationInterfaceConstants.SupportedProgIds)
+            ArgumentException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
+            if (!Path.Exists(filePath)) { ThrowSolutionPathNotFound(filePath); }
+
+            ThrowIfDteIsNull();
+
+            filePath = Path.GetFullPath(filePath);
+            _solution = _dte.Solution;
+            _solutionBuild = _dte.Solution.SolutionBuild;
+            _solution.Open(filePath);
+
+            // Get TwinCAT projects
+            for (int i = ProjectItemStartingIndex; i <= _dte.Solution.Projects.Count; i++)
             {
-                Type? t = Type.GetTypeFromProgID(p);
+                EnvDTE.Project currentItem = _dte.Solution.Projects.Item(i);
 
-                if (t is null) { continue; }
-
-                EnvDTE80.DTE2? dte;
-                try
+                if (currentItem.IsTwincatProject())
                 {
-                    dte = (EnvDTE80.DTE2?)Activator.CreateInstance(t);
-                    if (dte is null) { continue; }
-                }
-                catch { continue; }
-
-                if (dte.IsTwinCatIntegrated())
-                {
-                    progId = p;
-                    return dte;
+                    _twincatProjects.Add(new TwincatProject(currentItem));
                 }
             }
-
-            progId = string.Empty;
-            return null;
         }
 
+        public static void SaveProjectAsLibrary(string plcProjectName, string outFile, string solutionPath = "")
+        {
+
+        }
     }
 }

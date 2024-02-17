@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TwinGet.AutomationInterface": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
