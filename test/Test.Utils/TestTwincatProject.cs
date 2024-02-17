@@ -34,15 +34,11 @@ internal class TestTwincatProject
                     absolutePath
                 );
 
-            if (tcSmProject.Project.Plc?.Projects is not null)
-            {
-                _plcProjects.AddRange(
-                    from ProjectElement project in tcSmProject.Project.Plc.Projects
-                    let plcProject = new TestPlcProject(Path.Join(rootDir, project.PrjFilePath))
-                    where plcProject is not null
-                    select plcProject
-                );
-            }
+            var plcProjects = tcSmProject
+                .Project.Plc?.Projects
+                ?.Select(x => new TestPlcProject(Path.Join(rootDir, x.PrjFilePath)));
+
+            _plcProjects = new(plcProjects ?? []);
         }
     }
 }
