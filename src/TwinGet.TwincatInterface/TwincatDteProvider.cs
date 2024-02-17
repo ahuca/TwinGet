@@ -65,6 +65,10 @@ public class TwincatDteProvider : IDisposable
             );
         }
 
+        Dte.SuppressUI = true;
+        Dte.MainWindow.Visible = false;
+        Dte.UserControl = false;
+
         if (startMsgFiltering)
         {
             _startedMsgFiltering = true;
