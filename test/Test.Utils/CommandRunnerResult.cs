@@ -16,7 +16,7 @@ internal class CommandRunnerResult
 
     public bool Success => ExitCode == 0;
 
-    public string AllOuput => Output + Environment.NewLine + Errors;
+    public string AllOutput => Output + Environment.NewLine + Errors;
 
     internal CommandRunnerResult(Process process, int exitCode, string output, string error)
     {

@@ -36,17 +36,17 @@ public class PackCommandTests(ITestOutputHelper output)
 
         // Act
         var result = RunPack(args);
-        _output.WriteLine(result.AllOuput);
+        _output.WriteLine(result.AllOutput);
 
         // Assert
         result.ExitCode.Should().Be(0);
         result
-            .AllOuput.Should()
+            .AllOutput.Should()
             .Contain(OtherStrings.PackSuccess.Replace("{Path}", expectedPackagePath));
         if (!provideSolution)
         {
             result
-                .AllOuput.Should()
+                .AllOutput.Should()
                 .Contain(SuggestionStrings.SpecifySolutionFileForBetterPerformance);
         }
 
@@ -65,13 +65,13 @@ public class PackCommandTests(ITestOutputHelper output)
 
         // Act
         var result = RunPack(args);
-        _output.WriteLine(result.AllOuput);
+        _output.WriteLine(result.AllOutput);
 
         // Assert
         result.ExitCode.Should().NotBe(0);
-        result.AllOuput.Should().Contain("The specified library is not a managed library.");
+        result.AllOutput.Should().Contain("The specified library is not a managed library.");
         result
-            .AllOuput.Should()
+            .AllOutput.Should()
             .Contain(
                 CoreErrorStrings.FailedToSavePlcLibrary.Replace(
                     "{Path}",
