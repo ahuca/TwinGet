@@ -9,15 +9,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli", "src\TwinGet.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Core", "src\TwinGet.Core\TwinGet.Core.csproj", "{9B7F1AC0-7368-4504-8B3F-D9C518B85653}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.AutomationInterface", "src\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj", "{3FD0F366-6A8B-4CF8-A11E-D62D8A687EC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.TwincatInterface", "src\TwinGet.TwincatInterface\TwinGet.TwincatInterface.csproj", "{3FD0F366-6A8B-4CF8-A11E-D62D8A687EC7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BDB6B966-4B82-4F51-9487-91CD520BC5AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.AutomationInterface.Test", "test\TwinGet.AutomationInterface.Test\TwinGet.AutomationInterface.Test.csproj", "{0A952D6F-9D6D-45B0-8535-E10ED8029B6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.TwincatInterface.Test", "test\TwinGet.TwincatInterface.Test\TwinGet.TwincatInterface.Test.csproj", "{0A952D6F-9D6D-45B0-8535-E10ED8029B6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Utils", "src\TwinGet.Utils\TwinGet.Utils.csproj", "{C29610F6-4B71-49AD-B57F-784467C1CF1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Utils", "src\TwinGet.Utils\TwinGet.Utils.csproj", "{C29610F6-4B71-49AD-B57F-784467C1CF1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Utils.Test", "test\TwinGet.Utils.Test\TwinGet.Utils.Test.csproj", "{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Utils.Test", "test\TwinGet.Utils.Test\TwinGet.Utils.Test.csproj", "{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.TwincatInterface.Dto", "src\TwinGet.TwincatInterface.Dto\TwinGet.TwincatInterface.Dto.csproj", "{563081EB-AA78-4C47-8826-1DB5F1D724DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Core.Test", "test\TwinGet.Core.Test\TwinGet.Core.Test.csproj", "{79FD1B02-D5D7-44B5-83EF-5A8D0CDFDC17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Utils", "test\Test.Utils\Test.Utils.csproj", "{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinGet.Cli.FuncTest", "test\TwinGet.Cli.FuncTest\TwinGet.Cli.FuncTest.csproj", "{7FA80F24-E312-4B98-B6F3-F5A273B8D00C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Utils.Test", "test\Test.Utils.Test\Test.Utils.Test.csproj", "{0BAD79FB-472D-4191-9680-07AE27DFCEEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinGet.Cli.Test", "test\TwinGet.Cli.Test\TwinGet.Cli.Test.csproj", "{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +61,30 @@ Global
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79FD1B02-D5D7-44B5-83EF-5A8D0CDFDC17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79FD1B02-D5D7-44B5-83EF-5A8D0CDFDC17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79FD1B02-D5D7-44B5-83EF-5A8D0CDFDC17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79FD1B02-D5D7-44B5-83EF-5A8D0CDFDC17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FA80F24-E312-4B98-B6F3-F5A273B8D00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FA80F24-E312-4B98-B6F3-F5A273B8D00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FA80F24-E312-4B98-B6F3-F5A273B8D00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FA80F24-E312-4B98-B6F3-F5A273B8D00C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BAD79FB-472D-4191-9680-07AE27DFCEEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BAD79FB-472D-4191-9680-07AE27DFCEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BAD79FB-472D-4191-9680-07AE27DFCEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BAD79FB-472D-4191-9680-07AE27DFCEEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +96,12 @@ Global
 		{0A952D6F-9D6D-45B0-8535-E10ED8029B6B} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 		{C29610F6-4B71-49AD-B57F-784467C1CF1F} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
 		{1D55596F-6184-4DA6-9DFE-BDB9B358EA4B} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
+		{563081EB-AA78-4C47-8826-1DB5F1D724DE} = {46CA5D70-7812-4809-8B40-31392DE18AA1}
+		{79FD1B02-D5D7-44B5-83EF-5A8D0CDFDC17} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
+		{F10DC11D-B66B-4BF1-826E-E33E3966E5F6} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
+		{7FA80F24-E312-4B98-B6F3-F5A273B8D00C} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
+		{0BAD79FB-472D-4191-9680-07AE27DFCEEC} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
+		{476B1A0F-EED6-44EC-AC6F-E9E9061C7D4B} = {BDB6B966-4B82-4F51-9487-91CD520BC5AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42610935-EABE-41BA-A9A9-57FB7A657F65}

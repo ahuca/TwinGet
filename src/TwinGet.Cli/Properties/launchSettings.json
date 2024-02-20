@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TwinGet.Cli": {
+        "commandName": "Project",
+        "commandLineArgs": ""
+    }
+  }
+}

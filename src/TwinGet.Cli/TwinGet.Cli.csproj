@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamesapce>TwinGet.Cli</RootNamesapce>
@@ -6,23 +6,35 @@
     <AssemblyTitle>TwinGet Command Line</AssemblyTitle>
     <Description>TwinGet Command Line Interface</Description>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Pack\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TwinGet.AutomationInterface\TwinGet.AutomationInterface.csproj" />
+    <ProjectReference Include="..\TwinGet.TwincatInterface\TwinGet.TwincatInterface.csproj" />
     <ProjectReference Include="..\TwinGet.Core\TwinGet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Test.Utils"/>
   </ItemGroup>
 
 </Project>
