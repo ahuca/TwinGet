@@ -41,6 +41,7 @@ public class AutomationInterface : IDisposable, IAutomationInterface
     public AutomationInterface()
     {
         _dteProvider = new(this, true);
+        _ = _dteProvider?.Dte ?? throw new TwincatInterfaceException(ExceptionStrings.CouldNotCreateTwincatDteInstance);
     }
 
     protected bool TryCleanUpDteProvider()
@@ -82,15 +83,6 @@ public class AutomationInterface : IDisposable, IAutomationInterface
         GC.SuppressFinalize(this);
     }
 
-    // TODO: if we throw everytime we fail to instantiate a DTE instance, is this method even needed?
-    private void ThrowIfDteIsNull()
-    {
-        if (_dte is null)
-        {
-            throw new DteInstanceIsNullException($"No {nameof(EnvDTE80.DTE2)} instance available.");
-        }
-    }
-
     private static void ThrowSolutionPathNotFound(string solutionPath)
     {
         throw new FileNotFoundException($"Provided solution path does not exists.", solutionPath);
@@ -103,8 +95,6 @@ public class AutomationInterface : IDisposable, IAutomationInterface
         {
             ThrowSolutionPathNotFound(filePath);
         }
-
-        ThrowIfDteIsNull();
 
         filePath = Path.GetFullPath(filePath);
         _solution = _dte.Solution;
@@ -138,8 +128,6 @@ public class AutomationInterface : IDisposable, IAutomationInterface
     {
         ArgumentException.ThrowIfNullOrEmpty(plcProjectPath, nameof(plcProjectPath));
         ArgumentException.ThrowIfNullOrEmpty(outputDirectory, nameof(outputDirectory));
-
-        ThrowIfDteIsNull();
 
         if (!Directory.Exists(outputDirectory))
         {

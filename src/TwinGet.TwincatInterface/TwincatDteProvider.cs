@@ -21,7 +21,7 @@ public class TwincatDteProvider : IDisposable
     /// </summary>
     /// <param name="owner">The object that created this object.</param>
     /// <param name="startMsgFiltering">Start message filtering <see cref="MessageFilter.Register()"/> if this is true. Default value is <code>true</code>.</param>
-    /// <exception cref="CouldNotCreateTwincatDteException">Throw this exception when it fails to create a TwinCAT DTE instance.</exception>
+    /// <exception cref="TwincatInterfaceException">Throw this exception when it fails to create a TwinCAT DTE instance.</exception>
     public TwincatDteProvider(object owner, bool startMsgFiltering = true)
     {
         ArgumentNullException.ThrowIfNull(owner, nameof(owner));
@@ -60,9 +60,7 @@ public class TwincatDteProvider : IDisposable
 
         if (Dte is null || string.IsNullOrEmpty(ProgId))
         {
-            throw new CouldNotCreateTwincatDteException(
-                $"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}"
-            );
+            throw new TwincatInterfaceException(ExceptionStrings.CouldNotCreateTwincatDteInstance);
         }
 
         Dte.SuppressUI = true;

@@ -12,4 +12,5 @@ public static class ExceptionStrings
         $"The file '{{0}}' does not have a valid TwinCAT project extension.";
     public const string TreeItemIsNotAPlcProject = "The provided tree item '{0}' is not a PLC project.";
     public const string NotATwincatProject = "The provided project '{0}' is not a TwinCAT project.";
+    public const string CouldNotCreateTwincatDteInstance = $"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}";
 }
