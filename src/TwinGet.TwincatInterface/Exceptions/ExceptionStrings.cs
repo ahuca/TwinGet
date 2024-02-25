@@ -13,4 +13,5 @@ public static class ExceptionStrings
     public const string TreeItemIsNotAPlcProject = "The provided tree item '{0}' is not a PLC project.";
     public const string NotATwincatProject = "The provided project '{0}' is not a TwinCAT project.";
     public const string CouldNotCreateTwincatDteInstance = $"Failed to create a DTE instance due to missing TwinCAT XAE or TwinCAT-intergrated Visual Studio installation. TwinCAT can be downloaded from: {TwincatConstants.TwincatXaeDownloadUrl}";
+    public const string CouldNotGetSystemManager = "Failed to get the system manager object from project {0}";
 }

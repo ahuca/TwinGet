@@ -1,5 +1,6 @@
 ﻿// This file is licensed to you under MIT license.
 
+using System.Drawing;
 using EnvDTE;
 using TwinGet.TwincatInterface.Dto;
 using TwinGet.TwincatInterface.Exceptions;
@@ -34,8 +35,8 @@ public class TwincatProject : ITwincatProject
 
         if (_systemManager is null)
         {
-            throw new CouldNotGetSystemManager(
-                $"Failed to get the system manager object from project {_project.Name}"
+            throw new TwincatInterfaceException(
+                string.Format(ExceptionStrings.CouldNotGetSystemManager, _project.Name)
             );
         }
 
