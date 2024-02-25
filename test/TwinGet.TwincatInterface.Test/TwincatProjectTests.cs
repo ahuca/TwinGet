@@ -73,7 +73,7 @@ public class TwincatProjectTests : IDisposable
 #pragma warning restore CS8604 // Possible null reference argument.
 
         // Assert
-        constructTwincatProject.Should().Throw<NotATwincatProject>();
+        constructTwincatProject.Should().Throw<TwincatInterfaceException>().WithMessage(string.Format(ExceptionStrings.NotATwincatProject, project.Name));
     }
 
     [StaFact]

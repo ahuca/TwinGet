@@ -26,7 +26,7 @@ public class TwincatProject : ITwincatProject
     {
         if (!project.IsTwincatProject())
         {
-            throw new NotATwincatProject($"The provided {project.Name} is not a TwinCAT project.");
+            throw new TwincatInterfaceException(string.Format(ExceptionStrings.NotATwincatProject, project.Name));
         }
 
         _project = project;
