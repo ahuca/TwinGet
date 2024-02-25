@@ -43,9 +43,7 @@ public class PlcProject : IPlcProject
         }
         catch
         {
-            throw new NotAPlcProject(
-                $"The provided tree item {treeItem.Name} is not a PLC project."
-            );
+            throw new TwincatInterfaceException(string.Format(ExceptionStrings.TreeItemIsNotAPlcProject, treeItem.Name));
         }
     }
 

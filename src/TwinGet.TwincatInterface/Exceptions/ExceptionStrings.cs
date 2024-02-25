@@ -10,4 +10,5 @@ public static class ExceptionStrings
         $"The file {{0}} does not have a valid PLC project extension \'{TwincatConstants.PlcProjectExtension}\'.";
     public const string InvalidTwincatProjectExtension =
         $"The file {{0}} does not have a valid TwinCAT project extension.";
+    public const string TreeItemIsNotAPlcProject = "The provided tree item {0} is not a PLC project.";
 }
